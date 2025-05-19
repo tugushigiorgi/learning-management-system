@@ -7,4 +7,9 @@ public final class ConstMessages {
   public static final String COURSE_NOT_FOUND = "Course not found";
   public static final String LESSON_NOT_FOUND = "Lesson not found";
   public static final String LESSON_ADDED = "new lesson added";
+  public static final String LESSON_ALREADY_ADDED = "Lesson already added to this course";
+  public static final String NOT_ENOUGH_COINS = "Student doesn't have enough coins";
+  public static final String STUDENT_ENROLLED_SUCCESSFULLY = "Student enrolled successfully";
+  public static final String STUDENT_ALREADY_ENROLLED = "Student already enrolled successfully";
+
 }

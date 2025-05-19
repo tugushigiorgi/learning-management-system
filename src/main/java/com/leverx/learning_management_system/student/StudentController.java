@@ -1,6 +1,7 @@
 package com.leverx.learning_management_system.student;
 
 import static com.leverx.learning_management_system.ConstMessages.STUDENT_ADDED;
+import static com.leverx.learning_management_system.ConstMessages.STUDENT_ENROLLED_SUCCESSFULLY;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleItemOrNotFound;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleList;
 
@@ -27,6 +28,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class StudentController {
 
   private final StudentService studentService;
+
+  @PostMapping("/enroll/{studentId}/{courseId}")
+  public ResponseEntity<String> enrollToCourse(@PathVariable UUID studentId, @PathVariable UUID courseId) {
+    studentService.enrollToCourse(studentId, courseId);
+    return ResponseEntity.ok(STUDENT_ENROLLED_SUCCESSFULLY);
+  }
+
+  @GetMapping("/{studentId}/enrolled-courses-count")
+  public Integer getEnrolledCourseCount(@PathVariable UUID studentId) {
+    return studentService.getEnrolledCourseCount(studentId);
+  }
 
   @PostMapping
   public ResponseEntity<String> createStudent(@RequestBody CreateStudentDto studentDto) {

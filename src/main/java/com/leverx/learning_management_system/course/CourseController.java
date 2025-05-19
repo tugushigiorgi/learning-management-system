@@ -29,6 +29,12 @@ public class CourseController {
 
   private final CourseService courseService;
 
+
+  @GetMapping("/most-popular")
+  public ResponseEntity<List<CourseDto>> MostPopularCourses() {
+    return handleList(courseService.MostPopularCourses());
+  }
+
   @PostMapping
   public ResponseEntity<String> createCourse(@RequestBody CreateCourseDto courseDto) {
     courseService.createCourse(courseDto);

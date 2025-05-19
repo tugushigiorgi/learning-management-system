@@ -1,6 +1,7 @@
 package com.leverx.learning_management_system.course.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,4 +15,7 @@ public class UpdateCourseDto {
   private String description;
   private BigDecimal price;
   private BigDecimal coinsPaid;
+  private LocalDateTime startDate;
+  private LocalDateTime endDate;
+  private Boolean isPublic;
 }

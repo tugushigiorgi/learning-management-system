@@ -1,9 +1,13 @@
 package com.leverx.learning_management_system.lesson.service.imp;
 
+import static com.leverx.learning_management_system.ConstMessages.COURSE_NOT_FOUND;
+import static com.leverx.learning_management_system.ConstMessages.LESSON_ALREADY_ADDED;
 import static com.leverx.learning_management_system.ConstMessages.LESSON_NOT_FOUND;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.leverx.learning_management_system.Mapper.LessonMapper;
+import com.leverx.learning_management_system.course.CourseRepository;
 import com.leverx.learning_management_system.lesson.Lesson;
 import com.leverx.learning_management_system.lesson.LessonRepository;
 import com.leverx.learning_management_system.lesson.dto.CreateLessonDto;
@@ -22,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class LessonServiceImp implements LessonService {
   private final LessonRepository lessonRepository;
   private final LessonMapper lessonMapper;
+  private final CourseRepository courseRepository;
 
   @Override
   @Transactional
@@ -74,4 +79,26 @@ public class LessonServiceImp implements LessonService {
     }
     lessonRepository.save(currentLesson);
   }
+
+  @Override
+  @Transactional
+  public void addToCourse(UUID courseId, UUID lessonId) {
+
+    var currentLesson = lessonRepository.findById(lessonId)
+        .orElseThrow(() ->
+            new ResponseStatusException(NOT_FOUND, LESSON_NOT_FOUND + lessonId)
+        );
+
+    var currentCourse = courseRepository.findById(courseId).orElseThrow(() ->
+        new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseId)
+    );
+    var checkIfAlreadyAdded = currentCourse.getLessons().stream().anyMatch(lesson -> lesson.getId().equals(lessonId));
+
+    if (checkIfAlreadyAdded) {
+      throw new ResponseStatusException(BAD_REQUEST, LESSON_ALREADY_ADDED);
+    }
+    currentCourse.getLessons().add(currentLesson);
+    courseRepository.save(currentCourse);
+  }
+
 }

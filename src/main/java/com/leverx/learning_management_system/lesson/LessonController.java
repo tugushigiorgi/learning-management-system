@@ -27,6 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class LessonController {
   private final LessonService lessonService;
 
+
+  @PostMapping("/{lessonId}/{courseId}")
+  public ResponseEntity<Void> addToCourse(@PathVariable UUID lessonId, @PathVariable UUID courseId) {
+    lessonService.addToCourse(courseId, lessonId);
+    return ResponseEntity.ok().build();
+  }
+
+
   @PostMapping
   public ResponseEntity<String> createLesson(@RequestBody CreateLessonDto lessonDto) {
     lessonService.createLesson(lessonDto);

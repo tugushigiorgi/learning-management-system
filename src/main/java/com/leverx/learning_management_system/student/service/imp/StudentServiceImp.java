@@ -1,9 +1,14 @@
 package com.leverx.learning_management_system.student.service.imp;
 
+import static com.leverx.learning_management_system.ConstMessages.COURSE_NOT_FOUND;
+import static com.leverx.learning_management_system.ConstMessages.NOT_ENOUGH_COINS;
+import static com.leverx.learning_management_system.ConstMessages.STUDENT_ALREADY_ENROLLED;
 import static com.leverx.learning_management_system.ConstMessages.STUDENT_NOT_FOUND;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.leverx.learning_management_system.Mapper.StudentMapper;
+import com.leverx.learning_management_system.course.CourseRepository;
 import com.leverx.learning_management_system.student.Student;
 import com.leverx.learning_management_system.student.StudentRepository;
 import com.leverx.learning_management_system.student.dto.CreateStudentDto;
@@ -23,7 +28,42 @@ public class StudentServiceImp implements StudentService {
 
   private final StudentRepository studentRepository;
   private final StudentMapper studentMapper;
+  private final CourseRepository courseRepository;
 
+  @Override
+  @Transactional(readOnly = true)
+  public Integer getEnrolledCourseCount(UUID studentId) {
+    var getStudent = studentRepository.findById(studentId)
+        .orElseThrow(() ->
+            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + studentId)
+        );
+    return getStudent.getCourses().size();
+  }
+
+  @Override
+  @Transactional
+  public void enrollToCourse(UUID studentId, UUID courseId) {
+    var getStudent = studentRepository.findById(studentId)
+        .orElseThrow(() ->
+            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + studentId)
+        );
+    var getCourse = courseRepository.findById(courseId).orElseThrow(() ->
+        new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseId));
+
+    var checkIfAlreadyEnrolled = getStudent.getCourses().stream().anyMatch(course -> course.getId().equals(courseId));
+
+    if (checkIfAlreadyEnrolled) {
+      throw new ResponseStatusException(BAD_REQUEST, STUDENT_ALREADY_ENROLLED);
+    }
+
+    if (getStudent.getCoins().compareTo(getCourse.getPrice()) >= 0) {
+      getStudent.getCourses().add(getCourse);
+      getStudent.setCoins(getStudent.getCoins().subtract(getCourse.getPrice()));
+      studentRepository.save(getStudent);
+    } else {
+      throw new ResponseStatusException(BAD_REQUEST, NOT_ENOUGH_COINS);
+    }
+  }
 
   @Transactional
   @Override
@@ -56,11 +96,11 @@ public class StudentServiceImp implements StudentService {
   @Override
   @Transactional
   public void deleteById(UUID id) {
-    var getProduct = studentRepository.findById(id)
+    var getStudent = studentRepository.findById(id)
         .orElseThrow(() ->
             new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + id)
         );
-    studentRepository.delete(getProduct);
+    studentRepository.delete(getStudent);
   }
 
   @Override

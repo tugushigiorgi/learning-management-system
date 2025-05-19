@@ -9,7 +9,9 @@ import com.leverx.learning_management_system.course.CourseRepository;
 import com.leverx.learning_management_system.course.Service.CourseService;
 import com.leverx.learning_management_system.course.dto.CourseDto;
 import com.leverx.learning_management_system.course.dto.CreateCourseDto;
+import com.leverx.learning_management_system.course.dto.DetailedCourseDto;
 import com.leverx.learning_management_system.course.dto.UpdateCourseDto;
+import com.leverx.learning_management_system.courseSettings.CourseSettings;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +26,27 @@ public class CourseServiceImp implements CourseService {
   private final CourseMapper courseMapper;
 
   @Override
+  @Transactional(readOnly = true)
+  public List<CourseDto> MostPopularCourses() {
+    return courseRepository.findTop5MostPopular()
+        .stream()
+        .map(courseMapper::toDto)
+        .toList();
+  }
+
+  @Override
   @Transactional
   public void createCourse(CreateCourseDto courseDto) {
+    var courseSettings = CourseSettings.builder()
+        .startDate(courseDto.getStartDate())
+        .endDate(courseDto.getEndDate())
+        .isPublic(courseDto.getIsPublic())
+        .build();
     var newCourse = Course.builder()
         .price(courseDto.getPrice())
         .title(courseDto.getTitle())
         .description(courseDto.getDescription())
+        .settings(courseSettings)
         .build();
     courseRepository.save(newCourse);
   }
@@ -79,6 +96,24 @@ public class CourseServiceImp implements CourseService {
       currentCourse.setPrice(courseDto.getPrice());
     }
 
+    var courseSettings = currentCourse.getSettings();
+    if (!courseDto.getStartDate().equals(courseSettings.getStartDate())) {
+      courseSettings.setStartDate(courseDto.getStartDate());
+    }
+    if (!courseDto.getEndDate().equals(courseSettings.getEndDate())) {
+      courseSettings.setEndDate(courseDto.getEndDate());
+    }
+    if (!courseDto.getIsPublic().equals(courseSettings.getIsPublic())) {
+      courseSettings.setIsPublic(courseDto.getIsPublic());
+    }
+
     courseRepository.save(currentCourse);
+  }
+
+  @Override
+  public DetailedCourseDto getDetailedCourseById(UUID id) {
+    return courseRepository.findById(id)
+        .map(courseMapper::toDetailedDto)
+        .orElse(null);
   }
 }

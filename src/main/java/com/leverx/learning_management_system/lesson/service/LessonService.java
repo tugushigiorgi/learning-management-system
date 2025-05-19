@@ -16,4 +16,8 @@ public interface LessonService {
   void deleteById(UUID id);
 
   void updateLessons(UpdateLessonDto lessonDto);
+
+  void addToCourse(UUID courseId, UUID lessonId);
+
+
 }
