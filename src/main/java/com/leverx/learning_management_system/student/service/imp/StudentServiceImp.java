@@ -3,7 +3,7 @@ package com.leverx.learning_management_system.student.service.imp;
 import static com.leverx.learning_management_system.ConstMessages.STUDENT_NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import com.leverx.Mapper.StudentMapper;
+import com.leverx.learning_management_system.Mapper.StudentMapper;
 import com.leverx.learning_management_system.student.Student;
 import com.leverx.learning_management_system.student.StudentRepository;
 import com.leverx.learning_management_system.student.dto.CreateStudentDto;

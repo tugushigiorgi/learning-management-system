@@ -13,18 +13,17 @@ databaseChangeLog:
                     nullable: false
                     primaryKey: true
               - column:
-                  name: firstName
+                  name: first_name
                   type: VARCHAR(100)
               - column:
-                  name: lastName
+                  name: last_name
                   type: VARCHAR(100)
               - column:
                   name: email
                   type: VARCHAR(150)
               - column:
-                  name: dateOfBirth
+                  name: date_of_birth
                   type: DATE
               - column:
                   name: coins
                   type: NUMERIC(10,2)
-

@@ -1,10 +1,13 @@
 package com.leverx.learning_management_system.course.dto;
 
 import java.math.BigDecimal;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 
-@Data
+
+@Getter
+@Setter
 public class CourseDto {
   private String title;
   private String description;

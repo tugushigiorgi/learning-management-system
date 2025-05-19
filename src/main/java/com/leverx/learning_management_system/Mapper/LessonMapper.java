@@ -1,7 +1,5 @@
-package com.leverx.Mapper;
+package com.leverx.learning_management_system.Mapper;
 
-import com.leverx.learning_management_system.course.Course;
-import com.leverx.learning_management_system.course.dto.CourseDto;
 import com.leverx.learning_management_system.lesson.Lesson;
 import com.leverx.learning_management_system.lesson.dto.LessonDto;
 import org.mapstruct.Mapper;

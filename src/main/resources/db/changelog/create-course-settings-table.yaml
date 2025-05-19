@@ -4,7 +4,7 @@ databaseChangeLog:
       author: Giorgi
       changes:
         - createTable:
-            tableName: courseSettings
+            tableName: course_settings
             columns:
               - column:
                   name: id
@@ -13,11 +13,11 @@ databaseChangeLog:
                     nullable: false
                     primaryKey: true
               - column:
-                  name: startDate
+                  name: start_date
                   type: TIMESTAMP
               - column:
-                  name: endDate
+                  name: end_date
                   type: TIMESTAMP
               - column:
-                  name: isPublic
+                  name: is_public
                   type: BOOLEAN

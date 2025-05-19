@@ -1,9 +1,11 @@
 package com.leverx.learning_management_system.lesson.dto;
 
 import java.util.UUID;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UpdateLessonDto {
   private UUID id;
   private String title;

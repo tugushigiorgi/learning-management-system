@@ -7,27 +7,30 @@ databaseChangeLog:
             tableName: student_courses
             columns:
               - column:
-                  name: studentId
+                  name: student_id
                   type: UUID
                   constraints:
                     nullable: false
               - column:
-                  name: courseId
+                  name: course_id
                   type: UUID
                   constraints:
                     nullable: false
+
         - addPrimaryKey:
             tableName: student_courses
-            columnNames: studentId, courseId
+            columnNames: student_id, course_id
+
         - addForeignKeyConstraint:
             baseTableName: student_courses
-            baseColumnNames: studentId
+            baseColumnNames: student_id
             referencedTableName: student
             referencedColumnNames: id
             constraintName: fk_student_course_student
+
         - addForeignKeyConstraint:
             baseTableName: student_courses
-            baseColumnNames: courseId
+            baseColumnNames: course_id
             referencedTableName: course
             referencedColumnNames: id
             constraintName: fk_student_course_course

@@ -3,7 +3,7 @@ package com.leverx.learning_management_system.lesson.service.imp;
 import static com.leverx.learning_management_system.ConstMessages.LESSON_NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import com.leverx.Mapper.LessonMapper;
+import com.leverx.learning_management_system.Mapper.LessonMapper;
 import com.leverx.learning_management_system.lesson.Lesson;
 import com.leverx.learning_management_system.lesson.LessonRepository;
 import com.leverx.learning_management_system.lesson.dto.CreateLessonDto;

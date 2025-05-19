@@ -3,7 +3,7 @@ package com.leverx.learning_management_system.course.Service.imp;
 import static com.leverx.learning_management_system.ConstMessages.COURSE_NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import com.leverx.Mapper.CourseMapper;
+import com.leverx.learning_management_system.Mapper.CourseMapper;
 import com.leverx.learning_management_system.course.Course;
 import com.leverx.learning_management_system.course.CourseRepository;
 import com.leverx.learning_management_system.course.Service.CourseService;
@@ -13,10 +13,12 @@ import com.leverx.learning_management_system.course.dto.UpdateCourseDto;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
+@Service
 public class CourseServiceImp implements CourseService {
   private final CourseRepository courseRepository;
   private final CourseMapper courseMapper;

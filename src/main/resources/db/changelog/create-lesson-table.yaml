@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: create-lesson-table
       author: Giorgi
       changes:
         - createTable:
@@ -23,6 +23,7 @@ databaseChangeLog:
                   type: UUID
                   constraints:
                     nullable: false
+
         - addForeignKeyConstraint:
             baseTableName: lesson
             baseColumnNames: course_id

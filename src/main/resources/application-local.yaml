@@ -1,3 +1,9 @@
+logging:
+  level:
+    root: DEBUG
+    org.springframework.web: DEBUG
+    com.leverx.learning_management_system: DEBUG
+
 spring:
   h2:
     console:

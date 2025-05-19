@@ -36,6 +36,6 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: course
             baseColumnNames: course_settings_id
-            referencedTableName: courseSettings
+            referencedTableName: course_settings
             referencedColumnNames: id
             constraintName: fk_course_settings

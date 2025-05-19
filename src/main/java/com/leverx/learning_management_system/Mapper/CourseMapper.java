@@ -1,4 +1,4 @@
-package com.leverx.Mapper;
+package com.leverx.learning_management_system.Mapper;
 
 import com.leverx.learning_management_system.course.Course;
 import com.leverx.learning_management_system.course.dto.CourseDto;

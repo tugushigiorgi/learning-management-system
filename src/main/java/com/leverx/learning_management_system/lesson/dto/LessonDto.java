@@ -1,8 +1,10 @@
 package com.leverx.learning_management_system.lesson.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class LessonDto {
   private String title;
   private Integer duration;
