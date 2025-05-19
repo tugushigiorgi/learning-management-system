@@ -1,8 +1,9 @@
 logging:
   level:
-    root: DEBUG
-    org.springframework.web: DEBUG
-    com.leverx.learning_management_system: DEBUG
+    root: INFO
+    javax.management.remote.rmi: WARN
+    sun.rmi: WARN
+
 management:
   endpoints:
     web:
