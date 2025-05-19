@@ -3,6 +3,15 @@ logging:
     root: DEBUG
     org.springframework.web: DEBUG
     com.leverx.learning_management_system: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, loggers
+  endpoint:
+    health:
+      show-details: always
+
 
 spring:
   h2:
