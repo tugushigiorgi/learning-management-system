@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-student-table
+      author: Giorgi
+      changes:
+        - createTable:
+            tableName: student
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: firstName
+                  type: VARCHAR(100)
+              - column:
+                  name: lastName
+                  type: VARCHAR(100)
+              - column:
+                  name: email
+                  type: VARCHAR(150)
+              - column:
+                  name: dateOfBirth
+                  type: DATE
+              - column:
+                  name: coins
+                  type: NUMERIC(10,2)
+

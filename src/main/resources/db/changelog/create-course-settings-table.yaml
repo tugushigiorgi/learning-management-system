@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-course-settings-table
+      author: Giorgi
+      changes:
+        - createTable:
+            tableName: courseSettings
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: startDate
+                  type: TIMESTAMP
+              - column:
+                  name: endDate
+                  type: TIMESTAMP
+              - column:
+                  name: isPublic
+                  type: BOOLEAN

@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-student-course-join-table
+      author: Giorgi
+      changes:
+        - createTable:
+            tableName: student_courses
+            columns:
+              - column:
+                  name: studentId
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: courseId
+                  type: UUID
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: student_courses
+            columnNames: studentId, courseId
+        - addForeignKeyConstraint:
+            baseTableName: student_courses
+            baseColumnNames: studentId
+            referencedTableName: student
+            referencedColumnNames: id
+            constraintName: fk_student_course_student
+        - addForeignKeyConstraint:
+            baseTableName: student_courses
+            baseColumnNames: courseId
+            referencedTableName: course
+            referencedColumnNames: id
+            constraintName: fk_student_course_course

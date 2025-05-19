@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-course-table
+      author: Giorgi
+      changes:
+        - createTable:
+            tableName: course
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: title
+                  type: VARCHAR(100)
+              - column:
+                  name: description
+                  type: VARCHAR(200)
+              - column:
+                  name: price
+                  type: NUMERIC(10,2)
+              - column:
+                  name: coins_paid
+                  type: NUMERIC(10,2)
+              - column:
+                  name: course_settings_id
+                  type: UUID
+
+        - addUniqueConstraint:
+            tableName: course
+            columnNames: course_settings_id
+            constraintName: uq_course_settings
+
+        - addForeignKeyConstraint:
+            baseTableName: course
+            baseColumnNames: course_settings_id
+            referencedTableName: courseSettings
+            referencedColumnNames: id
+            constraintName: fk_course_settings
