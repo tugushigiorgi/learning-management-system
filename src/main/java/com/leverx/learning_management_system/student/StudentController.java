@@ -1,5 +1,6 @@
 package com.leverx.learning_management_system.student;
 
+import static com.leverx.learning_management_system.ConstMessages.STUDENT_ADDED;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleItemOrNotFound;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleList;
 
@@ -28,9 +29,9 @@ public class StudentController {
   private final StudentService studentService;
 
   @PostMapping
-  public ResponseEntity<Void> createStudent(@RequestBody CreateStudentDto studentDto) {
+  public ResponseEntity<String> createStudent(@RequestBody CreateStudentDto studentDto) {
     studentService.createStudent(studentDto);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(STUDENT_ADDED);
   }
 
   @GetMapping("/{id}")
