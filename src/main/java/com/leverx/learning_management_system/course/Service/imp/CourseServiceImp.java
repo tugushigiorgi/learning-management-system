@@ -1,7 +1,6 @@
 package com.leverx.learning_management_system.course.Service.imp;
 
 import static com.leverx.learning_management_system.ConstMessages.COURSE_NOT_FOUND;
-import static com.leverx.learning_management_system.ConstMessages.STUDENT_NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.leverx.Mapper.CourseMapper;
@@ -20,7 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class CourseServiceImp implements CourseService {
   private final CourseRepository courseRepository;
-  private final CourseMapper studentMapper;
+  private final CourseMapper courseMapper;
 
   @Override
   @Transactional
@@ -37,7 +36,7 @@ public class CourseServiceImp implements CourseService {
   @Transactional(readOnly = true)
   public CourseDto getCourseById(UUID id) {
     return courseRepository.findById(id)
-        .map(studentMapper::toDto)
+        .map(courseMapper::toDto)
         .orElse(null);
   }
 
@@ -45,7 +44,7 @@ public class CourseServiceImp implements CourseService {
   @Transactional(readOnly = true)
   public List<CourseDto> getAllCourses() {
     return courseRepository.findAll().stream()
-        .map(studentMapper::toDto)
+        .map(courseMapper::toDto)
         .toList();
   }
 
