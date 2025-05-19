@@ -1,10 +1,9 @@
 package com.leverx.learning_management_system.student.dto;
 
 import java.time.LocalDate;
-import lombok.Builder;
 import lombok.Data;
 
-@Builder
+
 @Data
 public class CreateStudentDto {
   private String firstName;
