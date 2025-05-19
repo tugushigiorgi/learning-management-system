@@ -8,10 +8,12 @@ import com.leverx.learning_management_system.course.Service.CourseService;
 import com.leverx.learning_management_system.course.dto.CourseDto;
 import com.leverx.learning_management_system.course.dto.CreateCourseDto;
 import com.leverx.learning_management_system.course.dto.UpdateCourseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,42 +27,51 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/courses")
 @RequiredArgsConstructor
+@Tag(name = "Courses", description = "Endpoints for managing courses")
 public class CourseController {
 
   private final CourseService courseService;
 
-
+  @Operation(summary = "Get the most popular courses by coins paid")
   @GetMapping("/most-popular")
   public ResponseEntity<List<CourseDto>> MostPopularCourses() {
     return handleList(courseService.MostPopularCourses());
   }
 
+  @Operation(summary = "Create a new course")
   @PostMapping
-  public ResponseEntity<String> createCourse(@RequestBody CreateCourseDto courseDto) {
+  public ResponseEntity<String> createCourse(
+      @RequestBody @Parameter(description = "Course creation data") CreateCourseDto courseDto) {
     courseService.createCourse(courseDto);
     return ResponseEntity.ok(COURSE_ADDED);
   }
 
+  @Operation(summary = "Get a course by ID")
   @GetMapping("/{id}")
-  public ResponseEntity<CourseDto> getCourse(@PathVariable UUID id) {
+  public ResponseEntity<CourseDto> getCourse(
+      @PathVariable @Parameter(description = "ID of the course to retrieve") UUID id) {
     return handleItemOrNotFound(courseService.getCourseById(id));
   }
 
+  @Operation(summary = "Get all courses")
   @GetMapping
   public ResponseEntity<List<CourseDto>> getAllCourses() {
     return handleList(courseService.getAllCourses());
   }
 
+  @Operation(summary = "Delete a course by ID")
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteCourse(@PathVariable UUID id) {
+  public ResponseEntity<Void> deleteCourse(
+      @PathVariable @Parameter(description = "ID of the course to delete") UUID id) {
     courseService.deleteById(id);
     return ResponseEntity.noContent().build();
   }
 
+  @Operation(summary = "Update an existing course")
   @PutMapping
-  public ResponseEntity<Void> updateCourse(@RequestBody UpdateCourseDto courseDtoDto) {
+  public ResponseEntity<Void> updateCourse(
+      @RequestBody @Parameter(description = "Course update data") UpdateCourseDto courseDtoDto) {
     courseService.updateCourse(courseDtoDto);
     return ResponseEntity.noContent().build();
   }
 }
-
