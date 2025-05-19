@@ -11,6 +11,7 @@ import com.leverx.learning_management_system.lesson.service.LessonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class LessonController {
   @Operation(summary = "Create a new lesson")
   @PostMapping
   public ResponseEntity<String> createLesson(
-      @RequestBody @Parameter(description = "Lesson creation data") CreateLessonDto lessonDto) {
+      @RequestBody @Valid  @Parameter(description = "Lesson creation data") CreateLessonDto lessonDto) {
     lessonService.createLesson(lessonDto);
     return ResponseEntity.ok(LESSON_ADDED);
   }
@@ -72,7 +73,7 @@ public class LessonController {
   @Operation(summary = "Update an existing lesson")
   @PutMapping
   public ResponseEntity<Void> updateLesson(
-      @RequestBody @Parameter(description = "Lesson update data") UpdateLessonDto lessonDtoDto) {
+      @RequestBody @Valid @Parameter(description = "Lesson update data") UpdateLessonDto lessonDtoDto) {
     lessonService.updateLessons(lessonDtoDto);
     return ResponseEntity.noContent().build();
   }

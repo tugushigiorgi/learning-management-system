@@ -12,6 +12,7 @@ import com.leverx.learning_management_system.student.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,7 @@ public class StudentController {
   @Operation(summary = "Create a new student")
   @PostMapping
   public ResponseEntity<String> createStudent(
-      @RequestBody @Parameter(description = "Student creation data") CreateStudentDto studentDto) {
+      @RequestBody @Valid @Parameter(description = "Student creation data") CreateStudentDto studentDto) {
     studentService.createStudent(studentDto);
     return ResponseEntity.ok(STUDENT_ADDED);
   }
@@ -81,7 +82,7 @@ public class StudentController {
   @Operation(summary = "Update an existing student")
   @PutMapping
   public ResponseEntity<Void> updateStudent(
-      @RequestBody @Parameter(description = "Student update data") UpdateStudentDto studentDto) {
+      @RequestBody @Valid @Parameter(description = "Student update data") UpdateStudentDto studentDto) {
     studentService.updateStudent(studentDto);
     return ResponseEntity.noContent().build();
   }
