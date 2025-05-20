@@ -49,13 +49,10 @@ public class StudentServiceImp implements StudentService {
         );
     var getCourse = courseRepository.findById(courseId).orElseThrow(() ->
         new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseId));
-
     var checkIfAlreadyEnrolled = getStudent.getCourses().stream().anyMatch(course -> course.getId().equals(courseId));
-
     if (checkIfAlreadyEnrolled) {
       throw new ResponseStatusException(BAD_REQUEST, STUDENT_ALREADY_ENROLLED);
     }
-
     if (getStudent.getCoins().compareTo(getCourse.getPrice()) >= 0) {
       getStudent.getCourses().add(getCourse);
       getStudent.setCoins(getStudent.getCoins().subtract(getCourse.getPrice()));
@@ -104,6 +101,7 @@ public class StudentServiceImp implements StudentService {
   }
 
   @Override
+  @Transactional
   public void updateStudent(UpdateStudentDto studentDto) {
 
     var currentStudent = studentRepository.findById(studentDto.getId())
@@ -113,15 +111,12 @@ public class StudentServiceImp implements StudentService {
     if (!studentDto.getFirstName().equals(currentStudent.getFirstName())) {
       currentStudent.setFirstName(studentDto.getFirstName());
     }
-
     if (!studentDto.getLastName().equals(currentStudent.getLastName())) {
       currentStudent.setLastName(studentDto.getLastName());
     }
-
     if (!studentDto.getEmail().equals(currentStudent.getEmail())) {
       currentStudent.setEmail(studentDto.getEmail());
     }
-
     if (!studentDto.getDateOfBirth().equals(currentStudent.getDateOfBirth())) {
       currentStudent.setDateOfBirth(studentDto.getDateOfBirth());
     }

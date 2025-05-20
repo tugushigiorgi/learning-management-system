@@ -12,8 +12,6 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
-
 @Getter
 @Setter
 public class UpdateCourseDto {
@@ -39,5 +37,6 @@ public class UpdateCourseDto {
   @Future(message = "endDate must be in the future")
   private LocalDateTime endDate;
 
+  @NotNull(message = "isPublic field is required")
   private Boolean isPublic;
 }

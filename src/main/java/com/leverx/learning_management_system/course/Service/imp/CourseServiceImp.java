@@ -114,6 +114,7 @@ public class CourseServiceImp implements CourseService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public DetailedCourseDto getDetailedCourseById(UUID id) {
     return courseRepository.findById(id)
         .map(courseMapper::toDetailedDto)

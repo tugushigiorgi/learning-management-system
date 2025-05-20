@@ -15,10 +15,9 @@ public interface CourseMapper {
   @Mappings({
       @Mapping(source = "title", target = "title"),
       @Mapping(source = "description", target = "description"),
-      @Mapping(source = "price", target = "price"),})
+      @Mapping(source = "price", target = "price"), })
   @BeanMapping(ignoreByDefault = true)
   CourseDto toDto(Course entity);
-
 
   @Mappings({
       @Mapping(source = "title", target = "title"),
@@ -26,13 +25,9 @@ public interface CourseMapper {
       @Mapping(source = "price", target = "price"),
       @Mapping(source = "settings", target = "settings"),
       @Mapping(source = "lessons", target = "lessons"),
-      @Mapping(source = "students", target = "students"),
-
-  })
+      @Mapping(source = "students", target = "students"), })
   @BeanMapping(ignoreByDefault = true)
   DetailedCourseDto toDetailedDto(Course entity);
-
-
 }
 
 

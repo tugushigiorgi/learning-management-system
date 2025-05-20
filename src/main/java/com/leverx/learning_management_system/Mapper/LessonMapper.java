@@ -13,6 +13,6 @@ public interface LessonMapper {
 
   @Mappings({
       @Mapping(source = "title", target = "title"),
-      @Mapping(source = "duration", target = "duration"),})
+      @Mapping(source = "duration", target = "duration"), })
   LessonDto toDto(Lesson entity);
 }

@@ -100,5 +100,4 @@ public class LessonServiceImp implements LessonService {
     currentCourse.getLessons().add(currentLesson);
     courseRepository.save(currentCourse);
   }
-
 }
