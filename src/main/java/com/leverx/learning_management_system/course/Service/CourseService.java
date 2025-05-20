@@ -23,4 +23,5 @@ public interface CourseService {
 
   DetailedCourseDto getDetailedCourseById(UUID id);
 
+  void sendMailToEnrolledStudents(UUID courseId);
 }

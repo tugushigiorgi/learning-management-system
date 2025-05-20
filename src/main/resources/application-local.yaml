@@ -1,3 +1,7 @@
+
+mailtrap:
+  token: ${MailToken}
+
 logging:
   level:
     root: INFO
@@ -12,7 +16,6 @@ management:
   endpoint:
     health:
       show-details: always
-
 
 spring:
   h2:

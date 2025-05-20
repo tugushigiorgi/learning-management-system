@@ -1,6 +1,10 @@
 package com.leverx.learning_management_system.course.Service.imp;
 
+import static com.leverx.learning_management_system.ConstMessages.COURSE_NEWS;
+import static com.leverx.learning_management_system.ConstMessages.COURSE_NEWS_SUBJECT;
 import static com.leverx.learning_management_system.ConstMessages.COURSE_NOT_FOUND;
+import static com.leverx.learning_management_system.ConstMessages.FROM_MAIL;
+import static com.leverx.learning_management_system.ConstMessages.STUDENTS_NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.leverx.learning_management_system.Mapper.CourseMapper;
@@ -12,6 +16,8 @@ import com.leverx.learning_management_system.course.dto.CreateCourseDto;
 import com.leverx.learning_management_system.course.dto.DetailedCourseDto;
 import com.leverx.learning_management_system.course.dto.UpdateCourseDto;
 import com.leverx.learning_management_system.courseSettings.CourseSettings;
+import com.leverx.learning_management_system.mailtrap.imp.MailTrapImp;
+import io.mailtrap.model.request.emails.Address;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class CourseServiceImp implements CourseService {
   private final CourseRepository courseRepository;
   private final CourseMapper courseMapper;
+  private final MailTrapImp mailTrapImp;
 
   @Override
   @Transactional(readOnly = true)
@@ -87,15 +94,12 @@ public class CourseServiceImp implements CourseService {
     if (!courseDto.getTitle().equals(currentCourse.getTitle())) {
       currentCourse.setTitle(courseDto.getTitle());
     }
-
     if (!courseDto.getDescription().equals(currentCourse.getDescription())) {
       currentCourse.setDescription(courseDto.getDescription());
     }
-
     if (!courseDto.getPrice().equals(currentCourse.getPrice())) {
       currentCourse.setPrice(courseDto.getPrice());
     }
-
     var courseSettings = currentCourse.getSettings();
     if (!courseDto.getStartDate().equals(courseSettings.getStartDate())) {
       courseSettings.setStartDate(courseDto.getStartDate());
@@ -106,7 +110,6 @@ public class CourseServiceImp implements CourseService {
     if (!courseDto.getIsPublic().equals(courseSettings.getIsPublic())) {
       courseSettings.setIsPublic(courseDto.getIsPublic());
     }
-
     courseRepository.save(currentCourse);
   }
 
@@ -115,5 +118,24 @@ public class CourseServiceImp implements CourseService {
     return courseRepository.findById(id)
         .map(courseMapper::toDetailedDto)
         .orElse(null);
+  }
+
+  @Override
+  public void sendMailToEnrolledStudents(UUID courseId) {
+    var course = courseRepository.findById(courseId).orElseThrow(() ->
+        new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseId)
+    );
+    if (course.getStudents().isEmpty()) {
+      new ResponseStatusException(NOT_FOUND, STUDENTS_NOT_FOUND);
+    }
+    var studentsEmails = course.getStudents()
+        .stream()
+        .map(student -> new Address(student.getEmail()))
+        .toList();
+    mailTrapImp.sendEmail(
+        studentsEmails,
+        FROM_MAIL,
+        COURSE_NEWS_SUBJECT,
+        COURSE_NEWS);
   }
 }

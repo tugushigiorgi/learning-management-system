@@ -1,6 +1,7 @@
 package com.leverx.learning_management_system.course;
 
 import static com.leverx.learning_management_system.ConstMessages.COURSE_ADDED;
+import static com.leverx.learning_management_system.ConstMessages.EMAIL_SENT;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleItemOrNotFound;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleList;
 
@@ -33,6 +34,13 @@ public class CourseController {
 
   private final CourseService courseService;
 
+  @Operation(summary = "Sends  mail to enrolled students")
+  @PostMapping("/{courseId}/send-mail-to-students")
+  public ResponseEntity<String> sendMailToEnrolledStudents(@PathVariable @Parameter(description = "Course Id") UUID courseId) {
+    courseService.sendMailToEnrolledStudents(courseId);
+    return ResponseEntity.ok(EMAIL_SENT);
+  }
+
   @Operation(summary = "Get the most popular courses by coins paid")
   @GetMapping("/most-popular")
   public ResponseEntity<List<CourseDto>> MostPopularCourses() {
@@ -41,16 +49,14 @@ public class CourseController {
 
   @Operation(summary = "Create a new course")
   @PostMapping
-  public ResponseEntity<String> createCourse(
-      @RequestBody @Valid  @Parameter(description = "Course creation data") CreateCourseDto courseDto) {
+  public ResponseEntity<String> createCourse(@RequestBody @Valid @Parameter(description = "Course creation data") CreateCourseDto courseDto) {
     courseService.createCourse(courseDto);
     return ResponseEntity.ok(COURSE_ADDED);
   }
 
   @Operation(summary = "Get a course by ID")
   @GetMapping("/{id}")
-  public ResponseEntity<CourseDto> getCourse(
-      @PathVariable @Parameter(description = "ID of the course to retrieve") UUID id) {
+  public ResponseEntity<CourseDto> getCourse(@PathVariable @Parameter(description = "ID of the course to retrieve") UUID id) {
     return handleItemOrNotFound(courseService.getCourseById(id));
   }
 
@@ -62,16 +68,14 @@ public class CourseController {
 
   @Operation(summary = "Delete a course by ID")
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteCourse(
-      @PathVariable @Parameter(description = "ID of the course to delete") UUID id) {
+  public ResponseEntity<Void> deleteCourse(@PathVariable @Parameter(description = "ID of the course to delete") UUID id) {
     courseService.deleteById(id);
     return ResponseEntity.noContent().build();
   }
 
   @Operation(summary = "Update an existing course")
   @PutMapping
-  public ResponseEntity<Void> updateCourse(
-      @RequestBody @Valid  @Parameter(description = "Course update data") UpdateCourseDto courseDtoDto) {
+  public ResponseEntity<Void> updateCourse(@RequestBody @Valid @Parameter(description = "Course update data") UpdateCourseDto courseDtoDto) {
     courseService.updateCourse(courseDtoDto);
     return ResponseEntity.noContent().build();
   }
