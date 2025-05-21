@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class MailTrapImp implements MailTrapService {
+public class mailTrapImp implements MailTrapService {
 
   private final MailtrapClient mailtrapClient;
 
   @Override
   public void sendEmail(List<Address> addresses, String from, String subject, String body) {
-    MailtrapMail mail = MailtrapMail.builder()
+    var mail = MailtrapMail.builder()
         .from(new Address(from))
         .to(addresses)
         .subject(subject)

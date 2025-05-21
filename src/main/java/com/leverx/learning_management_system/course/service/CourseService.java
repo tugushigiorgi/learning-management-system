@@ -1,4 +1,4 @@
-package com.leverx.learning_management_system.course.Service;
+package com.leverx.learning_management_system.course.service;
 
 import com.leverx.learning_management_system.course.dto.CourseDto;
 import com.leverx.learning_management_system.course.dto.CreateCourseDto;

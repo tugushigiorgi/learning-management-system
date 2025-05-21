@@ -5,7 +5,7 @@ import static com.leverx.learning_management_system.ConstMessages.EMAIL_SENT;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleItemOrNotFound;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleList;
 
-import com.leverx.learning_management_system.course.Service.CourseService;
+import com.leverx.learning_management_system.course.service.CourseService;
 import com.leverx.learning_management_system.course.dto.CourseDto;
 import com.leverx.learning_management_system.course.dto.CreateCourseDto;
 import com.leverx.learning_management_system.course.dto.UpdateCourseDto;

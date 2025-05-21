@@ -24,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
-public class StudentServiceImp implements StudentService {
+public class studentServiceImp implements StudentService {
 
   private final StudentRepository studentRepository;
   private final StudentMapper studentMapper;
@@ -35,8 +35,7 @@ public class StudentServiceImp implements StudentService {
   public Integer getEnrolledCourseCount(UUID studentId) {
     var getStudent = studentRepository.findById(studentId)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + studentId)
-        );
+            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + studentId));
     return getStudent.getCourses().size();
   }
 
@@ -45,11 +44,13 @@ public class StudentServiceImp implements StudentService {
   public void enrollToCourse(UUID studentId, UUID courseId) {
     var getStudent = studentRepository.findById(studentId)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + studentId)
-        );
-    var getCourse = courseRepository.findById(courseId).orElseThrow(() ->
+            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + studentId));
+    var getCourse = courseRepository.findById(courseId)
+        .orElseThrow(() ->
         new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseId));
-    var checkIfAlreadyEnrolled = getStudent.getCourses().stream().anyMatch(course -> course.getId().equals(courseId));
+    var checkIfAlreadyEnrolled = getStudent.getCourses()
+        .stream()
+        .anyMatch(course -> course.getId().equals(courseId));
     if (checkIfAlreadyEnrolled) {
       throw new ResponseStatusException(BAD_REQUEST, STUDENT_ALREADY_ENROLLED);
     }
@@ -85,7 +86,8 @@ public class StudentServiceImp implements StudentService {
   @Override
   @Transactional(readOnly = true)
   public List<StudentDto> getAllStudents() {
-    return studentRepository.findAll().stream()
+    return studentRepository.findAll()
+        .stream()
         .map(studentMapper::toDto)
         .toList();
   }
@@ -103,11 +105,9 @@ public class StudentServiceImp implements StudentService {
   @Override
   @Transactional
   public void updateStudent(UpdateStudentDto studentDto) {
-
     var currentStudent = studentRepository.findById(studentDto.getId())
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + studentDto.getId())
-        );
+            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + studentDto.getId()));
     if (!studentDto.getFirstName().equals(currentStudent.getFirstName())) {
       currentStudent.setFirstName(studentDto.getFirstName());
     }

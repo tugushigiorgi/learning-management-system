@@ -1,10 +1,7 @@
 package com.leverx.learning_management_system;
 
-import com.leverx.learning_management_system.course.Course;
-import com.leverx.learning_management_system.course.CourseRepository;
-import com.leverx.learning_management_system.course.Service.CourseService;
+import com.leverx.learning_management_system.course.service.CourseService;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

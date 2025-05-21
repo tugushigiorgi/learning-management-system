@@ -16,4 +16,5 @@ public final class ConstMessages {
   public static final String STUDENTS_NOT_FOUND = "Student not found";
   public static final String COURSE_NEWS = "We have news about this course!";
   public static final String COURSE_NEWS_SUBJECT = "Course News!";
+  public static final String COURSE_STARTING_TOMORROW="Courses starting tomorrow: ";
 }
