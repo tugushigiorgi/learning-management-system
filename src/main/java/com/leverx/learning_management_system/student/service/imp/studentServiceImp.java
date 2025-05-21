@@ -7,7 +7,7 @@ import static com.leverx.learning_management_system.ConstMessages.STUDENT_NOT_FO
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import com.leverx.learning_management_system.Mapper.StudentMapper;
+import com.leverx.learning_management_system.mapper.StudentMapper;
 import com.leverx.learning_management_system.course.CourseRepository;
 import com.leverx.learning_management_system.student.Student;
 import com.leverx.learning_management_system.student.StudentRepository;

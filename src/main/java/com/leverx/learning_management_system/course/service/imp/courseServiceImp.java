@@ -7,8 +7,9 @@ import static com.leverx.learning_management_system.ConstMessages.COURSE_STARTIN
 import static com.leverx.learning_management_system.ConstMessages.FROM_MAIL;
 import static com.leverx.learning_management_system.ConstMessages.STUDENTS_NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
-import com.leverx.learning_management_system.Mapper.CourseMapper;
+import com.leverx.learning_management_system.mapper.CourseMapper;
 import com.leverx.learning_management_system.course.Course;
 import com.leverx.learning_management_system.course.CourseRepository;
 import com.leverx.learning_management_system.course.service.CourseService;
@@ -25,6 +26,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
@@ -133,7 +135,7 @@ public class courseServiceImp implements CourseService {
   public void sendMailToEnrolledStudents(UUID courseId) {
     var course = courseRepository.findById(courseId)
         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseId));
-    if (course.getStudents().isEmpty()) {
+    if (isEmpty(course.getStudents())) {
       throw new ResponseStatusException(NOT_FOUND, STUDENTS_NOT_FOUND);
     }
     var studentsEmails = course.getStudents()

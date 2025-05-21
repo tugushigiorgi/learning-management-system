@@ -1,5 +1,7 @@
 package com.leverx.learning_management_system;
 
+import com.leverx.learning_management_system.course.Course;
+
 public final class ConstMessages {
   public static final String STUDENT_NOT_FOUND = "Student not found";
   public static final String STUDENT_ADDED = "new student added";
@@ -16,5 +18,7 @@ public final class ConstMessages {
   public static final String STUDENTS_NOT_FOUND = "Student not found";
   public static final String COURSE_NEWS = "We have news about this course!";
   public static final String COURSE_NEWS_SUBJECT = "Course News!";
-  public static final String COURSE_STARTING_TOMORROW="Courses starting tomorrow: ";
+  public static final String COURSE_STARTING_TOMORROW = "Courses starting tomorrow: ";
+  public static final String COURSE_NOT_FOUND_WITH_STATUS_CODE_ERROR = "404 NOT_FOUND \"Course not found";
+  public static final String STUDENTS_NOT_FOUND_WITH_STATUS_CODE_ERROR = "404 NOT_FOUND \"Student not found\"";
 }

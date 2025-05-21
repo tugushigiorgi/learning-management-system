@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -38,5 +39,5 @@ public class Student {
       joinColumns = @JoinColumn(name = "studentId"),
       inverseJoinColumns = @JoinColumn(name = "courseId")
   )
-  private Set<Course> courses;
+  private Set<Course> courses = new HashSet<>();
 }

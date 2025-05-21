@@ -7,13 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import com.leverx.learning_management_system.Mapper.LessonMapper;
 import com.leverx.learning_management_system.course.Course;
 import com.leverx.learning_management_system.course.CourseRepository;
 import com.leverx.learning_management_system.lesson.Lesson;
@@ -21,27 +19,47 @@ import com.leverx.learning_management_system.lesson.LessonRepository;
 import com.leverx.learning_management_system.lesson.dto.CreateLessonDto;
 import com.leverx.learning_management_system.lesson.dto.LessonDto;
 import com.leverx.learning_management_system.lesson.dto.UpdateLessonDto;
+import com.leverx.learning_management_system.mapper.LessonMapper;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+@ExtendWith(MockitoExtension.class)
 class lessonServiceImpTest {
 
+  @Mock
   private LessonRepository lessonRepository;
+
+  @Mock
   private LessonMapper lessonMapper;
+
+  @Mock
   private CourseRepository courseRepository;
+
+  @InjectMocks
   private lessonServiceImp lessonService;
+
+  private Lesson lesson;
+  private UUID lessonId;
+  private UUID courseId;
 
   @BeforeEach
   void setUp() {
-    lessonRepository = mock(LessonRepository.class);
-    lessonMapper = mock(LessonMapper.class);
-    courseRepository = mock(CourseRepository.class);
-    lessonService = new lessonServiceImp(lessonRepository, lessonMapper, courseRepository);
+    lessonId = UUID.randomUUID();
+    courseId = UUID.randomUUID();
+    lesson = Lesson.builder()
+        .id(lessonId)
+        .title("test")
+        .duration(30)
+        .build();
   }
 
   @Test
@@ -56,109 +74,79 @@ class lessonServiceImpTest {
 
   @Test
   void getLessonById_shouldReturnLessonDtoIfFound() {
-    var id = UUID.randomUUID();
-    var lesson = Lesson.builder()
-        .id(id)
-        .title("Intro to Java programming")
-        .duration(45)
-        .build();
     var dto = LessonDto.builder()
-        .title("Intro to Java programming")
-        .duration(45)
+        .title("test")
+        .duration(30)
         .build();
-    when(lessonRepository.findById(id)).thenReturn(Optional.of(lesson));
+    when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
     when(lessonMapper.toDto(lesson)).thenReturn(dto);
-    var result = lessonService.getLessonById(id);
+    var result = lessonService.getLessonById(lessonId);
     assertEquals(dto, result);
   }
 
   @Test
   void getLessonById_shouldReturnNullIfNotFound() {
-    var id = UUID.randomUUID();
-    when(lessonRepository.findById(id)).thenReturn(Optional.empty());
-    assertNull(lessonService.getLessonById(id));
+    when(lessonRepository.findById(lessonId)).thenReturn(Optional.empty());
+    assertNull(lessonService.getLessonById(lessonId));
   }
 
   @Test
   void getAllLessons_shouldReturnAllLessons() {
-    var lessons = List.of(Lesson.builder()
-        .id(UUID.randomUUID())
-        .title("Intro to Java programming")
-        .duration(30)
-        .build());
+    var lessons = List.of(lesson);
     var dtos = List.of(LessonDto.builder()
-        .title("Intro to Java programming")
+        .title("test")
         .duration(30)
         .build());
     when(lessonRepository.findAll()).thenReturn(lessons);
-    when(lessonMapper.toDto(lessons.get(0))).thenReturn(dtos.get(0));
+    when(lessonMapper.toDto(lessons.getFirst())).thenReturn(dtos.getFirst());
     List<LessonDto> result = lessonService.getAllLessons();
     assertEquals(dtos, result);
   }
 
   @Test
   void deleteById_shouldDeleteIfFound() {
-    var id = UUID.randomUUID();
-    var lesson = Lesson.builder()
-        .id(id)
-        .build();
-    when(lessonRepository.findById(id)).thenReturn(Optional.of(lesson));
-    lessonService.deleteById(id);
+    when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
+    lessonService.deleteById(lessonId);
     verify(lessonRepository).delete(lesson);
   }
 
   @Test
   void deleteById_shouldThrowIfNotFound() {
-    var id = UUID.randomUUID();
-    when(lessonRepository.findById(id)).thenReturn(Optional.empty());
+    when(lessonRepository.findById(lessonId)).thenReturn(Optional.empty());
     var ex = assertThrows(ResponseStatusException.class,
-        () -> lessonService.deleteById(id));
+        () -> lessonService.deleteById(lessonId));
     assertEquals(NOT_FOUND, ex.getStatusCode());
     assertTrue(ex.getReason().contains(LESSON_NOT_FOUND));
   }
 
   @Test
   void updateLessons_shouldUpdateLesson() {
-    var id = UUID.randomUUID();
-    var lesson = Lesson.builder()
-        .id(id)
-        .title("Java 8 programming course")
+    var dto = UpdateLessonDto.builder()
+        .id(lessonId)
+        .title("test")
         .duration(30)
         .build();
-    var dto = UpdateLessonDto.builder()
-        .id(id)
-        .title("Java 21 programming course")
-        .duration(60)
-        .build();
-    when(lessonRepository.findById(id)).thenReturn(Optional.of(lesson));
+    when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
     lessonService.updateLessons(dto);
-    assertEquals("Java 21 programming course", lesson.getTitle());
-    assertEquals(60, lesson.getDuration());
+    assertEquals("test", lesson.getTitle());
+    assertEquals(30, lesson.getDuration());
     verify(lessonRepository).save(lesson);
   }
 
   @Test
   void updateLessons_shouldThrowIfNotFound() {
-    var id = UUID.randomUUID();
     var dto = UpdateLessonDto.builder()
-        .id(id)
+        .id(lessonId)
         .title("programming course")
         .duration(12)
         .build();
-    when(lessonRepository.findById(id)).thenReturn(Optional.empty());
+    when(lessonRepository.findById(lessonId)).thenReturn(Optional.empty());
     assertThrows(ResponseStatusException.class,
         () -> lessonService.updateLessons(dto));
   }
 
   @Test
   void addToCourse_shouldAddLessonToCourse() {
-    var courseId = UUID.randomUUID();
-    var lessonId = UUID.randomUUID();
-    var lesson = Lesson.builder()
-        .id(lessonId)
-        .title("Java 21 programming course")
-        .duration(60)
-        .build();
     var course = Course.builder()
         .id(courseId)
         .lessons(new HashSet<>())
@@ -174,12 +162,6 @@ class lessonServiceImpTest {
 
   @Test
   void addToCourse_shouldThrowIfLessonAlreadyAdded() {
-    var courseId = UUID.randomUUID();
-    var lessonId = UUID.randomUUID();
-    var lesson = Lesson.builder()
-        .title("Python programming course")
-        .id(lessonId)
-        .build();
     var lessons = new HashSet<Lesson>();
     lessons.add(lesson);
     var course = Course
@@ -189,7 +171,7 @@ class lessonServiceImpTest {
         .build();
     when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
-    ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+    var ex = assertThrows(ResponseStatusException.class,
         () -> lessonService.addToCourse(courseId, lessonId));
     assertEquals(BAD_REQUEST, ex.getStatusCode());
     assertEquals(LESSON_ALREADY_ADDED, ex.getReason());
@@ -197,23 +179,15 @@ class lessonServiceImpTest {
 
   @Test
   void addToCourse_shouldThrowIfLessonNotFound() {
-    var courseId = UUID.randomUUID();
-    var lessonId = UUID.randomUUID();
     when(lessonRepository.findById(lessonId))
         .thenReturn(Optional.empty());
     assertThrows(ResponseStatusException.class,
         () -> lessonService.addToCourse(courseId, lessonId));
-
   }
 
   @Test
   void addToCourse_shouldThrowIfCourseNotFound() {
-    var courseId = UUID.randomUUID();
-    var lessonId = UUID.randomUUID();
-    var lesson = Lesson.builder()
-        .id(lessonId)
-        .build();
-    when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
+    when(lessonRepository.findById(this.lessonId)).thenReturn(Optional.of(lesson));
     when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
     assertThrows(ResponseStatusException.class,
         () -> lessonService.addToCourse(courseId, lessonId));

@@ -6,7 +6,7 @@ import static com.leverx.learning_management_system.ConstMessages.LESSON_NOT_FOU
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import com.leverx.learning_management_system.Mapper.LessonMapper;
+import com.leverx.learning_management_system.mapper.LessonMapper;
 import com.leverx.learning_management_system.course.CourseRepository;
 import com.leverx.learning_management_system.lesson.Lesson;
 import com.leverx.learning_management_system.lesson.LessonRepository;
