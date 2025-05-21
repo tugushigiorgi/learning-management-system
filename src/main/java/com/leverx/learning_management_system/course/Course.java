@@ -14,6 +14,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -40,8 +41,8 @@ public class Course {
   private CourseSettings settings;
   @JsonIgnore
   @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<Lesson> lessons;
+  private Set<Lesson> lessons = new HashSet<>();
   @JsonIgnore
   @ManyToMany(mappedBy = "courses")
-  private Set<Student> students;
+  private Set<Student> students = new HashSet<>();
 }
