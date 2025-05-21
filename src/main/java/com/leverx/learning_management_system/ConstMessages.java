@@ -1,7 +1,5 @@
 package com.leverx.learning_management_system;
 
-import com.leverx.learning_management_system.course.Course;
-
 public final class ConstMessages {
   public static final String STUDENT_NOT_FOUND = "Student not found";
   public static final String STUDENT_ADDED = "new student added";

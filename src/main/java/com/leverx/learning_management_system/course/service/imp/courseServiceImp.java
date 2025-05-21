@@ -9,16 +9,16 @@ import static com.leverx.learning_management_system.ConstMessages.STUDENTS_NOT_F
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
-import com.leverx.learning_management_system.mapper.CourseMapper;
 import com.leverx.learning_management_system.course.Course;
 import com.leverx.learning_management_system.course.CourseRepository;
-import com.leverx.learning_management_system.course.service.CourseService;
 import com.leverx.learning_management_system.course.dto.CourseDto;
 import com.leverx.learning_management_system.course.dto.CreateCourseDto;
 import com.leverx.learning_management_system.course.dto.DetailedCourseDto;
 import com.leverx.learning_management_system.course.dto.UpdateCourseDto;
+import com.leverx.learning_management_system.course.service.CourseService;
 import com.leverx.learning_management_system.courseSettings.CourseSettings;
 import com.leverx.learning_management_system.mailtrap.imp.mailTrapImp;
+import com.leverx.learning_management_system.mapper.CourseMapper;
 import io.mailtrap.model.request.emails.Address;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +26,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor

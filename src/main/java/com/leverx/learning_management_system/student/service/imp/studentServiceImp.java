@@ -97,8 +97,7 @@ public class studentServiceImp implements StudentService {
   public void deleteById(UUID id) {
     var getStudent = studentRepository.findById(id)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + id)
-        );
+            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + id));
     studentRepository.delete(getStudent);
   }
 

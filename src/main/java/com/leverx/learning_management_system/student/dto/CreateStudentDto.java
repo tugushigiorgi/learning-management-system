@@ -6,12 +6,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 
 @Getter
 @Setter
+@Builder
 public class CreateStudentDto {
   @NotBlank(message = "First name is required")
   @Size(min = 1, max = 50, message = "First name must be between 1 and 50 characters")
