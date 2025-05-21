@@ -18,6 +18,8 @@ import com.leverx.learning_management_system.course.dto.UpdateCourseDto;
 import com.leverx.learning_management_system.courseSettings.CourseSettings;
 import com.leverx.learning_management_system.mailtrap.imp.MailTrapImp;
 import io.mailtrap.model.request.emails.Address;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -34,63 +36,49 @@ public class CourseServiceImp implements CourseService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<CourseDto> MostPopularCourses() {
-    return courseRepository.findTop5MostPopular()
-        .stream()
-        .map(courseMapper::toDto)
-        .toList();
+  public void printAlCourseByStartDateBetween(LocalDateTime start, LocalDateTime end) {
+    List<Course> courses = courseRepository.findAllByStartDateBetween(start, end);
+    System.out.println("Courses starting tomorrow: " + courses.size());
+    courses.forEach(c -> System.out.println("- " + c.getTitle()));
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<CourseDto> mostPopularCourses() {
+    return courseRepository.findTop5MostPopular().stream().map(courseMapper::toDto).toList();
   }
 
   @Override
   @Transactional
   public void createCourse(CreateCourseDto courseDto) {
-    var courseSettings = CourseSettings.builder()
-        .startDate(courseDto.getStartDate())
-        .endDate(courseDto.getEndDate())
-        .isPublic(courseDto.getIsPublic())
-        .build();
-    var newCourse = Course.builder()
-        .price(courseDto.getPrice())
-        .title(courseDto.getTitle())
-        .description(courseDto.getDescription())
-        .settings(courseSettings)
-        .build();
+    var courseSettings = CourseSettings.builder().startDate(courseDto.getStartDate()).endDate(courseDto.getEndDate()).isPublic(courseDto.getIsPublic()).build();
+    var newCourse = Course.builder().price(courseDto.getPrice()).title(courseDto.getTitle()).description(courseDto.getDescription()).settings(courseSettings).build();
     courseRepository.save(newCourse);
   }
 
   @Override
   @Transactional(readOnly = true)
   public CourseDto getCourseById(UUID id) {
-    return courseRepository.findById(id)
-        .map(courseMapper::toDto)
-        .orElse(null);
+    return courseRepository.findById(id).map(courseMapper::toDto).orElse(null);
   }
 
   @Override
   @Transactional(readOnly = true)
   public List<CourseDto> getAllCourses() {
-    return courseRepository.findAll().stream()
-        .map(courseMapper::toDto)
-        .toList();
+    return courseRepository.findAll().stream().map(courseMapper::toDto).toList();
   }
 
   @Override
   @Transactional
   public void deleteById(UUID id) {
-    var getCourse = courseRepository.findById(id)
-        .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + id)
-        );
+    var getCourse = courseRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + id));
     courseRepository.delete(getCourse);
   }
 
   @Override
   @Transactional
   public void updateCourse(UpdateCourseDto courseDto) {
-    var currentCourse = courseRepository.findById(courseDto.getId())
-        .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseDto.getId())
-        );
+    var currentCourse = courseRepository.findById(courseDto.getId()).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseDto.getId()));
     if (!courseDto.getTitle().equals(currentCourse.getTitle())) {
       currentCourse.setTitle(courseDto.getTitle());
     }
@@ -116,27 +104,16 @@ public class CourseServiceImp implements CourseService {
   @Override
   @Transactional(readOnly = true)
   public DetailedCourseDto getDetailedCourseById(UUID id) {
-    return courseRepository.findById(id)
-        .map(courseMapper::toDetailedDto)
-        .orElse(null);
+    return courseRepository.findById(id).map(courseMapper::toDetailedDto).orElse(null);
   }
 
   @Override
   public void sendMailToEnrolledStudents(UUID courseId) {
-    var course = courseRepository.findById(courseId).orElseThrow(() ->
-        new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseId)
-    );
+    var course = courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseId));
     if (course.getStudents().isEmpty()) {
       new ResponseStatusException(NOT_FOUND, STUDENTS_NOT_FOUND);
     }
-    var studentsEmails = course.getStudents()
-        .stream()
-        .map(student -> new Address(student.getEmail()))
-        .toList();
-    mailTrapImp.sendEmail(
-        studentsEmails,
-        FROM_MAIL,
-        COURSE_NEWS_SUBJECT,
-        COURSE_NEWS);
+    var studentsEmails = course.getStudents().stream().map(student -> new Address(student.getEmail())).toList();
+    mailTrapImp.sendEmail(studentsEmails, FROM_MAIL, COURSE_NEWS_SUBJECT, COURSE_NEWS);
   }
 }
