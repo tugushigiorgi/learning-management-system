@@ -8,10 +8,16 @@ import java.util.UUID;
 
 public interface StudentService {
   Integer getEnrolledCourseCount(UUID studentId);
+
   void enrollToCourse(UUID studentId, UUID courseId);
-  void createStudent(CreateStudentDto studentDto);
+
+  StudentDto createStudent(CreateStudentDto studentDto);
+
   StudentDto getStudentById(UUID id);
+
   List<StudentDto> getAllStudents();
+
   void deleteById(UUID id);
-  void updateStudent(UpdateStudentDto studentDto);
+
+  StudentDto updateStudent(UpdateStudentDto studentDto);
 }

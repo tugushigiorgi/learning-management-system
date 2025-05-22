@@ -30,6 +30,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -49,6 +51,9 @@ class StudentServiceImpTest {
 
   @InjectMocks
   private StudentServiceImp studentService;
+
+  @Captor
+  private ArgumentCaptor<Student> studentCaptor;
 
   private UpdateStudentDto updateStudentDto;
   private UUID studentId;
@@ -144,10 +149,36 @@ class StudentServiceImpTest {
   }
 
   @Test
-  void createStudent_shouldSaveStudent() {
-    var dto = mock(CreateStudentDto.class);
-    studentService.createStudent(dto);
-    verify(studentRepository).save(any(Student.class));
+  void createStudent_shouldSaveAndReturnDto() {
+    var dto = CreateStudentDto.builder()
+        .firstName("Giorgi")
+        .lastName("Tughushi")
+        .email("giorgi@gmail.com")
+        .dateOfBirth(LocalDate.of(2001, 1, 1))
+        .build();
+    var savedStudent = Student.builder()
+        .id(UUID.randomUUID())
+        .firstName("Giorgi")
+        .lastName("Tughushi")
+        .email("giorgi@gmail.com")
+        .dateOfBirth(LocalDate.of(2001, 1, 1))
+        .build();
+    var expectedDto = StudentDto.builder()
+        .firstName("Giorgi")
+        .lastName("Tughushi")
+        .email("giorgi@gmail.com")
+        .dateOfBirth(LocalDate.of(2001, 1, 1))
+        .build();
+    when(studentRepository.save(any(Student.class))).thenReturn(savedStudent);
+    when(studentMapper.toDto(savedStudent)).thenReturn(expectedDto);
+    var result = studentService.createStudent(dto);
+    verify(studentRepository).save(studentCaptor.capture());
+    var capturedStudent = studentCaptor.getValue();
+    assertEquals("Giorgi", capturedStudent.getFirstName());
+    assertEquals("Tughushi", capturedStudent.getLastName());
+    assertEquals("giorgi@gmail.com", capturedStudent.getEmail());
+    assertEquals(LocalDate.of(2001, 1, 1), capturedStudent.getDateOfBirth());
+    assertEquals(expectedDto, result);
   }
 
   @Test
@@ -192,14 +223,46 @@ class StudentServiceImpTest {
   }
 
   @Test
-  void updateStudent_shouldUpdateAndSave() {
-    when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
-    studentService.updateStudent(updateStudentDto);
-    assertEquals(updateStudentDto.getFirstName(), student.getFirstName());
-    assertEquals(updateStudentDto.getLastName(), student.getLastName());
-    assertEquals(updateStudentDto.getEmail(), student.getEmail());
-    assertEquals(updateStudentDto.getDateOfBirth(), student.getDateOfBirth());
-    verify(studentRepository).save(student);
+  void updateStudent_shouldUpdateAndReturnDto() {
+    var studentId = UUID.randomUUID();
+    var existingStudent = Student.builder()
+        .id(studentId)
+        .firstName("Old")
+        .lastName("Name")
+        .email("old@email.com")
+        .dateOfBirth(LocalDate.of(1995, 1, 1))
+        .build();
+    var updateDto = UpdateStudentDto.builder()
+        .id(studentId)
+        .firstName("New")
+        .lastName("User")
+        .email("new@email.com")
+        .dateOfBirth(LocalDate.of(2000, 5, 5))
+        .build();
+    var updatedStudent = Student.builder()
+        .id(studentId)
+        .firstName("New")
+        .lastName("User")
+        .email("new@email.com")
+        .dateOfBirth(LocalDate.of(2000, 5, 5))
+        .build();
+    var expectedDto = StudentDto.builder()
+        .firstName("New")
+        .lastName("User")
+        .email("new@email.com")
+        .dateOfBirth(LocalDate.of(2000, 5, 5))
+        .build();
+    when(studentRepository.findById(studentId)).thenReturn(Optional.of(existingStudent));
+    when(studentRepository.save(any(Student.class))).thenReturn(updatedStudent);
+    when(studentMapper.toDto(updatedStudent)).thenReturn(expectedDto);
+    var result = studentService.updateStudent(updateDto);
+    verify(studentRepository).save(studentCaptor.capture());
+    var captured = studentCaptor.getValue();
+    assertEquals("New", captured.getFirstName());
+    assertEquals("User", captured.getLastName());
+    assertEquals("new@email.com", captured.getEmail());
+    assertEquals(LocalDate.of(2000, 5, 5), captured.getDateOfBirth());
+    assertEquals(expectedDto, result);
   }
 
   @Test

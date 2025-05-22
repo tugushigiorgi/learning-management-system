@@ -65,14 +65,15 @@ public class StudentServiceImp implements StudentService {
 
   @Transactional
   @Override
-  public void createStudent(CreateStudentDto studentDto) {
+  public StudentDto createStudent(CreateStudentDto studentDto) {
     var newStudent = Student.builder()
         .firstName(studentDto.getFirstName())
         .lastName(studentDto.getLastName())
         .email(studentDto.getEmail())
         .dateOfBirth(studentDto.getDateOfBirth())
         .build();
-    studentRepository.save(newStudent);
+    var savedStudent=studentRepository.save(newStudent);
+    return studentMapper.toDto(savedStudent);
   }
 
   @Override
@@ -103,7 +104,7 @@ public class StudentServiceImp implements StudentService {
 
   @Override
   @Transactional
-  public void updateStudent(UpdateStudentDto studentDto) {
+  public StudentDto updateStudent(UpdateStudentDto studentDto) {
     var currentStudent = studentRepository.findById(studentDto.getId())
         .orElseThrow(() ->
             new ResponseStatusException(NOT_FOUND, String.format("%s%s", STUDENT_NOT_FOUND, studentDto.getId())));
@@ -119,6 +120,7 @@ public class StudentServiceImp implements StudentService {
     if (!studentDto.getDateOfBirth().equals(currentStudent.getDateOfBirth())) {
       currentStudent.setDateOfBirth(studentDto.getDateOfBirth());
     }
-    studentRepository.save(currentStudent);
+    var updatedStudent=studentRepository.save(currentStudent);
+    return studentMapper.toDto(updatedStudent);
   }
 }

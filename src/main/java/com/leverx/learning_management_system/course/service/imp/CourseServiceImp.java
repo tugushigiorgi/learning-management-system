@@ -54,7 +54,7 @@ public class CourseServiceImp implements CourseService {
 
   @Override
   @Transactional
-  public void createCourse(CreateCourseDto courseDto) {
+  public CourseDto createCourse(CreateCourseDto courseDto) {
     var courseSettings = CourseSettings.builder()
         .startDate(courseDto.getStartDate())
         .endDate(courseDto.getEndDate())
@@ -66,7 +66,8 @@ public class CourseServiceImp implements CourseService {
         .description(courseDto.getDescription())
         .settings(courseSettings)
         .build();
-    courseRepository.save(newCourse);
+    var savedCourse=courseRepository.save(newCourse);
+    return courseMapper.toDto(savedCourse);
   }
 
   @Override
@@ -96,7 +97,7 @@ public class CourseServiceImp implements CourseService {
 
   @Override
   @Transactional
-  public void updateCourse(UpdateCourseDto courseDto) {
+  public CourseDto updateCourse(UpdateCourseDto courseDto) {
     var currentCourse = courseRepository.findById(courseDto.getId())
         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format("%s%s", COURSE_NOT_FOUND, courseDto.getId())));
     if (!courseDto.getTitle().equals(currentCourse.getTitle())) {
@@ -118,7 +119,8 @@ public class CourseServiceImp implements CourseService {
     if (!courseDto.getIsPublic().equals(courseSettings.getIsPublic())) {
       courseSettings.setIsPublic(courseDto.getIsPublic());
     }
-    courseRepository.save(currentCourse);
+    var updatedCourse=courseRepository.save(currentCourse);
+    return courseMapper.toDto(updatedCourse);
   }
 
   @Override

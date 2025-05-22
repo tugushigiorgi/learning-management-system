@@ -27,6 +27,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -47,6 +49,9 @@ class LessonServiceImpTest {
   @InjectMocks
   private LessonServiceImp lessonService;
 
+  @Captor
+  private ArgumentCaptor<Lesson> lessonCaptor;
+
   private Lesson lesson;
   private UUID lessonId;
   private UUID courseId;
@@ -63,13 +68,28 @@ class LessonServiceImpTest {
   }
 
   @Test
-  void createLesson_shouldSaveLesson() {
+  void createLesson_shouldCreateAndReturnLessonDto() {
     var dto = CreateLessonDto.builder()
         .title("Intro to Java programming")
         .duration(11)
         .build();
-    lessonService.createLesson(dto);
-    verify(lessonRepository).save(any(Lesson.class));
+    var savedLesson = Lesson.builder()
+        .id(UUID.randomUUID())
+        .title(dto.getTitle())
+        .duration(dto.getDuration())
+        .build();
+    var expectedDto = LessonDto.builder()
+        .title(savedLesson.getTitle())
+        .duration(savedLesson.getDuration())
+        .build();
+    when(lessonRepository.save(any(Lesson.class))).thenReturn(savedLesson);
+    when(lessonMapper.toDto(savedLesson)).thenReturn(expectedDto);
+    var actualDto = lessonService.createLesson(dto);
+    verify(lessonRepository).save(lessonCaptor.capture());
+    var capturedLesson = lessonCaptor.getValue();
+    assertEquals(dto.getTitle(), capturedLesson.getTitle());
+    assertEquals(dto.getDuration(), capturedLesson.getDuration());
+    assertEquals(expectedDto, actualDto);
   }
 
   @Test
@@ -120,17 +140,35 @@ class LessonServiceImpTest {
   }
 
   @Test
-  void updateLessons_shouldUpdateLesson() {
+  void updateLessons_shouldUpdateAndReturnDto() {
     var dto = UpdateLessonDto.builder()
         .id(lessonId)
-        .title("test")
+        .title("Updated Title")
+        .duration(45)
+        .build();
+    var existingLesson = Lesson.builder()
+        .id(lessonId)
+        .title("Old Title")
         .duration(30)
         .build();
-    when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
-    lessonService.updateLessons(dto);
-    assertEquals("test", lesson.getTitle());
-    assertEquals(30, lesson.getDuration());
-    verify(lessonRepository).save(lesson);
+    var updatedLesson = Lesson.builder()
+        .id(lessonId)
+        .title("Updated Title")
+        .duration(45)
+        .build();
+    var expectedDto = LessonDto.builder()
+        .title("Updated Title")
+        .duration(45)
+        .build();
+    when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(existingLesson));
+    when(lessonRepository.save(any(Lesson.class))).thenReturn(updatedLesson);
+    when(lessonMapper.toDto(updatedLesson)).thenReturn(expectedDto);
+    var result = lessonService.updateLessons(dto);
+    verify(lessonRepository).save(lessonCaptor.capture());
+    var savedLesson = lessonCaptor.getValue();
+    assertEquals("Updated Title", savedLesson.getTitle());
+    assertEquals(45, savedLesson.getDuration());
+    assertEquals(expectedDto, result);
   }
 
   @Test

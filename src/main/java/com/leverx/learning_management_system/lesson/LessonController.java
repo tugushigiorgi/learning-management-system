@@ -1,6 +1,5 @@
 package com.leverx.learning_management_system.lesson;
 
-import static com.leverx.learning_management_system.ConstMessages.LESSON_ADDED;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleItemOrNotFound;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleList;
 
@@ -44,10 +43,10 @@ public class LessonController {
 
   @Operation(summary = "Create a new lesson")
   @PostMapping
-  public ResponseEntity<String> createLesson(
+  public ResponseEntity<LessonDto> createLesson(
       @RequestBody @Valid  @Parameter(description = "Lesson creation data") CreateLessonDto lessonDto) {
-    lessonService.createLesson(lessonDto);
-    return ResponseEntity.ok(LESSON_ADDED);
+    var newLesson=lessonService.createLesson(lessonDto);
+    return ResponseEntity.ok(newLesson);
   }
 
   @Operation(summary = "Get a lesson by ID")
@@ -73,9 +72,9 @@ public class LessonController {
 
   @Operation(summary = "Update an existing lesson")
   @PutMapping
-  public ResponseEntity<Void> updateLesson(
+  public ResponseEntity<LessonDto> updateLesson(
       @RequestBody @Valid @Parameter(description = "Lesson update data") UpdateLessonDto lessonDtoDto) {
-    lessonService.updateLessons(lessonDtoDto);
-    return ResponseEntity.noContent().build();
+    var updatedLesson=lessonService.updateLessons(lessonDtoDto);
+    return ResponseEntity.ok(updatedLesson);
   }
 }

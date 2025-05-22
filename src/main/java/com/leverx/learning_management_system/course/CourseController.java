@@ -1,14 +1,13 @@
 package com.leverx.learning_management_system.course;
 
-import static com.leverx.learning_management_system.ConstMessages.COURSE_ADDED;
 import static com.leverx.learning_management_system.ConstMessages.EMAIL_SENT;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleItemOrNotFound;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleList;
 
-import com.leverx.learning_management_system.course.service.CourseService;
 import com.leverx.learning_management_system.course.dto.CourseDto;
 import com.leverx.learning_management_system.course.dto.CreateCourseDto;
 import com.leverx.learning_management_system.course.dto.UpdateCourseDto;
+import com.leverx.learning_management_system.course.service.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,9 +48,9 @@ public class CourseController {
 
   @Operation(summary = "Create a new course")
   @PostMapping
-  public ResponseEntity<String> createCourse(@RequestBody @Valid @Parameter(description = "Course creation data") CreateCourseDto courseDto) {
-    courseService.createCourse(courseDto);
-    return ResponseEntity.ok(COURSE_ADDED);
+  public ResponseEntity<CourseDto> createCourse(@RequestBody @Valid @Parameter(description = "Course creation data") CreateCourseDto courseDto) {
+    var newCourse = courseService.createCourse(courseDto);
+    return ResponseEntity.ok(newCourse);
   }
 
   @Operation(summary = "Get a course by ID")
@@ -75,8 +74,8 @@ public class CourseController {
 
   @Operation(summary = "Update an existing course")
   @PutMapping
-  public ResponseEntity<Void> updateCourse(@RequestBody @Valid @Parameter(description = "Course update data") UpdateCourseDto courseDtoDto) {
-    courseService.updateCourse(courseDtoDto);
-    return ResponseEntity.noContent().build();
+  public ResponseEntity<CourseDto> updateCourse(@RequestBody @Valid @Parameter(description = "Course update data") UpdateCourseDto courseDtoDto) {
+    var updatedCourse=courseService.updateCourse(courseDtoDto);
+    return ResponseEntity.ok(updatedCourse);
   }
 }

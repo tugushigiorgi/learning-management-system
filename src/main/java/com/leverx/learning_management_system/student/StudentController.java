@@ -1,6 +1,5 @@
 package com.leverx.learning_management_system.student;
 
-import static com.leverx.learning_management_system.ConstMessages.STUDENT_ADDED;
 import static com.leverx.learning_management_system.ConstMessages.STUDENT_ENROLLED_SUCCESSFULLY;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleItemOrNotFound;
 import static com.leverx.learning_management_system.util.ControllerResponse.handleList;
@@ -52,10 +51,10 @@ public class StudentController {
 
   @Operation(summary = "Create a new student")
   @PostMapping
-  public ResponseEntity<String> createStudent(
+  public ResponseEntity<StudentDto> createStudent(
       @RequestBody @Valid @Parameter(description = "Student creation data") CreateStudentDto studentDto) {
-    studentService.createStudent(studentDto);
-    return ResponseEntity.ok(STUDENT_ADDED);
+    var newStudent=studentService.createStudent(studentDto);
+    return ResponseEntity.ok(newStudent);
   }
 
   @Operation(summary = "Get a student by ID")
@@ -81,9 +80,9 @@ public class StudentController {
 
   @Operation(summary = "Update an existing student")
   @PutMapping
-  public ResponseEntity<Void> updateStudent(
+  public ResponseEntity<StudentDto> updateStudent(
       @RequestBody @Valid @Parameter(description = "Student update data") UpdateStudentDto studentDto) {
-    studentService.updateStudent(studentDto);
-    return ResponseEntity.noContent().build();
+    var updatedStudent=studentService.updateStudent(studentDto);
+    return ResponseEntity.ok(updatedStudent);
   }
 }

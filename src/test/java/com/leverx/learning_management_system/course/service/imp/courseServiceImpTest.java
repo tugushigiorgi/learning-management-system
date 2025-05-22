@@ -27,6 +27,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -50,6 +52,8 @@ class CourseServiceImpTest {
   private UUID courseId;
   private Course course;
 
+  @Captor
+  private ArgumentCaptor<Course> courseCaptor;
   @BeforeEach
   void setup() {
     courseId = UUID.randomUUID();
@@ -67,7 +71,7 @@ class CourseServiceImpTest {
   }
 
   @Test
-  void createCourse_shouldSaveCourse() {
+  void createCourse_shouldSaveAndReturnDto() {
     var dto = CreateCourseDto.builder()
         .title("Intro to Java programming")
         .description("Description")
@@ -76,8 +80,17 @@ class CourseServiceImpTest {
         .startDate(LocalDateTime.now())
         .endDate(LocalDateTime.now().plusDays(5))
         .build();
-    courseService.createCourse(dto);
-    verify(courseRepository).save(any(Course.class));
+    var savedCourse = Course.builder()
+        .title(dto.getTitle())
+        .build();
+    var courseDto = new CourseDto();
+    when(courseRepository.save(any())).thenReturn(savedCourse);
+    when(courseMapper.toDto(savedCourse)).thenReturn(courseDto);
+    var result = courseService.createCourse(dto);
+    verify(courseRepository).save(courseCaptor.capture());
+    var captured = courseCaptor.getValue();
+    assertEquals(dto.getTitle(), captured.getTitle());
+    assertEquals(courseDto, result);
   }
 
   @Test
@@ -119,23 +132,42 @@ class CourseServiceImpTest {
   }
 
   @Test
-  void updateCourse_shouldUpdateAndSaveCourse() {
-    var dto = UpdateCourseDto.builder()
+  void updateCourse_shouldUpdateAndReturnDto() {
+    var updateDto = UpdateCourseDto.builder()
         .id(courseId)
-        .title("Updated Title")
-        .description("Updated Desc")
+        .title("new")
+        .description("Desc")
         .price(BigDecimal.valueOf(150))
         .startDate(LocalDateTime.now())
         .endDate(LocalDateTime.now().plusDays(1))
         .isPublic(false)
         .build();
-    when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
-    courseService.updateCourse(dto);
-    assertEquals("Updated Title", course.getTitle());
-    assertEquals("Updated Desc", course.getDescription());
-    assertEquals(BigDecimal.valueOf(150), course.getPrice());
-    assertEquals(false, course.getSettings().getIsPublic());
-    verify(courseRepository).save(course);
+    var settings = CourseSettings.builder()
+        .startDate(LocalDateTime.now().minusDays(1))
+        .endDate(LocalDateTime.now())
+        .isPublic(false).build();
+    var existingCourse  = Course.builder()
+        .id(courseId)
+        .title("old")
+        .description("desc2")
+        .price(BigDecimal.ZERO)
+        .settings(settings)
+        .build();
+    var updatedCourse = Course.builder().id(courseId).build();
+    var expectedDto = new CourseDto();
+    when(courseRepository.findById(courseId)).thenReturn(Optional.of(existingCourse));
+    when(courseRepository.save(any())).thenReturn(updatedCourse);
+    when(courseMapper.toDto(updatedCourse)).thenReturn(expectedDto);
+    var result = courseService.updateCourse(updateDto);
+    verify(courseRepository).save(courseCaptor.capture());
+    var savedCourse = courseCaptor.getValue();
+    assertEquals(updateDto.getTitle(), savedCourse.getTitle());
+    assertEquals(updateDto.getDescription(), savedCourse.getDescription());
+    assertEquals(updateDto.getPrice(), savedCourse.getPrice());
+    assertEquals(updateDto.getStartDate(), savedCourse.getSettings().getStartDate());
+    assertEquals(updateDto.getEndDate(), savedCourse.getSettings().getEndDate());
+    assertEquals(updateDto.getIsPublic(), savedCourse.getSettings().getIsPublic());
+    assertEquals(expectedDto, result);
   }
 
   @Test

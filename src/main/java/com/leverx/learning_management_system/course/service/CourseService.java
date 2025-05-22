@@ -10,12 +10,20 @@ import java.util.UUID;
 
 public interface CourseService {
   void printAllCoursesByStartDateBetween(LocalDateTime start, LocalDateTime end);
+
   List<CourseDto> getMostPopularCourses();
-  void createCourse(CreateCourseDto courseDto);
+
+  CourseDto createCourse(CreateCourseDto courseDto);
+
   CourseDto getCourseById(UUID id);
+
   List<CourseDto> getAllCourses();
+
   void deleteById(UUID id);
-  void updateCourse(UpdateCourseDto courseDto);
+
+  CourseDto updateCourse(UpdateCourseDto courseDto);
+
   DetailedCourseDto getDetailedCourseById(UUID id);
+
   void sendMailToEnrolledStudents(UUID courseId);
 }

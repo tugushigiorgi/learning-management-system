@@ -30,12 +30,13 @@ public class LessonServiceImp implements LessonService {
 
   @Override
   @Transactional
-  public void createLesson(CreateLessonDto lessonDto) {
+  public LessonDto createLesson(CreateLessonDto lessonDto) {
     var newLesson = Lesson.builder()
         .title(lessonDto.getTitle())
         .duration(lessonDto.getDuration())
         .build();
-    lessonRepository.save(newLesson);
+    var savedLesson=lessonRepository.save(newLesson);
+    return lessonMapper.toDto(savedLesson);
   }
 
   @Override
@@ -66,7 +67,7 @@ public class LessonServiceImp implements LessonService {
 
   @Override
   @Transactional
-  public void updateLessons(UpdateLessonDto lessonDto) {
+  public LessonDto updateLessons(UpdateLessonDto lessonDto) {
     var currentLesson = lessonRepository.findById(lessonDto.getId())
         .orElseThrow(() ->
             new ResponseStatusException(NOT_FOUND, String.format("%s%s", LESSON_NOT_FOUND, lessonDto.getId())));
@@ -76,7 +77,8 @@ public class LessonServiceImp implements LessonService {
     if (!lessonDto.getDuration().equals(currentLesson.getDuration())) {
       currentLesson.setDuration(lessonDto.getDuration());
     }
-    lessonRepository.save(currentLesson);
+    var savedLesson=lessonRepository.save(currentLesson);
+    return lessonMapper.toDto(savedLesson);
   }
 
   @Override

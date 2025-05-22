@@ -7,10 +7,15 @@ import java.util.List;
 import java.util.UUID;
 
 public interface LessonService {
-  void createLesson(CreateLessonDto lessonDto);
+  LessonDto createLesson(CreateLessonDto lessonDto);
+
   LessonDto getLessonById(UUID id);
+
   List<LessonDto> getAllLessons();
+
   void deleteById(UUID id);
-  void updateLessons(UpdateLessonDto lessonDto);
+
+  LessonDto updateLessons(UpdateLessonDto lessonDto);
+
   void addToCourse(UUID courseId, UUID lessonId);
 }
