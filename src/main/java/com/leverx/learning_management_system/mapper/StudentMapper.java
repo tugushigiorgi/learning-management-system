@@ -16,6 +16,4 @@ public interface StudentMapper {
       @Mapping(source = "dateOfBirth", target = "dateOfBirth"),
       @Mapping(source = "coins", target = "coins"), })
   StudentDto toDto(Student entity);
-
-
 }

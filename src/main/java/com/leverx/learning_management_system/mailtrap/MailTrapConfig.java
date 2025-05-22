@@ -10,16 +10,15 @@ import org.springframework.context.annotation.Configuration;
 public class MailTrapConfig {
 
   @Value("${mailtrap.token}")
-  private String TOKEN;
+  private String token;
 
   @Bean
-  public MailtrapClient mailtrapConfig() {
+  public MailtrapClient mailtrapClient() {
     var config = new io.mailtrap.config.MailtrapConfig.Builder()
         .sandbox(true)
         .inboxId(3711273L)
-        .token(TOKEN)
+        .token(token)
         .build();
-    var client = MailtrapClientFactory.createMailtrapClient(config);
-    return client;
+    return MailtrapClientFactory.createMailtrapClient(config);
   }
 }
