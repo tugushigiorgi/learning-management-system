@@ -22,7 +22,6 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(SQLException.class)
   public ResponseEntity<String> handleSQLException(SQLException ex) {
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body(ex.getMessage());
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
   }
 }
