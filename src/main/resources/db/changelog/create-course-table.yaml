@@ -4,7 +4,7 @@ databaseChangeLog:
       author: Giorgi
       changes:
         - createTable:
-            tableName: course
+            tableName: courses
             columns:
               - column:
                   name: id
@@ -29,12 +29,12 @@ databaseChangeLog:
                   type: UUID
 
         - addUniqueConstraint:
-            tableName: course
+            tableName: courses
             columnNames: course_settings_id
             constraintName: uq_course_settings
 
         - addForeignKeyConstraint:
-            baseTableName: course
+            baseTableName: courses
             baseColumnNames: course_settings_id
             referencedTableName: course_settings
             referencedColumnNames: id

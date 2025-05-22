@@ -4,7 +4,7 @@ databaseChangeLog:
       author: Giorgi
       changes:
         - createTable:
-            tableName: lesson
+            tableName: lessons
             columns:
               - column:
                   name: id
@@ -25,8 +25,8 @@ databaseChangeLog:
                     nullable: false
 
         - addForeignKeyConstraint:
-            baseTableName: lesson
+            baseTableName: lessons
             baseColumnNames: course_id
-            referencedTableName: course
+            referencedTableName: courses
             referencedColumnNames: id
             constraintName: fk_lesson_course

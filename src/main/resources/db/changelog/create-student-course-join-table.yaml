@@ -24,13 +24,13 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: student_courses
             baseColumnNames: student_id
-            referencedTableName: student
+            referencedTableName: students
             referencedColumnNames: id
             constraintName: fk_student_course_student
 
         - addForeignKeyConstraint:
             baseTableName: student_courses
             baseColumnNames: course_id
-            referencedTableName: course
+            referencedTableName: courses
             referencedColumnNames: id
             constraintName: fk_student_course_course
