@@ -14,7 +14,7 @@ public class CourseScheduleJob {
 
   @Scheduled(cron = "0 0 0 * * *")
   public void collectCoursesStartingTomorrow() {
-    LocalDate tomorrow = LocalDate.now().plusDays(1);
-    courseService.printAlCourseByStartDateBetween(tomorrow.atStartOfDay(), tomorrow.plusDays(1).atStartOfDay());
+    var tomorrow = LocalDate.now().plusDays(1);
+    courseService.printAllCoursesByStartDateBetween(tomorrow.atStartOfDay(), tomorrow.plusDays(1).atStartOfDay());
   }
 }

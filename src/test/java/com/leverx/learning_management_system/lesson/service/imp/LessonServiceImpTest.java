@@ -33,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
-class lessonServiceImpTest {
+class LessonServiceImpTest {
 
   @Mock
   private LessonRepository lessonRepository;
@@ -45,7 +45,7 @@ class lessonServiceImpTest {
   private CourseRepository courseRepository;
 
   @InjectMocks
-  private lessonServiceImp lessonService;
+  private LessonServiceImp lessonService;
 
   private Lesson lesson;
   private UUID lessonId;

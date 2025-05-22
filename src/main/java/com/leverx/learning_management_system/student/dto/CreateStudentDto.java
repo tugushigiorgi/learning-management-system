@@ -1,5 +1,4 @@
 package com.leverx.learning_management_system.student.dto;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,11 +9,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @Builder
 public class CreateStudentDto {
+
   @NotBlank(message = "First name is required")
   @Size(min = 1, max = 50, message = "First name must be between 1 and 50 characters")
   private String firstName;

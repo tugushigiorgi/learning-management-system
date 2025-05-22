@@ -1,6 +1,5 @@
 package com.leverx.learning_management_system.lesson.dto;
 
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -17,6 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateLessonDto {
+
   @NotBlank(message = "title is required")
   @Size(min = 1, max = 100, message = "title must be between 1 and 100 characters")
   private String title;

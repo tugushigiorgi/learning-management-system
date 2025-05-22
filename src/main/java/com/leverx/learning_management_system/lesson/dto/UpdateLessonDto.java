@@ -17,11 +17,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateLessonDto {
+
   @NotNull(message = "Lesson Id must be provided")
   private UUID id;
+
   @NotBlank(message = "title is required")
   @Size(min = 1, max = 100, message = "title must be between 1 and 100 characters")
   private String title;
+
   @NotNull(message = "duration is required")
   @Positive(message = "duration must be a positive number (in minutes)")
   private Integer duration;

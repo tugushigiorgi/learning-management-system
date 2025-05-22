@@ -1,5 +1,4 @@
 package com.leverx.learning_management_system.student.dto;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -18,6 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateStudentDto {
+
   @NotNull(message = "Student ID is required for update")
   private UUID id;
 

@@ -17,7 +17,7 @@ import com.leverx.learning_management_system.course.dto.DetailedCourseDto;
 import com.leverx.learning_management_system.course.dto.UpdateCourseDto;
 import com.leverx.learning_management_system.course.service.CourseService;
 import com.leverx.learning_management_system.courseSettings.CourseSettings;
-import com.leverx.learning_management_system.mailtrap.imp.mailTrapImp;
+import com.leverx.learning_management_system.mailtrap.imp.MailTrapImp;
 import com.leverx.learning_management_system.mapper.CourseMapper;
 import io.mailtrap.model.request.emails.Address;
 import java.time.LocalDateTime;
@@ -30,22 +30,22 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
 @Service
-public class courseServiceImp implements CourseService {
+public class CourseServiceImp implements CourseService {
   private final CourseRepository courseRepository;
   private final CourseMapper courseMapper;
-  private final mailTrapImp mailTrapImp;
+  private final MailTrapImp mailTrapImp;
 
   @Override
   @Transactional(readOnly = true)
-  public void printAlCourseByStartDateBetween(LocalDateTime start, LocalDateTime end) {
+  public void printAllCoursesByStartDateBetween(LocalDateTime start, LocalDateTime end) {
     var courses = courseRepository.findAllByStartDateBetween(start, end);
-    System.out.println(COURSE_STARTING_TOMORROW + courses.size());
+    System.out.printf("%s%d%n", COURSE_STARTING_TOMORROW, courses.size());
     courses.forEach(c -> System.out.println("- " + c.getTitle()));
   }
 
   @Override
   @Transactional(readOnly = true)
-  public List<CourseDto> mostPopularCourses() {
+  public List<CourseDto> getMostPopularCourses() {
     return courseRepository.findTop5MostPopular()
         .stream()
         .map(courseMapper::toDto)
@@ -72,8 +72,7 @@ public class courseServiceImp implements CourseService {
   @Override
   @Transactional(readOnly = true)
   public CourseDto getCourseById(UUID id) {
-    return courseRepository
-        .findById(id)
+    return courseRepository.findById(id)
         .map(courseMapper::toDto)
         .orElse(null);
   }
@@ -91,7 +90,7 @@ public class courseServiceImp implements CourseService {
   @Transactional
   public void deleteById(UUID id) {
     var getCourse = courseRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + id));
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format("%s%s", COURSE_NOT_FOUND, id)));
     courseRepository.delete(getCourse);
   }
 
@@ -99,7 +98,7 @@ public class courseServiceImp implements CourseService {
   @Transactional
   public void updateCourse(UpdateCourseDto courseDto) {
     var currentCourse = courseRepository.findById(courseDto.getId())
-        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseDto.getId()));
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format("%s%s", COURSE_NOT_FOUND, courseDto.getId())));
     if (!courseDto.getTitle().equals(currentCourse.getTitle())) {
       currentCourse.setTitle(courseDto.getTitle());
     }
@@ -133,7 +132,7 @@ public class courseServiceImp implements CourseService {
   @Override
   public void sendMailToEnrolledStudents(UUID courseId) {
     var course = courseRepository.findById(courseId)
-        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseId));
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format("%s%s", COURSE_NOT_FOUND, courseId)));
     if (isEmpty(course.getStudents())) {
       throw new ResponseStatusException(NOT_FOUND, STUDENTS_NOT_FOUND);
     }

@@ -17,7 +17,7 @@ import com.leverx.learning_management_system.course.dto.CreateCourseDto;
 import com.leverx.learning_management_system.course.dto.DetailedCourseDto;
 import com.leverx.learning_management_system.course.dto.UpdateCourseDto;
 import com.leverx.learning_management_system.courseSettings.CourseSettings;
-import com.leverx.learning_management_system.mailtrap.imp.mailTrapImp;
+import com.leverx.learning_management_system.mailtrap.imp.MailTrapImp;
 import com.leverx.learning_management_system.mapper.CourseMapper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -42,10 +42,10 @@ class CourseServiceImpTest {
   private CourseMapper courseMapper;
 
   @Mock
-  private mailTrapImp mailTrapImp;
+  private MailTrapImp mailTrapImp;
 
   @InjectMocks
-  private courseServiceImp courseService;
+  private CourseServiceImp courseService;
 
   private UUID courseId;
   private Course course;
@@ -154,11 +154,11 @@ class CourseServiceImpTest {
   }
 
   @Test
-  void mostPopularCourses_shouldReturnTopMappedCourses() {
+  void getMostPopularCourses_shouldReturnTopMappedCourses() {
     when(courseRepository.findTop5MostPopular())
         .thenReturn(List.of(course));
     when(courseMapper.toDto(course)).thenReturn(new CourseDto());
-    var result = courseService.mostPopularCourses();
+    var result = courseService.getMostPopularCourses();
     assertEquals(1, result.size());
     verify(courseRepository).findTop5MostPopular();
   }
@@ -182,12 +182,12 @@ class CourseServiceImpTest {
   }
 
   @Test
-  void printAlCourseByStartDateBetween_shouldCallRepository() {
+  void printAllCoursesByStartDateBetween_shouldCallRepository() {
     var start = LocalDateTime.now();
     var end = start.plusDays(3);
     when(courseRepository.findAllByStartDateBetween(start, end))
         .thenReturn(List.of(course));
-    courseService.printAlCourseByStartDateBetween(start, end);
+    courseService.printAllCoursesByStartDateBetween(start, end);
     verify(courseRepository).findAllByStartDateBetween(start, end);
   }
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class mailTrapImp implements MailTrapService {
+public class MailTrapImp implements MailTrapService {
 
   private final MailtrapClient mailtrapClient;
 

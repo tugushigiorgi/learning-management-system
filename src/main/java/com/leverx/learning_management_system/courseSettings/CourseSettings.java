@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "courseSettings")
+@Table(name = "course_settings")
 public class CourseSettings {
   @Id
   @GeneratedValue

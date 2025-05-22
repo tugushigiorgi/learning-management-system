@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "course")
+@Table(name = "courses")
 public class Course {
   @Id
   @GeneratedValue

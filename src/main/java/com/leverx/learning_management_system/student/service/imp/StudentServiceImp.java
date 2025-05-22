@@ -24,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
-public class studentServiceImp implements StudentService {
+public class StudentServiceImp implements StudentService {
 
   private final StudentRepository studentRepository;
   private final StudentMapper studentMapper;
@@ -35,7 +35,7 @@ public class studentServiceImp implements StudentService {
   public Integer getEnrolledCourseCount(UUID studentId) {
     var getStudent = studentRepository.findById(studentId)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + studentId));
+            new ResponseStatusException(NOT_FOUND, String.format("%s%s", STUDENT_NOT_FOUND, studentId)));
     return getStudent.getCourses().size();
   }
 
@@ -44,14 +44,14 @@ public class studentServiceImp implements StudentService {
   public void enrollToCourse(UUID studentId, UUID courseId) {
     var getStudent = studentRepository.findById(studentId)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + studentId));
+            new ResponseStatusException(NOT_FOUND, String.format("%s%s", STUDENT_NOT_FOUND, studentId)));
     var getCourse = courseRepository.findById(courseId)
         .orElseThrow(() ->
-        new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseId));
-    var checkIfAlreadyEnrolled = getStudent.getCourses()
+            new ResponseStatusException(NOT_FOUND, String.format("%s%s", COURSE_NOT_FOUND, courseId)));
+    var alreadyEnrolled = getStudent.getCourses()
         .stream()
         .anyMatch(course -> course.getId().equals(courseId));
-    if (checkIfAlreadyEnrolled) {
+    if (alreadyEnrolled) {
       throw new ResponseStatusException(BAD_REQUEST, STUDENT_ALREADY_ENROLLED);
     }
     if (getStudent.getCoins().compareTo(getCourse.getPrice()) >= 0) {
@@ -97,7 +97,7 @@ public class studentServiceImp implements StudentService {
   public void deleteById(UUID id) {
     var getStudent = studentRepository.findById(id)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + id));
+            new ResponseStatusException(NOT_FOUND, String.format("%s%s", STUDENT_NOT_FOUND, id)));
     studentRepository.delete(getStudent);
   }
 
@@ -106,7 +106,7 @@ public class studentServiceImp implements StudentService {
   public void updateStudent(UpdateStudentDto studentDto) {
     var currentStudent = studentRepository.findById(studentDto.getId())
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, STUDENT_NOT_FOUND + studentDto.getId()));
+            new ResponseStatusException(NOT_FOUND, String.format("%s%s", STUDENT_NOT_FOUND, studentDto.getId())));
     if (!studentDto.getFirstName().equals(currentStudent.getFirstName())) {
       currentStudent.setFirstName(studentDto.getFirstName());
     }

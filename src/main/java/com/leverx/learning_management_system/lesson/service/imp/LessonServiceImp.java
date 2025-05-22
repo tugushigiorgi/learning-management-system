@@ -23,7 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
-public class lessonServiceImp implements LessonService {
+public class LessonServiceImp implements LessonService {
   private final LessonRepository lessonRepository;
   private final LessonMapper lessonMapper;
   private final CourseRepository courseRepository;
@@ -60,7 +60,7 @@ public class lessonServiceImp implements LessonService {
   public void deleteById(UUID id) {
     var lesson = lessonRepository.findById(id)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, LESSON_NOT_FOUND + id));
+            new ResponseStatusException(NOT_FOUND, String.format("%s%s", LESSON_NOT_FOUND, id)));
     lessonRepository.delete(lesson);
   }
 
@@ -69,7 +69,7 @@ public class lessonServiceImp implements LessonService {
   public void updateLessons(UpdateLessonDto lessonDto) {
     var currentLesson = lessonRepository.findById(lessonDto.getId())
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, LESSON_NOT_FOUND + lessonDto.getId()));
+            new ResponseStatusException(NOT_FOUND, String.format("%s%s", LESSON_NOT_FOUND, lessonDto.getId())));
     if (!lessonDto.getTitle().equals(currentLesson.getTitle())) {
       currentLesson.setTitle(lessonDto.getTitle());
     }
@@ -84,12 +84,14 @@ public class lessonServiceImp implements LessonService {
   public void addToCourse(UUID courseId, UUID lessonId) {
     var currentLesson = lessonRepository.findById(lessonId)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, LESSON_NOT_FOUND + lessonId));
+            new ResponseStatusException(NOT_FOUND, String.format("%s%s", LESSON_NOT_FOUND, lessonId)));
     var currentCourse = courseRepository.findById(courseId)
         .orElseThrow(() ->
-        new ResponseStatusException(NOT_FOUND, COURSE_NOT_FOUND + courseId));
-    var checkIfAlreadyAdded = currentCourse.getLessons().stream().anyMatch(lesson -> lesson.getId().equals(lessonId));
-    if (checkIfAlreadyAdded) {
+        new ResponseStatusException(NOT_FOUND, String.format("%s%s", COURSE_NOT_FOUND, courseId)));
+    var alreadyAdded = currentCourse.getLessons()
+        .stream()
+        .anyMatch(lesson -> lesson.getId().equals(lessonId));
+    if (alreadyAdded) {
       throw new ResponseStatusException(BAD_REQUEST, LESSON_ALREADY_ADDED);
     }
     currentCourse.getLessons().add(currentLesson);

@@ -43,8 +43,8 @@ public class CourseController {
 
   @Operation(summary = "Get the most popular courses by coins paid")
   @GetMapping("/most-popular")
-  public ResponseEntity<List<CourseDto>> MostPopularCourses() {
-    return handleList(courseService.mostPopularCourses());
+  public ResponseEntity<List<CourseDto>> getMostPopularCourses() {
+    return handleList(courseService.getMostPopularCourses());
   }
 
   @Operation(summary = "Create a new course")
