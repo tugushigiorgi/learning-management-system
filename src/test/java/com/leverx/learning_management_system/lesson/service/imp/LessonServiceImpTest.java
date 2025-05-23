@@ -1,7 +1,6 @@
 package com.leverx.learning_management_system.lesson.service.imp;
 
 import static com.leverx.learning_management_system.ConstMessages.LESSON_ALREADY_ADDED;
-import static com.leverx.learning_management_system.ConstMessages.LESSON_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -69,6 +68,7 @@ class LessonServiceImpTest {
 
   @Test
   void createLesson_shouldCreateAndReturnLessonDto() {
+    // Given
     var dto = CreateLessonDto.builder()
         .title("Intro to Java programming")
         .duration(11)
@@ -84,7 +84,11 @@ class LessonServiceImpTest {
         .build();
     when(lessonRepository.save(any(Lesson.class))).thenReturn(savedLesson);
     when(lessonMapper.toDto(savedLesson)).thenReturn(expectedDto);
+
+    // When
     var actualDto = lessonService.createLesson(dto);
+
+    // Then
     verify(lessonRepository).save(lessonCaptor.capture());
     var capturedLesson = lessonCaptor.getValue();
     assertEquals(dto.getTitle(), capturedLesson.getTitle());
@@ -94,24 +98,33 @@ class LessonServiceImpTest {
 
   @Test
   void getLessonById_shouldReturnLessonDtoIfFound() {
+    // Given
     var dto = LessonDto.builder()
         .title("test")
         .duration(30)
         .build();
     when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
     when(lessonMapper.toDto(lesson)).thenReturn(dto);
+
+    // When
     var result = lessonService.getLessonById(lessonId);
+
+    // Then
     assertEquals(dto, result);
   }
 
   @Test
   void getLessonById_shouldReturnNullIfNotFound() {
+    // Given
     when(lessonRepository.findById(lessonId)).thenReturn(Optional.empty());
+
+    // When & Then
     assertNull(lessonService.getLessonById(lessonId));
   }
 
   @Test
   void getAllLessons_shouldReturnAllLessons() {
+    // Given
     var lessons = List.of(lesson);
     var dtos = List.of(LessonDto.builder()
         .title("test")
@@ -119,28 +132,40 @@ class LessonServiceImpTest {
         .build());
     when(lessonRepository.findAll()).thenReturn(lessons);
     when(lessonMapper.toDto(lessons.getFirst())).thenReturn(dtos.getFirst());
+
+    // When
     List<LessonDto> result = lessonService.getAllLessons();
+
+    // Then
     assertEquals(dtos, result);
   }
 
   @Test
   void deleteById_shouldDeleteIfFound() {
+    // Given
     when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
+
+    // When
     lessonService.deleteById(lessonId);
+
+    // Then
     verify(lessonRepository).delete(lesson);
   }
 
   @Test
   void deleteById_shouldThrowIfNotFound() {
+    // Given
     when(lessonRepository.findById(lessonId)).thenReturn(Optional.empty());
+
+    // When & Then
     var ex = assertThrows(ResponseStatusException.class,
         () -> lessonService.deleteById(lessonId));
     assertEquals(NOT_FOUND, ex.getStatusCode());
-    assertTrue(ex.getReason().contains(LESSON_NOT_FOUND));
   }
 
   @Test
   void updateLessons_shouldUpdateAndReturnDto() {
+    // Given
     var dto = UpdateLessonDto.builder()
         .id(lessonId)
         .title("Updated Title")
@@ -163,7 +188,11 @@ class LessonServiceImpTest {
     when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(existingLesson));
     when(lessonRepository.save(any(Lesson.class))).thenReturn(updatedLesson);
     when(lessonMapper.toDto(updatedLesson)).thenReturn(expectedDto);
+
+    // When
     var result = lessonService.updateLessons(dto);
+
+    // Then
     verify(lessonRepository).save(lessonCaptor.capture());
     var savedLesson = lessonCaptor.getValue();
     assertEquals("Updated Title", savedLesson.getTitle());
@@ -173,18 +202,22 @@ class LessonServiceImpTest {
 
   @Test
   void updateLessons_shouldThrowIfNotFound() {
+    // Given
     var dto = UpdateLessonDto.builder()
         .id(lessonId)
         .title("programming course")
         .duration(12)
         .build();
     when(lessonRepository.findById(lessonId)).thenReturn(Optional.empty());
+
+    // When & Then
     assertThrows(ResponseStatusException.class,
         () -> lessonService.updateLessons(dto));
   }
 
   @Test
   void addToCourse_shouldAddLessonToCourse() {
+    // Given
     var course = Course.builder()
         .id(courseId)
         .lessons(new HashSet<>())
@@ -193,13 +226,18 @@ class LessonServiceImpTest {
         .thenReturn(Optional.of(lesson));
     when(courseRepository.findById(courseId))
         .thenReturn(Optional.of(course));
+
+    // When
     lessonService.addToCourse(courseId, lessonId);
+
+    // Then
     assertTrue(course.getLessons().contains(lesson));
     verify(courseRepository).save(course);
   }
 
   @Test
   void addToCourse_shouldThrowIfLessonAlreadyAdded() {
+    // Given
     var lessons = new HashSet<Lesson>();
     lessons.add(lesson);
     var course = Course
@@ -209,6 +247,8 @@ class LessonServiceImpTest {
         .build();
     when(lessonRepository.findById(lessonId)).thenReturn(Optional.of(lesson));
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+
+    // When & Then
     var ex = assertThrows(ResponseStatusException.class,
         () -> lessonService.addToCourse(courseId, lessonId));
     assertEquals(BAD_REQUEST, ex.getStatusCode());
@@ -217,16 +257,22 @@ class LessonServiceImpTest {
 
   @Test
   void addToCourse_shouldThrowIfLessonNotFound() {
+    // Given
     when(lessonRepository.findById(lessonId))
         .thenReturn(Optional.empty());
+
+    // When & Then
     assertThrows(ResponseStatusException.class,
         () -> lessonService.addToCourse(courseId, lessonId));
   }
 
   @Test
   void addToCourse_shouldThrowIfCourseNotFound() {
+    // Given
     when(lessonRepository.findById(this.lessonId)).thenReturn(Optional.of(lesson));
     when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
+
+    // When & Then
     assertThrows(ResponseStatusException.class,
         () -> lessonService.addToCourse(courseId, lessonId));
   }

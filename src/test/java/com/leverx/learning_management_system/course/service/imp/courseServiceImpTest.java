@@ -1,11 +1,12 @@
 package com.leverx.learning_management_system.course.service.imp;
 
-import static com.leverx.learning_management_system.ConstMessages.COURSE_NOT_FOUND_WITH_STATUS_CODE_ERROR;
-import static com.leverx.learning_management_system.ConstMessages.STUDENTS_NOT_FOUND_WITH_STATUS_CODE_ERROR;
+import static com.leverx.learning_management_system.ConstMessages.COURSE_NOT_FOUND;
+import static com.leverx.learning_management_system.ConstMessages.STUDENTS_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,6 +55,7 @@ class CourseServiceImpTest {
 
   @Captor
   private ArgumentCaptor<Course> courseCaptor;
+
   @BeforeEach
   void setup() {
     courseId = UUID.randomUUID();
@@ -72,6 +74,7 @@ class CourseServiceImpTest {
 
   @Test
   void createCourse_shouldSaveAndReturnDto() {
+    // Given
     var dto = CreateCourseDto.builder()
         .title("Intro to Java programming")
         .description("Description")
@@ -80,13 +83,15 @@ class CourseServiceImpTest {
         .startDate(LocalDateTime.now())
         .endDate(LocalDateTime.now().plusDays(5))
         .build();
-    var savedCourse = Course.builder()
-        .title(dto.getTitle())
-        .build();
+    var savedCourse = Course.builder().title(dto.getTitle()).build();
     var courseDto = new CourseDto();
     when(courseRepository.save(any())).thenReturn(savedCourse);
     when(courseMapper.toDto(savedCourse)).thenReturn(courseDto);
+
+    // When
     var result = courseService.createCourse(dto);
+
+    // Then
     verify(courseRepository).save(courseCaptor.capture());
     var captured = courseCaptor.getValue();
     assertEquals(dto.getTitle(), captured.getTitle());
@@ -95,44 +100,68 @@ class CourseServiceImpTest {
 
   @Test
   void getCourseById_shouldReturnCourseDto_whenExists() {
+    // Given
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
     when(courseMapper.toDto(course)).thenReturn(new CourseDto());
+
+    // When
     var result = courseService.getCourseById(courseId);
+
+    // Then
     assertNotNull(result);
     verify(courseRepository).findById(courseId);
   }
 
   @Test
   void getCourseById_shouldReturnNull_whenNotFound() {
+    // Given
     when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
+
+    // When
     var result = courseService.getCourseById(courseId);
+
+    // Then
     assertNull(result);
   }
 
   @Test
   void getAllCourses_shouldReturnMappedCourses() {
+    // Given
     when(courseRepository.findAll()).thenReturn(List.of(course));
     when(courseMapper.toDto(course)).thenReturn(new CourseDto());
+
+    // When
     var result = courseService.getAllCourses();
+
+    // Then
     assertEquals(1, result.size());
     verify(courseRepository).findAll();
   }
 
   @Test
   void deleteById_shouldDeleteCourse_whenExists() {
+    // Given
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+
+    // When
     courseService.deleteById(courseId);
+
+    // Then
     verify(courseRepository).delete(course);
   }
 
   @Test
   void deleteById_shouldThrowException_whenNotFound() {
+    // Given
     when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
+
+    // When / Then
     assertThrows(ResponseStatusException.class, () -> courseService.deleteById(courseId));
   }
 
   @Test
   void updateCourse_shouldUpdateAndReturnDto() {
+    // Given
     var updateDto = UpdateCourseDto.builder()
         .id(courseId)
         .title("new")
@@ -158,7 +187,11 @@ class CourseServiceImpTest {
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(existingCourse));
     when(courseRepository.save(any())).thenReturn(updatedCourse);
     when(courseMapper.toDto(updatedCourse)).thenReturn(expectedDto);
+
+    // When
     var result = courseService.updateCourse(updateDto);
+
+    // Then
     verify(courseRepository).save(courseCaptor.capture());
     var savedCourse = courseCaptor.getValue();
     assertEquals(updateDto.getTitle(), savedCourse.getTitle());
@@ -172,6 +205,7 @@ class CourseServiceImpTest {
 
   @Test
   void updateCourse_shouldThrowException_whenNotFound() {
+    // Given
     var dto = UpdateCourseDto.builder()
         .id(courseId)
         .title("Title")
@@ -182,63 +216,85 @@ class CourseServiceImpTest {
         .isPublic(true)
         .build();
     when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
+
+    // When / Then
     assertThrows(ResponseStatusException.class, () -> courseService.updateCourse(dto));
   }
 
   @Test
   void getMostPopularCourses_shouldReturnTopMappedCourses() {
-    when(courseRepository.findTop5MostPopular())
-        .thenReturn(List.of(course));
+    // Given
+    when(courseRepository.findTop5MostPopular()).thenReturn(List.of(course));
     when(courseMapper.toDto(course)).thenReturn(new CourseDto());
+
+    // When
     var result = courseService.getMostPopularCourses();
+
+    // Then
     assertEquals(1, result.size());
     verify(courseRepository).findTop5MostPopular();
   }
 
   @Test
   void getDetailedCourseById_shouldReturnDetailedDto_whenFound() {
-    when(courseRepository.findById(courseId))
-        .thenReturn(Optional.of(course));
-    when(courseMapper.toDetailedDto(course))
-        .thenReturn(new DetailedCourseDto());
+    // Given
+    when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+    when(courseMapper.toDetailedDto(course)).thenReturn(new DetailedCourseDto());
+
+    // When
     var result = courseService.getDetailedCourseById(courseId);
+
+    // Then
     assertNotNull(result);
   }
 
   @Test
   void getDetailedCourseById_shouldReturnNull_whenNotFound() {
-    when(courseRepository.findById(courseId))
-        .thenReturn(Optional.empty());
+    // Given
+    when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
+
+    // When
     var result = courseService.getDetailedCourseById(courseId);
+
+    // Then
     assertNull(result);
   }
 
   @Test
   void printAllCoursesByStartDateBetween_shouldCallRepository() {
+    // Given
     var start = LocalDateTime.now();
     var end = start.plusDays(3);
-    when(courseRepository.findAllByStartDateBetween(start, end))
-        .thenReturn(List.of(course));
+    when(courseRepository.findAllByStartDateBetween(start, end)).thenReturn(List.of(course));
+
+    // When
     courseService.printAllCoursesByStartDateBetween(start, end);
+
+    // Then
     verify(courseRepository).findAllByStartDateBetween(start, end);
   }
 
   @Test
   void sendMailToEnrolledStudents_shouldThrowException_whenCourseNotFound() {
-    when(courseRepository.findById(courseId))
-        .thenReturn(Optional.empty());
+    // Given
+    when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
+
+    // When / Then
     var exception = assertThrows(ResponseStatusException.class,
         () -> courseService.sendMailToEnrolledStudents(courseId)
     );
-    assertEquals(COURSE_NOT_FOUND_WITH_STATUS_CODE_ERROR + courseId + "\"", exception.getMessage());
+    assertTrue(exception.getMessage().contains(String.format(COURSE_NOT_FOUND,courseId)));
   }
 
   @Test
   void sendMailToEnrolledStudents_shouldThrowException_whenStudentsListIsEmpty() {
+    // Given
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+
+    // When / Then
     var exception = assertThrows(ResponseStatusException.class,
         () -> courseService.sendMailToEnrolledStudents(courseId)
     );
-    assertEquals(STUDENTS_NOT_FOUND_WITH_STATUS_CODE_ERROR, exception.getMessage());
+    assertTrue(exception.getMessage().contains(STUDENTS_NOT_FOUND));
   }
 }

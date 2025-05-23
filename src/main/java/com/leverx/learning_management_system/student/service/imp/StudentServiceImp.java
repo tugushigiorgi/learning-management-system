@@ -7,8 +7,8 @@ import static com.leverx.learning_management_system.ConstMessages.STUDENT_NOT_FO
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import com.leverx.learning_management_system.mapper.StudentMapper;
 import com.leverx.learning_management_system.course.CourseRepository;
+import com.leverx.learning_management_system.mapper.StudentMapper;
 import com.leverx.learning_management_system.student.Student;
 import com.leverx.learning_management_system.student.StudentRepository;
 import com.leverx.learning_management_system.student.dto.CreateStudentDto;
@@ -35,7 +35,7 @@ public class StudentServiceImp implements StudentService {
   public Integer getEnrolledCourseCount(UUID studentId) {
     var getStudent = studentRepository.findById(studentId)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, String.format("%s%s", STUDENT_NOT_FOUND, studentId)));
+            new ResponseStatusException(NOT_FOUND, String.format(STUDENT_NOT_FOUND, studentId)));
     return getStudent.getCourses().size();
   }
 
@@ -44,10 +44,10 @@ public class StudentServiceImp implements StudentService {
   public void enrollToCourse(UUID studentId, UUID courseId) {
     var getStudent = studentRepository.findById(studentId)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, String.format("%s%s", STUDENT_NOT_FOUND, studentId)));
+            new ResponseStatusException(NOT_FOUND, String.format(STUDENT_NOT_FOUND, studentId)));
     var getCourse = courseRepository.findById(courseId)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, String.format("%s%s", COURSE_NOT_FOUND, courseId)));
+            new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, courseId)));
     var alreadyEnrolled = getStudent.getCourses()
         .stream()
         .anyMatch(course -> course.getId().equals(courseId));
@@ -98,7 +98,7 @@ public class StudentServiceImp implements StudentService {
   public void deleteById(UUID id) {
     var getStudent = studentRepository.findById(id)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, String.format("%s%s", STUDENT_NOT_FOUND, id)));
+            new ResponseStatusException(NOT_FOUND, String.format(STUDENT_NOT_FOUND, id)));
     studentRepository.delete(getStudent);
   }
 
@@ -107,7 +107,7 @@ public class StudentServiceImp implements StudentService {
   public StudentDto updateStudent(UpdateStudentDto studentDto) {
     var currentStudent = studentRepository.findById(studentDto.getId())
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, String.format("%s%s", STUDENT_NOT_FOUND, studentDto.getId())));
+            new ResponseStatusException(NOT_FOUND, String.format(STUDENT_NOT_FOUND, studentDto.getId())));
     if (!studentDto.getFirstName().equals(currentStudent.getFirstName())) {
       currentStudent.setFirstName(studentDto.getFirstName());
     }
@@ -120,7 +120,7 @@ public class StudentServiceImp implements StudentService {
     if (!studentDto.getDateOfBirth().equals(currentStudent.getDateOfBirth())) {
       currentStudent.setDateOfBirth(studentDto.getDateOfBirth());
     }
-    var updatedStudent=studentRepository.save(currentStudent);
+    var updatedStudent = studentRepository.save(currentStudent);
     return studentMapper.toDto(updatedStudent);
   }
 }

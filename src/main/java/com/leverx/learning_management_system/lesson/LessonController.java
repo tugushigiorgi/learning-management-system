@@ -32,23 +32,6 @@ public class LessonController {
 
   private final LessonService lessonService;
 
-  @Operation(summary = "Add an existing lesson to a course")
-  @PostMapping("/{lessonId}/{courseId}")
-  public ResponseEntity<Void> addToCourse(
-      @PathVariable @Parameter(description = "Lesson ID to add") UUID lessonId,
-      @PathVariable @Parameter(description = "Course ID to add lesson to") UUID courseId) {
-    lessonService.addToCourse(courseId, lessonId);
-    return ResponseEntity.ok().build();
-  }
-
-  @Operation(summary = "Create a new lesson")
-  @PostMapping
-  public ResponseEntity<LessonDto> createLesson(
-      @RequestBody @Valid  @Parameter(description = "Lesson creation data") CreateLessonDto lessonDto) {
-    var newLesson=lessonService.createLesson(lessonDto);
-    return ResponseEntity.ok(newLesson);
-  }
-
   @Operation(summary = "Get a lesson by ID")
   @GetMapping("/{id}")
   public ResponseEntity<LessonDto> getLesson(
@@ -60,6 +43,23 @@ public class LessonController {
   @GetMapping
   public ResponseEntity<List<LessonDto>> getAllLessons() {
     return handleList(lessonService.getAllLessons());
+  }
+
+  @Operation(summary = "Create a new lesson")
+  @PostMapping
+  public ResponseEntity<LessonDto> createLesson(
+      @RequestBody @Valid  @Parameter(description = "Lesson creation data") CreateLessonDto lessonDto) {
+    var newLesson=lessonService.createLesson(lessonDto);
+    return ResponseEntity.ok(newLesson);
+  }
+
+  @Operation(summary = "Add an existing lesson to a course")
+  @PostMapping("/{lessonId}/{courseId}")
+  public ResponseEntity<Void> addToCourse(
+      @PathVariable @Parameter(description = "Lesson ID to add") UUID lessonId,
+      @PathVariable @Parameter(description = "Course ID to add lesson to") UUID courseId) {
+    lessonService.addToCourse(courseId, lessonId);
+    return ResponseEntity.ok().build();
   }
 
   @Operation(summary = "Delete a lesson by ID")

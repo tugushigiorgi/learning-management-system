@@ -16,19 +16,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 public class LessonControllerIntegrationTest {
 
+  @Autowired
   private MockMvc mockMvc;
+  @Autowired
   private LessonRepository lessonRepository;
 
   @Test
+  @Transactional
   void getLessonById_shouldReturnLessonDto() throws Exception {
+    // Arrange: create and save a Lesson entity in the database
     var lesson = Lesson.builder()
         .title("Spring Boot Basics")
         .duration(45)
         .build();
     lesson = lessonRepository.save(lesson);
+
+    // Act & Assert: perform GET request and verify response content
     mockMvc.perform(get("/api/lessons/" + lesson.getId())
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -36,3 +41,4 @@ public class LessonControllerIntegrationTest {
         .andExpect(jsonPath("$.duration").value(45));
   }
 }
+

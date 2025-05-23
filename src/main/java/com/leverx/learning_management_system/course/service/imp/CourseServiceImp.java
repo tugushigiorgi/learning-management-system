@@ -39,7 +39,7 @@ public class CourseServiceImp implements CourseService {
   @Transactional(readOnly = true)
   public void printAllCoursesByStartDateBetween(LocalDateTime start, LocalDateTime end) {
     var courses = courseRepository.findAllByStartDateBetween(start, end);
-    System.out.printf("%s%d%n", COURSE_STARTING_TOMORROW, courses.size());
+    System.out.printf(COURSE_STARTING_TOMORROW, courses.size());
     courses.forEach(c -> System.out.println("- " + c.getTitle()));
   }
 
@@ -91,7 +91,7 @@ public class CourseServiceImp implements CourseService {
   @Transactional
   public void deleteById(UUID id) {
     var getCourse = courseRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format("%s%s", COURSE_NOT_FOUND, id)));
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, id)));
     courseRepository.delete(getCourse);
   }
 
@@ -99,7 +99,7 @@ public class CourseServiceImp implements CourseService {
   @Transactional
   public CourseDto updateCourse(UpdateCourseDto courseDto) {
     var currentCourse = courseRepository.findById(courseDto.getId())
-        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format("%s%s", COURSE_NOT_FOUND, courseDto.getId())));
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, courseDto.getId())));
     if (!courseDto.getTitle().equals(currentCourse.getTitle())) {
       currentCourse.setTitle(courseDto.getTitle());
     }
@@ -134,7 +134,7 @@ public class CourseServiceImp implements CourseService {
   @Override
   public void sendMailToEnrolledStudents(UUID courseId) {
     var course = courseRepository.findById(courseId)
-        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format("%s%s", COURSE_NOT_FOUND, courseId)));
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, courseId)));
     if (isEmpty(course.getStudents())) {
       throw new ResponseStatusException(NOT_FOUND, STUDENTS_NOT_FOUND);
     }

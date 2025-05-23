@@ -33,17 +33,22 @@ public class CourseController {
 
   private final CourseService courseService;
 
-  @Operation(summary = "Sends  mail to enrolled students")
-  @PostMapping("/{courseId}/send-mail-to-students")
-  public ResponseEntity<String> sendMailToEnrolledStudents(@PathVariable @Parameter(description = "Course Id") UUID courseId) {
-    courseService.sendMailToEnrolledStudents(courseId);
-    return ResponseEntity.ok(EMAIL_SENT);
+  @Operation(summary = "Get a course by ID")
+  @GetMapping("/{id}")
+  public ResponseEntity<CourseDto> getCourse(@PathVariable @Parameter(description = "ID of the course to retrieve") UUID id) {
+    return handleItemOrNotFound(courseService.getCourseById(id));
   }
 
   @Operation(summary = "Get the most popular courses by coins paid")
   @GetMapping("/most-popular")
   public ResponseEntity<List<CourseDto>> getMostPopularCourses() {
     return handleList(courseService.getMostPopularCourses());
+  }
+
+  @Operation(summary = "Get all courses")
+  @GetMapping
+  public ResponseEntity<List<CourseDto>> getAllCourses() {
+    return handleList(courseService.getAllCourses());
   }
 
   @Operation(summary = "Create a new course")
@@ -53,16 +58,11 @@ public class CourseController {
     return ResponseEntity.ok(newCourse);
   }
 
-  @Operation(summary = "Get a course by ID")
-  @GetMapping("/{id}")
-  public ResponseEntity<CourseDto> getCourse(@PathVariable @Parameter(description = "ID of the course to retrieve") UUID id) {
-    return handleItemOrNotFound(courseService.getCourseById(id));
-  }
-
-  @Operation(summary = "Get all courses")
-  @GetMapping
-  public ResponseEntity<List<CourseDto>> getAllCourses() {
-    return handleList(courseService.getAllCourses());
+  @Operation(summary = "Sends  mail to enrolled students")
+  @PostMapping("/{courseId}/send-mail-to-students")
+  public ResponseEntity<String> sendMailToEnrolledStudents(@PathVariable @Parameter(description = "Course Id") UUID courseId) {
+    courseService.sendMailToEnrolledStudents(courseId);
+    return ResponseEntity.ok(EMAIL_SENT);
   }
 
   @Operation(summary = "Delete a course by ID")

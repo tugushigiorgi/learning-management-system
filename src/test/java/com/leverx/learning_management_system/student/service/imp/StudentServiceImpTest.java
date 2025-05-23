@@ -9,9 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.leverx.learning_management_system.course.Course;
 import com.leverx.learning_management_system.course.CourseRepository;
@@ -35,6 +36,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
@@ -84,28 +86,41 @@ class StudentServiceImpTest {
         .courses(new HashSet<>())
         .build();
   }
-
   @Test
   void getEnrolledCourseCount_shouldReturnSize() {
+    // Arrange
     student.getCourses().add(course);
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
+
+    // Act
     var count = studentService.getEnrolledCourseCount(studentId);
+
+    // Assert
     assertEquals(1, count);
   }
 
   @Test
   void getEnrolledCourseCount_shouldThrowException_ifStudentNotFound() {
+    // Arrange
     when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
-    var exception = assertThrows(ResponseStatusException.class, () ->
-        studentService.getEnrolledCourseCount(studentId));
-    assertTrue(exception.getMessage().contains(STUDENT_NOT_FOUND));
+
+    // Act & Assert
+    var exception = assertThrows(ResponseStatusException.class,
+        () -> studentService.getEnrolledCourseCount(studentId));
+    assertEquals(String.format(STUDENT_NOT_FOUND,studentId), exception.getReason());
+    assertEquals(NOT_FOUND, exception.getStatusCode());
   }
 
   @Test
   void enrollToCourse_shouldSucceed_whenEnoughCoinsAndNotEnrolled() {
+    // Arrange
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+
+    // Act
     studentService.enrollToCourse(studentId, courseId);
+
+    // Assert
     assertTrue(student.getCourses().contains(course));
     assertEquals(BigDecimal.valueOf(50), student.getCoins());
     verify(studentRepository).save(student);
@@ -113,49 +128,67 @@ class StudentServiceImpTest {
 
   @Test
   void enrollToCourse_shouldThrow_ifStudentAlreadyEnrolled() {
+    // Arrange
     student.getCourses().add(course);
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
-    var exception = assertThrows(ResponseStatusException.class, () ->
-        studentService.enrollToCourse(studentId, courseId));
-    assertTrue(exception.getMessage().contains(STUDENT_ALREADY_ENROLLED));
+
+    // Act & Assert
+    var exception = assertThrows(ResponseStatusException.class,
+        () -> studentService.enrollToCourse(studentId, courseId));
+    assertEquals(STUDENT_ALREADY_ENROLLED, exception.getReason());
+    assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
   }
 
   @Test
   void enrollToCourse_shouldThrow_ifNotEnoughCoins() {
+    // Arrange
     student.setCoins(BigDecimal.valueOf(10));
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
-    var exception = assertThrows(ResponseStatusException.class, () ->
-        studentService.enrollToCourse(studentId, courseId));
-    assertTrue(exception.getMessage().contains(NOT_ENOUGH_COINS));
+
+    // Act & Assert
+    var exception = assertThrows(ResponseStatusException.class,
+        () -> studentService.enrollToCourse(studentId, courseId));
+    assertEquals(NOT_ENOUGH_COINS, exception.getReason());
+    assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
   }
 
   @Test
   void enrollToCourse_shouldThrow_ifStudentNotFound() {
+    // Arrange
     when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
-    var exception = assertThrows(ResponseStatusException.class, () ->
-        studentService.enrollToCourse(studentId, courseId));
-    assertTrue(exception.getMessage().contains(STUDENT_NOT_FOUND));
+
+    // Act & Assert
+    var exception = assertThrows(ResponseStatusException.class,
+        () -> studentService.enrollToCourse(studentId, courseId));
+    assertEquals(String.format(STUDENT_NOT_FOUND,studentId), exception.getReason());
+    assertEquals(NOT_FOUND, exception.getStatusCode());
   }
 
   @Test
   void enrollToCourse_shouldThrow_ifCourseNotFound() {
+    // Arrange
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
     when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
-    var exception = assertThrows(ResponseStatusException.class, () ->
-        studentService.enrollToCourse(studentId, courseId));
-    assertTrue(exception.getMessage().contains(COURSE_NOT_FOUND));
+
+    // Act & Assert
+    var exception = assertThrows(ResponseStatusException.class,
+        () -> studentService.enrollToCourse(studentId, courseId));
+    assertEquals(String.format(COURSE_NOT_FOUND,courseId), exception.getReason());
+    assertEquals(NOT_FOUND, exception.getStatusCode());
   }
 
   @Test
   void createStudent_shouldSaveAndReturnDto() {
+    // Arrange
     var dto = CreateStudentDto.builder()
         .firstName("Giorgi")
         .lastName("Tughushi")
         .email("giorgi@gmail.com")
         .dateOfBirth(LocalDate.of(2001, 1, 1))
         .build();
+
     var savedStudent = Student.builder()
         .id(UUID.randomUUID())
         .firstName("Giorgi")
@@ -163,15 +196,21 @@ class StudentServiceImpTest {
         .email("giorgi@gmail.com")
         .dateOfBirth(LocalDate.of(2001, 1, 1))
         .build();
+
     var expectedDto = StudentDto.builder()
         .firstName("Giorgi")
         .lastName("Tughushi")
         .email("giorgi@gmail.com")
         .dateOfBirth(LocalDate.of(2001, 1, 1))
         .build();
+
     when(studentRepository.save(any(Student.class))).thenReturn(savedStudent);
     when(studentMapper.toDto(savedStudent)).thenReturn(expectedDto);
+
+    // Act
     var result = studentService.createStudent(dto);
+
+    // Assert
     verify(studentRepository).save(studentCaptor.capture());
     var capturedStudent = studentCaptor.getValue();
     assertEquals("Giorgi", capturedStudent.getFirstName());
@@ -183,48 +222,76 @@ class StudentServiceImpTest {
 
   @Test
   void getStudentById_shouldReturnMappedStudent() {
-    var dto = mock(StudentDto.class);
+    // Arrange
+    var dto = StudentDto.builder()
+        .firstName("Test")
+        .lastName("User")
+        .email("test@example.com")
+        .dateOfBirth(LocalDate.of(2000, 1, 1))
+        .build();
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
     when(studentMapper.toDto(student)).thenReturn(dto);
+
+    // Act
     var result = studentService.getStudentById(studentId);
+
+    // Assert
     assertEquals(dto, result);
   }
 
   @Test
   void getStudentById_shouldReturnNull_whenNotFound() {
+    // Arrange
     when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
+
+    // Act
     var result = studentService.getStudentById(studentId);
+
+    // Assert
     assertNull(result);
   }
 
   @Test
   void getAllStudents_shouldReturnMappedList() {
-    var list = List.of(student);
-    var mappedList = List.of(mock(StudentDto.class));
-    when(studentRepository.findAll()).thenReturn(list);
-    when(studentMapper.toDto(any())).thenReturn(mappedList.get(0));
+    // Arrange
+    var mapped = StudentDto.builder().firstName("Mapped").build();
+    when(studentRepository.findAll()).thenReturn(List.of(student));
+    when(studentMapper.toDto(any())).thenReturn(mapped);
+
+    // Act
     var result = studentService.getAllStudents();
-    assertEquals(mappedList, result);
+
+    // Assert
+    assertEquals(List.of(mapped), result);
   }
 
   @Test
   void deleteById_shouldDeleteStudent() {
+    // Arrange
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
+
+    // Act
     studentService.deleteById(studentId);
+
+    // Assert
     verify(studentRepository).delete(student);
   }
 
   @Test
   void deleteById_shouldThrow_ifNotFound() {
+    // Arrange
     when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
-    var exception = assertThrows(ResponseStatusException.class, () ->
-        studentService.deleteById(studentId));
-    assertTrue(exception.getMessage().contains(STUDENT_NOT_FOUND));
+
+    // Act & Assert
+    var exception = assertThrows(ResponseStatusException.class,
+        () -> studentService.deleteById(studentId));
+    assertEquals(String.format(STUDENT_NOT_FOUND,studentId), exception.getReason());
+    assertEquals(NOT_FOUND, exception.getStatusCode());
   }
 
   @Test
   void updateStudent_shouldUpdateAndReturnDto() {
-    var studentId = UUID.randomUUID();
+    // Arrange
     var existingStudent = Student.builder()
         .id(studentId)
         .firstName("Old")
@@ -232,6 +299,7 @@ class StudentServiceImpTest {
         .email("old@email.com")
         .dateOfBirth(LocalDate.of(1995, 1, 1))
         .build();
+
     var updateDto = UpdateStudentDto.builder()
         .id(studentId)
         .firstName("New")
@@ -239,6 +307,7 @@ class StudentServiceImpTest {
         .email("new@email.com")
         .dateOfBirth(LocalDate.of(2000, 5, 5))
         .build();
+
     var updatedStudent = Student.builder()
         .id(studentId)
         .firstName("New")
@@ -246,16 +315,22 @@ class StudentServiceImpTest {
         .email("new@email.com")
         .dateOfBirth(LocalDate.of(2000, 5, 5))
         .build();
+
     var expectedDto = StudentDto.builder()
         .firstName("New")
         .lastName("User")
         .email("new@email.com")
         .dateOfBirth(LocalDate.of(2000, 5, 5))
         .build();
+
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(existingStudent));
     when(studentRepository.save(any(Student.class))).thenReturn(updatedStudent);
     when(studentMapper.toDto(updatedStudent)).thenReturn(expectedDto);
+
+    // Act
     var result = studentService.updateStudent(updateDto);
+
+    // Assert
     verify(studentRepository).save(studentCaptor.capture());
     var captured = studentCaptor.getValue();
     assertEquals("New", captured.getFirstName());
@@ -267,9 +342,15 @@ class StudentServiceImpTest {
 
   @Test
   void updateStudent_shouldThrow_ifNotFound() {
+    // Arrange
     when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
-    var exception = assertThrows(ResponseStatusException.class, () ->
-        studentService.updateStudent(updateStudentDto));
-    assertTrue(exception.getMessage().contains(STUDENT_NOT_FOUND));
+
+    // Act & Assert
+    var exception = assertThrows(ResponseStatusException.class,
+        () -> studentService.updateStudent(updateStudentDto));
+    assertEquals(String.format(STUDENT_NOT_FOUND,studentId), exception.getReason());
+    assertEquals(NOT_FOUND, exception.getStatusCode());
+    verify(studentRepository, never()).save(any());
   }
+
 }

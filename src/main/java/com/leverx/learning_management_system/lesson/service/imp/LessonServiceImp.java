@@ -6,7 +6,6 @@ import static com.leverx.learning_management_system.ConstMessages.LESSON_NOT_FOU
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import com.leverx.learning_management_system.mapper.LessonMapper;
 import com.leverx.learning_management_system.course.CourseRepository;
 import com.leverx.learning_management_system.lesson.Lesson;
 import com.leverx.learning_management_system.lesson.LessonRepository;
@@ -14,6 +13,7 @@ import com.leverx.learning_management_system.lesson.dto.CreateLessonDto;
 import com.leverx.learning_management_system.lesson.dto.LessonDto;
 import com.leverx.learning_management_system.lesson.dto.UpdateLessonDto;
 import com.leverx.learning_management_system.lesson.service.LessonService;
+import com.leverx.learning_management_system.mapper.LessonMapper;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class LessonServiceImp implements LessonService {
         .title(lessonDto.getTitle())
         .duration(lessonDto.getDuration())
         .build();
-    var savedLesson=lessonRepository.save(newLesson);
+    var savedLesson =lessonRepository.save(newLesson);
     return lessonMapper.toDto(savedLesson);
   }
 
@@ -61,7 +61,7 @@ public class LessonServiceImp implements LessonService {
   public void deleteById(UUID id) {
     var lesson = lessonRepository.findById(id)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, String.format("%s%s", LESSON_NOT_FOUND, id)));
+            new ResponseStatusException(NOT_FOUND, String.format(LESSON_NOT_FOUND, id)));
     lessonRepository.delete(lesson);
   }
 
@@ -70,7 +70,7 @@ public class LessonServiceImp implements LessonService {
   public LessonDto updateLessons(UpdateLessonDto lessonDto) {
     var currentLesson = lessonRepository.findById(lessonDto.getId())
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, String.format("%s%s", LESSON_NOT_FOUND, lessonDto.getId())));
+            new ResponseStatusException(NOT_FOUND, String.format(LESSON_NOT_FOUND, lessonDto.getId())));
     if (!lessonDto.getTitle().equals(currentLesson.getTitle())) {
       currentLesson.setTitle(lessonDto.getTitle());
     }
@@ -86,10 +86,10 @@ public class LessonServiceImp implements LessonService {
   public void addToCourse(UUID courseId, UUID lessonId) {
     var currentLesson = lessonRepository.findById(lessonId)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, String.format("%s%s", LESSON_NOT_FOUND, lessonId)));
+            new ResponseStatusException(NOT_FOUND, String.format(LESSON_NOT_FOUND, lessonId)));
     var currentCourse = courseRepository.findById(courseId)
         .orElseThrow(() ->
-        new ResponseStatusException(NOT_FOUND, String.format("%s%s", COURSE_NOT_FOUND, courseId)));
+        new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, courseId)));
     var alreadyAdded = currentCourse.getLessons()
         .stream()
         .anyMatch(lesson -> lesson.getId().equals(lessonId));

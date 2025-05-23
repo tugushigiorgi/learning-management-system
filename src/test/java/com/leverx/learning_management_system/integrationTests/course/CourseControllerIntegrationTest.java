@@ -20,14 +20,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 public class CourseControllerIntegrationTest {
 
+  @Autowired
   private MockMvc mockMvc;
+  @Autowired
   private CourseRepository courseRepository;
 
   @Test
+  @Transactional
   void getAllCourses_shouldReturnAllCourses() throws Exception {
+    // Arrange: create and persist two Course entities with different properties
     var course1 = Course.builder()
         .title("Java Basics")
         .description("Intro to Java")
@@ -38,6 +41,7 @@ public class CourseControllerIntegrationTest {
             .isPublic(true)
             .build())
         .build();
+
     var course2 = Course.builder()
         .title("Spring Boot")
         .description("Spring Boot Deep Dive")
@@ -48,7 +52,10 @@ public class CourseControllerIntegrationTest {
             .isPublic(false)
             .build())
         .build();
+
     courseRepository.saveAll(List.of(course1, course2));
+
+    // Act & Assert: perform GET request and verify response contains both courses
     mockMvc.perform(get("/api/courses")
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
