@@ -18,10 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @Transactional
 public class LessonControllerIntegrationTest {
-  @Autowired
-  private MockMvc mockMvc;
 
-  @Autowired
+  private MockMvc mockMvc;
   private LessonRepository lessonRepository;
 
   @Test

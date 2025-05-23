@@ -23,13 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class StudentControllerIntegrationTest {
 
-  @Autowired
+
   private MockMvc mockMvc;
-
-  @Autowired
   private ObjectMapper objectMapper;
-
-  @Autowired
   private StudentRepository studentRepository;
 
   @Test
