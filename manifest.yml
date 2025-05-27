@@ -15,3 +15,4 @@ applications:
     services:
       - lms_hdi
       - lms_logging
+      - lms_destination_service
