@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
     <groupId>com.leverx</groupId>
-    <artifactId>learning-management-system</artifactId>
+    <artifactId>learningmanagementsystem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Learning management system</name>
     <description>learning management system application</description>
