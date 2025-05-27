@@ -23,6 +23,7 @@
         <mockito.version>5.17.0</mockito.version>
         <liquibase.version>4.20.0</liquibase.version>
         <sap.jdb.version>2.24.7</sap.jdb.version>
+        <sap.loggind.version>3.8.4</sap.loggind.version>
     </properties>
     <dependencies>
         <dependency>
@@ -92,6 +93,11 @@
             <groupId>com.sap.cloud.db.jdbc</groupId>
             <artifactId>ngdbc</artifactId>
             <version>${sap.jdb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sap.hcp.cf.logging</groupId>
+            <artifactId>cf-java-logging-support-logback</artifactId>
+            <version>${sap.loggind.version}</version>
         </dependency>
     </dependencies>
     <build>

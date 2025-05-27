@@ -14,3 +14,4 @@ applications:
       JBP_CONFIG_SAP_MACHINE_JDK : "{ version: 21.+ }"
     services:
       - lms_hdi
+      - lms_logging

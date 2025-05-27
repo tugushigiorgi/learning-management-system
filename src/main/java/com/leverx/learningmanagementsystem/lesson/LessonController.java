@@ -14,19 +14,14 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/lessons")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Lessons", description = "Endpoints for managing lessons")
 public class LessonController {
 
@@ -36,20 +31,23 @@ public class LessonController {
   @GetMapping("/{id}")
   public ResponseEntity<LessonDto> getLesson(
       @PathVariable @Parameter(description = "ID of the lesson to retrieve") UUID id) {
+    log.info("Fetching lesson with ID: {}", id);
     return handleItemOrNotFound(lessonService.getLessonById(id));
   }
 
   @Operation(summary = "Get all lessons")
   @GetMapping
   public ResponseEntity<List<LessonDto>> getAllLessons() {
+    log.info("Fetching all lessons");
     return handleList(lessonService.getAllLessons());
   }
 
   @Operation(summary = "Create a new lesson")
   @PostMapping
   public ResponseEntity<LessonDto> createLesson(
-      @RequestBody @Valid  @Parameter(description = "Lesson creation data") CreateLessonDto lessonDto) {
-    var newLesson=lessonService.createLesson(lessonDto);
+      @RequestBody @Valid @Parameter(description = "Lesson creation data") CreateLessonDto lessonDto) {
+    log.info("Creating new lesson: {}", lessonDto);
+    var newLesson = lessonService.createLesson(lessonDto);
     return ResponseEntity.ok(newLesson);
   }
 
@@ -58,6 +56,7 @@ public class LessonController {
   public ResponseEntity<Void> addToCourse(
       @PathVariable @Parameter(description = "Lesson ID to add") UUID lessonId,
       @PathVariable @Parameter(description = "Course ID to add lesson to") UUID courseId) {
+    log.info("Adding lesson ID {} to course ID {}", lessonId, courseId);
     lessonService.addToCourse(courseId, lessonId);
     return ResponseEntity.ok().build();
   }
@@ -66,6 +65,7 @@ public class LessonController {
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteLesson(
       @PathVariable @Parameter(description = "ID of the lesson to delete") UUID id) {
+    log.warn("Deleting lesson with ID: {}", id);
     lessonService.deleteById(id);
     return ResponseEntity.noContent().build();
   }
@@ -74,7 +74,8 @@ public class LessonController {
   @PutMapping
   public ResponseEntity<LessonDto> updateLesson(
       @RequestBody @Valid @Parameter(description = "Lesson update data") UpdateLessonDto lessonDtoDto) {
-    var updatedLesson=lessonService.updateLessons(lessonDtoDto);
+    log.info("Updating lesson: {}", lessonDtoDto);
+    var updatedLesson = lessonService.updateLessons(lessonDtoDto);
     return ResponseEntity.ok(updatedLesson);
   }
 }

@@ -15,19 +15,14 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/courses")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Courses", description = "Endpoints for managing courses")
 public class CourseController {
 
@@ -36,24 +31,28 @@ public class CourseController {
   @Operation(summary = "Get a course by ID")
   @GetMapping("/{id}")
   public ResponseEntity<CourseDto> getCourse(@PathVariable @Parameter(description = "ID of the course to retrieve") UUID id) {
+    log.info("Fetching course with ID: {}", id); // ✅ Example usage
     return handleItemOrNotFound(courseService.getCourseById(id));
   }
 
   @Operation(summary = "Get the most popular courses by coins paid")
   @GetMapping("/most-popular")
   public ResponseEntity<List<CourseDto>> getMostPopularCourses() {
+    log.info("Fetching most popular courses");
     return handleList(courseService.getMostPopularCourses());
   }
 
   @Operation(summary = "Get all courses")
   @GetMapping
   public ResponseEntity<List<CourseDto>> getAllCourses() {
+    log.info("Fetching all courses");
     return handleList(courseService.getAllCourses());
   }
 
   @Operation(summary = "Create a new course")
   @PostMapping
   public ResponseEntity<CourseDto> createCourse(@RequestBody @Valid @Parameter(description = "Course creation data") CreateCourseDto courseDto) {
+    log.info("Creating new course: {}", courseDto);
     var newCourse = courseService.createCourse(courseDto);
     return ResponseEntity.ok(newCourse);
   }
@@ -61,6 +60,7 @@ public class CourseController {
   @Operation(summary = "Sends  mail to enrolled students")
   @PostMapping("/{courseId}/send-mail-to-students")
   public ResponseEntity<String> sendMailToEnrolledStudents(@PathVariable @Parameter(description = "Course Id") UUID courseId) {
+    log.info("Sending mail to enrolled students for course ID: {}", courseId);
     courseService.sendMailToEnrolledStudents(courseId);
     return ResponseEntity.ok(EMAIL_SENT);
   }
@@ -68,6 +68,7 @@ public class CourseController {
   @Operation(summary = "Delete a course by ID")
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteCourse(@PathVariable @Parameter(description = "ID of the course to delete") UUID id) {
+    log.warn("Deleting course with ID: {}", id);
     courseService.deleteById(id);
     return ResponseEntity.noContent().build();
   }
@@ -75,7 +76,8 @@ public class CourseController {
   @Operation(summary = "Update an existing course")
   @PutMapping
   public ResponseEntity<CourseDto> updateCourse(@RequestBody @Valid @Parameter(description = "Course update data") UpdateCourseDto courseDtoDto) {
-    var updatedCourse=courseService.updateCourse(courseDtoDto);
+    log.info("Updating course: {}", courseDtoDto);
+    var updatedCourse = courseService.updateCourse(courseDtoDto);
     return ResponseEntity.ok(updatedCourse);
   }
 }
