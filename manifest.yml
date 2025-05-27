@@ -1,0 +1,14 @@
+---
+applications:
+  - name: learningmanagementsystem
+    random-route: true
+    path: ./target/learningmanagementsystem-0.0.1-SNAPSHOT.jar
+    memory: 1024M
+    buildpacks:
+      - sap_java_buildpack_jakarta
+    env:
+      MAILTRAP_TOKEN: "fd09b808891305ea4105d0ed11867c23"
+      SPRING_PROFILES_ACTIVE: prod
+      TARGET_RUNTIME: tomcat
+      JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
+      JBP_CONFIG_SAP_MACHINE_JDK : "{ version: 21.+ }"

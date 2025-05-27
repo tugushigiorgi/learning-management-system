@@ -1,4 +1,3 @@
-
 mailtrap:
   token: ${MailToken}
 
