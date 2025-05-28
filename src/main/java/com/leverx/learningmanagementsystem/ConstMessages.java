@@ -14,4 +14,5 @@ public final class ConstMessages {
   public static final String COURSE_NEWS = "We have news about this course!";
   public static final String COURSE_NEWS_SUBJECT = "Course News!";
   public static final String COURSE_STARTING_TOMORROW = "Courses starting tomorrow: %d";
+  public static final String EVALUATE_URI_FORMAT = "%s/api/v1/evaluate/%s";
 }

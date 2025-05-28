@@ -24,6 +24,7 @@
         <liquibase.version>4.20.0</liquibase.version>
         <sap.jdb.version>2.24.7</sap.jdb.version>
         <sap.loggind.version>3.8.4</sap.loggind.version>
+        <http.client.version>4.5.14</http.client.version>
     </properties>
     <dependencies>
         <dependency>
@@ -98,6 +99,11 @@
             <groupId>com.sap.hcp.cf.logging</groupId>
             <artifactId>cf-java-logging-support-logback</artifactId>
             <version>${sap.loggind.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${http.client.version}</version>
         </dependency>
     </dependencies>
     <build>

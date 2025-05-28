@@ -16,3 +16,4 @@ applications:
       - lms_hdi
       - lms_logging
       - lms_destination_service
+      - lms_flag_service

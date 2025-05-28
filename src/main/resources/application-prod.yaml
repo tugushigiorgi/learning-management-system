@@ -24,5 +24,10 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
     contexts: dev
 
+sap:
+  ffs:
+    uri: ${vcap.services.lms_flag_service.credentials.uri}
+    username: ${vcap.services.lms_flag_service.credentials.username}
+    password: ${vcap.services.lms_flag_service.credentials.password}
 
 
