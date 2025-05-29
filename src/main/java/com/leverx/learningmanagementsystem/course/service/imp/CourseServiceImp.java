@@ -17,7 +17,7 @@ import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
 import com.leverx.learningmanagementsystem.course.service.CourseService;
 import com.leverx.learningmanagementsystem.courseSettings.CourseSettings;
-import com.leverx.learningmanagementsystem.mailtrap.imp.MailTrapImp;
+import com.leverx.learningmanagementsystem.mail.imp.MailTrapServiceImp;
 import com.leverx.learningmanagementsystem.mapper.CourseMapper;
 import io.mailtrap.model.request.emails.Address;
 import java.time.LocalDateTime;
@@ -33,7 +33,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class CourseServiceImp implements CourseService {
   private final CourseRepository courseRepository;
   private final CourseMapper courseMapper;
-  private final MailTrapImp mailTrapImp;
+  private final MailTrapServiceImp mailTrapImp;
 
   @Override
   @Transactional(readOnly = true)

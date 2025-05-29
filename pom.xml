@@ -25,6 +25,7 @@
         <sap.jdb.version>2.24.7</sap.jdb.version>
         <sap.loggind.version>3.8.4</sap.loggind.version>
         <http.client.version>4.5.14</http.client.version>
+        <mail.version>3.4.3</mail.version>
     </properties>
     <dependencies>
         <dependency>
@@ -104,6 +105,11 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${http.client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>${mail.version}</version>
         </dependency>
     </dependencies>
     <build>

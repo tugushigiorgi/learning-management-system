@@ -1,6 +1,6 @@
-package com.leverx.learningmanagementsystem.mailtrap.imp;
+package com.leverx.learningmanagementsystem.mail.imp;
 
-import com.leverx.learningmanagementsystem.mailtrap.MailTrapService;
+import com.leverx.learningmanagementsystem.mail.MailService;
 import io.mailtrap.client.MailtrapClient;
 import io.mailtrap.model.request.emails.Address;
 import io.mailtrap.model.request.emails.MailtrapMail;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class MailTrapImp implements MailTrapService {
+public class MailTrapServiceImp implements MailService {
 
   private final MailtrapClient mailtrapClient;
 

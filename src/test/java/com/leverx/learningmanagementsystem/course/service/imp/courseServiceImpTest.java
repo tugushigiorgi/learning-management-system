@@ -18,7 +18,7 @@ import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
 import com.leverx.learningmanagementsystem.courseSettings.CourseSettings;
-import com.leverx.learningmanagementsystem.mailtrap.imp.MailTrapImp;
+import com.leverx.learningmanagementsystem.mail.imp.MailTrapServiceImp;
 import com.leverx.learningmanagementsystem.mapper.CourseMapper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -45,7 +45,7 @@ class CourseServiceImpTest {
   private CourseMapper courseMapper;
 
   @Mock
-  private MailTrapImp mailTrapImp;
+  private MailTrapServiceImp mailTrapImp;
 
   @InjectMocks
   private CourseServiceImp courseService;

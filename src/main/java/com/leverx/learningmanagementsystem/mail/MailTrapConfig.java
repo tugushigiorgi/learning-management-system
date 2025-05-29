@@ -1,4 +1,4 @@
-package com.leverx.learningmanagementsystem.mailtrap;
+package com.leverx.learningmanagementsystem.mail;
 
 import io.mailtrap.client.MailtrapClient;
 import io.mailtrap.factory.MailtrapClientFactory;
