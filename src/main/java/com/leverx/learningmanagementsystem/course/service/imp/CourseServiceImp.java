@@ -23,29 +23,20 @@ import io.mailtrap.model.request.emails.Address;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
+@AllArgsConstructor
 public class CourseServiceImp implements CourseService {
 
   private final CourseRepository courseRepository;
   private final CourseMapper courseMapper;
   private final MailTrapServiceImp mailTrapImp;
 
-  public CourseServiceImp(
-      CourseRepository courseRepository,
-      CourseMapper courseMapper,
-      @Qualifier("mailTrapServiceImp") MailTrapServiceImp mailTrapImp
-  ) {
-    this.courseRepository = courseRepository;
-    this.courseMapper = courseMapper;
-    this.mailTrapImp = mailTrapImp;
-  }
 
   @Override
   @Transactional(readOnly = true)

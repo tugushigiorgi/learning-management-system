@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 
-public class JavaMailSenderConfig {
+public class JavaMailSenderUtil {
 
   public static JavaMailSender javaMailSender(SmtpObject smtp) {
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

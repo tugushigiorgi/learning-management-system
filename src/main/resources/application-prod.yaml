@@ -31,3 +31,9 @@ sap:
     password: ${vcap.services.lms_flag_service.credentials.password}
 
 
+smtp-ups:
+  host: ${vcap.services.smtp-credentials.credentials.host}
+  port: ${vcap.services.smtp-credentials.credentials.port}
+  username: ${vcap.services.smtp-credentials.credentials.username}
+  password: ${vcap.services.smtp-credentials.credentials.password}
+
