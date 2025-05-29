@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile("prod")
 public class MainController {
   @GetMapping("/")
-  public String hello() throws IOException {
-
-      return "Hello World!";
+  public
+  String hello() throws IOException {
+    return "Hello World";
   }
 }

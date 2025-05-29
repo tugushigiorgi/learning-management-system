@@ -24,16 +24,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-@RequiredArgsConstructor
+
 @Service
 public class CourseServiceImp implements CourseService {
+
   private final CourseRepository courseRepository;
   private final CourseMapper courseMapper;
   private final MailTrapServiceImp mailTrapImp;
+
+  public CourseServiceImp(
+      CourseRepository courseRepository,
+      CourseMapper courseMapper,
+      @Qualifier("mailTrapServiceImp") MailTrapServiceImp mailTrapImp
+  ) {
+    this.courseRepository = courseRepository;
+    this.courseMapper = courseMapper;
+    this.mailTrapImp = mailTrapImp;
+  }
 
   @Override
   @Transactional(readOnly = true)
@@ -66,7 +78,7 @@ public class CourseServiceImp implements CourseService {
         .description(courseDto.getDescription())
         .settings(courseSettings)
         .build();
-    var savedCourse=courseRepository.save(newCourse);
+    var savedCourse = courseRepository.save(newCourse);
     return courseMapper.toDto(savedCourse);
   }
 
@@ -119,7 +131,7 @@ public class CourseServiceImp implements CourseService {
     if (!courseDto.getIsPublic().equals(courseSettings.getIsPublic())) {
       courseSettings.setIsPublic(courseDto.getIsPublic());
     }
-    var updatedCourse=courseRepository.save(currentCourse);
+    var updatedCourse = courseRepository.save(currentCourse);
     return courseMapper.toDto(updatedCourse);
   }
 
@@ -141,7 +153,7 @@ public class CourseServiceImp implements CourseService {
     var studentsEmails = course.getStudents()
         .stream()
         .map(student -> new Address(student.getEmail()))
-        .toList();
+        .toArray(Address[]::new);
     mailTrapImp.sendEmail(studentsEmails, FROM_MAIL, COURSE_NEWS_SUBJECT, COURSE_NEWS);
   }
 }

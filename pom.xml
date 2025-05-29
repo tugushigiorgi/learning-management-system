@@ -25,7 +25,7 @@
         <sap.jdb.version>2.24.7</sap.jdb.version>
         <sap.loggind.version>3.8.4</sap.loggind.version>
         <http.client.version>4.5.14</http.client.version>
-        <mail.version>3.4.3</mail.version>
+        <sapdest.version>5.18.0</sapdest.version>
     </properties>
     <dependencies>
         <dependency>
@@ -109,8 +109,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
-            <version>${mail.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.sap.cloud.sdk.cloudplatform</groupId>
+            <artifactId>cloudplatform-connectivity-scp-cf</artifactId>
+            <version>${sapdest.version}</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
