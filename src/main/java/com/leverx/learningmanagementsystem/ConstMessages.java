@@ -27,4 +27,6 @@ public final class ConstMessages {
   public static final String MISSING_PORT="Missing port";
   public static final String MISSING_USER="Missing user";
   public static final String MISSING_PASSWORD="Missing password";
+  public static final String FLAG_INPUT_ERROR="flag input error";
+  public static final String FLAG_IS_INACTIVE="flag is inactive";
 }

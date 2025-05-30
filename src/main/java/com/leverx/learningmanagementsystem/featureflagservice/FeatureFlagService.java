@@ -1,4 +1,4 @@
-package com.leverx.learningmanagementsystem.featureflagservice.service;
+package com.leverx.learningmanagementsystem.featureflagservice;
 
 import java.io.IOException;
 

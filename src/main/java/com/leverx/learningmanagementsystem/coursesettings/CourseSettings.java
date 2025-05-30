@@ -1,4 +1,4 @@
-package com.leverx.learningmanagementsystem.courseSettings;
+package com.leverx.learningmanagementsystem.coursesettings;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

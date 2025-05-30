@@ -1,7 +1,7 @@
-package com.leverx.learningmanagementsystem.mail;
+package com.leverx.learningmanagementsystem.mail.util;
 
+import com.leverx.learningmanagementsystem.mail.SmtpObject;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.InternetAddress;
 import java.util.Properties;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -10,7 +10,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 public class JavaMailSenderUtil {
 
-  public static JavaMailSender javaMailSender(SmtpObject smtp) {
+  public static JavaMailSender getJavaMailSender(SmtpObject smtp) {
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
     mailSender.setHost(smtp.getHost());
     mailSender.setPort(smtp.getPort());
@@ -22,7 +22,7 @@ public class JavaMailSenderUtil {
     return mailSender;
   }
 
-  public static void sendSmtpMail(JavaMailSender mailSender, InternetAddress[] addresses, String from, String subject, String body) throws MessagingException {
+  public static void sendSmtpMail(JavaMailSender mailSender, String[] addresses, String from, String subject, String body) throws MessagingException {
     var message = mailSender.createMimeMessage();
     var helper = new MimeMessageHelper(message, true);
     helper.setTo(addresses);

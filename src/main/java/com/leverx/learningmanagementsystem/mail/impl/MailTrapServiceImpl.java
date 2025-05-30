@@ -1,24 +1,26 @@
-package com.leverx.learningmanagementsystem.mail.imp;
+package com.leverx.learningmanagementsystem.mail.impl;
 
 import com.leverx.learningmanagementsystem.mail.MailService;
 import io.mailtrap.client.MailtrapClient;
 import io.mailtrap.model.request.emails.Address;
 import io.mailtrap.model.request.emails.MailtrapMail;
-import java.util.List;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class MailTrapServiceImp implements MailService<Address> {
+public class MailTrapServiceImpl implements MailService {
 
   private final MailtrapClient mailtrapClient;
 
   @Override
-  public void sendEmail(Address[] addresses, String from, String subject, String body) {
+  public void sendEmail(String[] addresses, String from, String subject, String body) {
     var mail = MailtrapMail.builder()
         .from(new Address(from))
-        .to(List.of(addresses))
+        .to(Arrays.stream(addresses)
+            .map(Address::new)
+            .toList())
         .subject(subject)
         .text(body)
         .build();

@@ -1,7 +1,7 @@
 package com.leverx.learningmanagementsystem.lesson;
 
-import static com.leverx.learningmanagementsystem.util.ControllerResponse.handleItemOrNotFound;
-import static com.leverx.learningmanagementsystem.util.ControllerResponse.handleList;
+import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.handleItemOrNotFound;
+import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.handleList;
 
 import com.leverx.learningmanagementsystem.lesson.dto.CreateLessonDto;
 import com.leverx.learningmanagementsystem.lesson.dto.LessonDto;

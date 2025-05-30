@@ -1,4 +1,4 @@
-package com.leverx.learningmanagementsystem.course.service.imp;
+package com.leverx.learningmanagementsystem.course.service.impl;
 
 import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_NOT_FOUND;
 import static com.leverx.learningmanagementsystem.ConstMessages.STUDENTS_NOT_FOUND;
@@ -17,8 +17,8 @@ import com.leverx.learningmanagementsystem.course.dto.CourseDto;
 import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
-import com.leverx.learningmanagementsystem.courseSettings.CourseSettings;
-import com.leverx.learningmanagementsystem.mail.imp.MailTrapServiceImp;
+import com.leverx.learningmanagementsystem.coursesettings.CourseSettings;
+import com.leverx.learningmanagementsystem.mail.impl.MailTrapServiceImpl;
 import com.leverx.learningmanagementsystem.mapper.CourseMapper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -36,7 +36,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
-class CourseServiceImpTest {
+class CourseServiceImplTest {
 
   @Mock
   private CourseRepository courseRepository;
@@ -45,10 +45,10 @@ class CourseServiceImpTest {
   private CourseMapper courseMapper;
 
   @Mock
-  private MailTrapServiceImp mailTrapImp;
+  private MailTrapServiceImpl mailTrapImp;
 
   @InjectMocks
-  private CourseServiceImp courseService;
+  private CourseServiceImpl courseService;
 
   private UUID courseId;
   private Course course;

@@ -1,4 +1,4 @@
-package com.leverx.learningmanagementsystem.student.service.imp;
+package com.leverx.learningmanagementsystem.student.service.impl;
 
 import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_NOT_FOUND;
 import static com.leverx.learningmanagementsystem.ConstMessages.NOT_ENOUGH_COINS;
@@ -24,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
-public class StudentServiceImp implements StudentService {
+public class StudentServiceImpl implements StudentService {
 
   private final StudentRepository studentRepository;
   private final StudentMapper studentMapper;

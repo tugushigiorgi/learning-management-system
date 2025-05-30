@@ -1,8 +1,8 @@
 package com.leverx.learningmanagementsystem.student;
 
 import static com.leverx.learningmanagementsystem.ConstMessages.STUDENT_ENROLLED_SUCCESSFULLY;
-import static com.leverx.learningmanagementsystem.util.ControllerResponse.handleItemOrNotFound;
-import static com.leverx.learningmanagementsystem.util.ControllerResponse.handleList;
+import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.handleItemOrNotFound;
+import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.handleList;
 
 import com.leverx.learningmanagementsystem.student.dto.CreateStudentDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;

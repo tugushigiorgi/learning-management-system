@@ -1,11 +1,13 @@
-package com.leverx.learningmanagementsystem.mail;
+package com.leverx.learningmanagementsystem.mail.impl;
 
 import static com.leverx.learningmanagementsystem.ConstMessages.FLAG_CHECK_FAILED;
 import static com.leverx.learningmanagementsystem.ConstMessages.SMTP_FLAG;
 
-import com.leverx.learningmanagementsystem.featureflagservice.service.FeatureFlagService;
+import com.leverx.learningmanagementsystem.featureflagservice.FeatureFlagService;
+import com.leverx.learningmanagementsystem.mail.MailService;
+import com.leverx.learningmanagementsystem.mail.SmtpCredentialProvider;
+import com.leverx.learningmanagementsystem.mail.util.JavaMailSenderUtil;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.InternetAddress;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,23 +20,23 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Primary
 @Profile("prod")
-public class DynamicMailService implements MailService<InternetAddress> {
+public class DynamicMailServiceImpl implements MailService {
 
   private final FeatureFlagService featureFlagService;
-  private final SmtpCredentialProvider upsCredentialProvider;
+  private final SmtpCredentialProvider userProvidedCredentialProvider;
   private final SmtpCredentialProvider destinationCredentialProvider;
 
   @Override
-  public void sendEmail(InternetAddress[] addresses, String from, String subject, String body) throws MessagingException {
+  public void sendEmail(String[] addresses, String from, String subject, String body) throws MessagingException {
     boolean useDestination = false;
     try {
       useDestination = featureFlagService.isFeatureEnabled(SMTP_FLAG);
     } catch (IOException e) {
       log.warn(FLAG_CHECK_FAILED, e);
     }
-    var provider = useDestination ? destinationCredentialProvider : upsCredentialProvider;
+    var provider = useDestination ? destinationCredentialProvider : userProvidedCredentialProvider;
     var smtp = provider.getCredentials();
-    var mailSender = JavaMailSenderUtil.javaMailSender(smtp);
+    var mailSender = JavaMailSenderUtil.getJavaMailSender(smtp);
     JavaMailSenderUtil.sendSmtpMail(mailSender, addresses, from, subject, body);
   }
 }

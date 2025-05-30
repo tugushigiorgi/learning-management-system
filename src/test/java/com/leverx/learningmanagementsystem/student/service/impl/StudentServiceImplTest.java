@@ -1,4 +1,4 @@
-package com.leverx.learningmanagementsystem.student.service.imp;
+package com.leverx.learningmanagementsystem.student.service.impl;
 
 import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_NOT_FOUND;
 import static com.leverx.learningmanagementsystem.ConstMessages.NOT_ENOUGH_COINS;
@@ -40,7 +40,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
-class StudentServiceImpTest {
+class StudentServiceImplTest {
 
   @Mock
   private StudentRepository studentRepository;
@@ -52,7 +52,7 @@ class StudentServiceImpTest {
   private CourseRepository courseRepository;
 
   @InjectMocks
-  private StudentServiceImp studentService;
+  private StudentServiceImpl studentService;
 
   @Captor
   private ArgumentCaptor<Student> studentCaptor;

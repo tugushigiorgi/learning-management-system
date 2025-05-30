@@ -1,4 +1,4 @@
-package com.leverx.learningmanagementsystem.lesson.service.imp;
+package com.leverx.learningmanagementsystem.lesson.service.impl;
 
 import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_NOT_FOUND;
 import static com.leverx.learningmanagementsystem.ConstMessages.LESSON_ALREADY_ADDED;
@@ -23,7 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
-public class LessonServiceImp implements LessonService {
+public class LessonServiceImpl implements LessonService {
   private final LessonRepository lessonRepository;
   private final LessonMapper lessonMapper;
   private final CourseRepository courseRepository;

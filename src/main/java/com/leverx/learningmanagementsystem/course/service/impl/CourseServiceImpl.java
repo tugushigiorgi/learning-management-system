@@ -1,4 +1,4 @@
-package com.leverx.learningmanagementsystem.course.service.imp;
+package com.leverx.learningmanagementsystem.course.service.impl;
 
 import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_NEWS;
 import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_NEWS_SUBJECT;
@@ -16,9 +16,10 @@ import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
 import com.leverx.learningmanagementsystem.course.service.CourseService;
-import com.leverx.learningmanagementsystem.courseSettings.CourseSettings;
-import com.leverx.learningmanagementsystem.mail.imp.MailTrapServiceImp;
+import com.leverx.learningmanagementsystem.coursesettings.CourseSettings;
+import com.leverx.learningmanagementsystem.mail.impl.MailTrapServiceImpl;
 import com.leverx.learningmanagementsystem.mapper.CourseMapper;
+import com.leverx.learningmanagementsystem.student.Student;
 import io.mailtrap.model.request.emails.Address;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,11 +32,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @AllArgsConstructor
-public class CourseServiceImp implements CourseService {
+public class CourseServiceImpl implements CourseService {
 
   private final CourseRepository courseRepository;
   private final CourseMapper courseMapper;
-  private final MailTrapServiceImp mailTrapImp;
+  private final MailTrapServiceImpl mailTrapImp;
 
 
   @Override
@@ -143,8 +144,8 @@ public class CourseServiceImp implements CourseService {
     }
     var studentsEmails = course.getStudents()
         .stream()
-        .map(student -> new Address(student.getEmail()))
-        .toArray(Address[]::new);
+        .map(Student::getEmail)
+        .toArray(String[]::new);
     mailTrapImp.sendEmail(studentsEmails, FROM_MAIL, COURSE_NEWS_SUBJECT, COURSE_NEWS);
   }
 }

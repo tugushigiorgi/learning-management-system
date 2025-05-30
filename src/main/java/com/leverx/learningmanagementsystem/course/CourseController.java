@@ -1,8 +1,8 @@
 package com.leverx.learningmanagementsystem.course;
 
 import static com.leverx.learningmanagementsystem.ConstMessages.EMAIL_SENT;
-import static com.leverx.learningmanagementsystem.util.ControllerResponse.handleItemOrNotFound;
-import static com.leverx.learningmanagementsystem.util.ControllerResponse.handleList;
+import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.handleItemOrNotFound;
+import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.handleList;
 
 import com.leverx.learningmanagementsystem.course.dto.CourseDto;
 import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
@@ -31,7 +31,7 @@ public class CourseController {
   @Operation(summary = "Get a course by ID")
   @GetMapping("/{id}")
   public ResponseEntity<CourseDto> getCourse(@PathVariable @Parameter(description = "ID of the course to retrieve") UUID id) {
-    log.info("Fetching course with ID: {}", id); // ✅ Example usage
+    log.info("Fetching course with ID: {}", id);
     return handleItemOrNotFound(courseService.getCourseById(id));
   }
 

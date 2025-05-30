@@ -1,7 +1,7 @@
 package com.leverx.learningmanagementsystem.course;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.leverx.learningmanagementsystem.courseSettings.CourseSettings;
+import com.leverx.learningmanagementsystem.coursesettings.CourseSettings;
 import com.leverx.learningmanagementsystem.lesson.Lesson;
 import com.leverx.learningmanagementsystem.student.Student;
 import jakarta.persistence.CascadeType;

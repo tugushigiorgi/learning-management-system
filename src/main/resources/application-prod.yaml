@@ -30,10 +30,12 @@ sap:
     username: ${vcap.services.lms_flag_service.credentials.username}
     password: ${vcap.services.lms_flag_service.credentials.password}
 
-
 smtp-ups:
   host: ${vcap.services.smtp-credentials.credentials.host}
   port: ${vcap.services.smtp-credentials.credentials.port}
   username: ${vcap.services.smtp-credentials.credentials.username}
   password: ${vcap.services.smtp-credentials.credentials.password}
 
+mailtrap:
+  token: ${vcap.services.smtp-ups.credentials.token}
+  id: ${vcap.services.smtp-ups.credentials.id}

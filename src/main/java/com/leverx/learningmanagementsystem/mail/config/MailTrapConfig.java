@@ -1,23 +1,24 @@
-package com.leverx.learningmanagementsystem.mail;
+package com.leverx.learningmanagementsystem.mail.config;
 
+import com.leverx.learningmanagementsystem.mail.properties.MailTrapProperties;
 import io.mailtrap.client.MailtrapClient;
 import io.mailtrap.factory.MailtrapClientFactory;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@AllArgsConstructor
 public class MailTrapConfig {
 
-  @Value("${mailtrap.token}")
-  private String token;
+  private MailTrapProperties properties;
 
   @Bean
   public MailtrapClient mailtrapClient() {
     var config = new io.mailtrap.config.MailtrapConfig.Builder()
         .sandbox(true)
-        .inboxId(3711273L)
-        .token(token)
+        .inboxId(properties.getId())
+        .token(properties.getToken())
         .build();
     return MailtrapClientFactory.createMailtrapClient(config);
   }
