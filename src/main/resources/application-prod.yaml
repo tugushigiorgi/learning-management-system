@@ -36,6 +36,5 @@ smtp-ups:
   username: ${vcap.services.smtp-credentials.credentials.username}
   password: ${vcap.services.smtp-credentials.credentials.password}
 
-mailtrap:
-  token: ${vcap.services.smtp-ups.credentials.token}
-  id: ${vcap.services.smtp-ups.credentials.id}
+
+
