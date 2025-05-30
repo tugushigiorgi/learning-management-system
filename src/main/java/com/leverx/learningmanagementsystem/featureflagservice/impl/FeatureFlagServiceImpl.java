@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +23,7 @@ import org.springframework.stereotype.Service;
 public class FeatureFlagServiceImpl implements FeatureFlagService {
 
   private final FeatureFlagProperties featureFlagProperties;
-  private final HttpClient httpClient;
-
+  private final CloseableHttpClient httpClient;
   private static final Map<Integer, Boolean> STATUS_FLAG_MAP = Map.of(
       200, true,
       204, false,
@@ -38,9 +37,11 @@ public class FeatureFlagServiceImpl implements FeatureFlagService {
     var credentials = encodeBase64String((featureFlagProperties.getUsername() + ":" + featureFlagProperties.getPassword()).getBytes());
     var request = new HttpGet(uri);
     request.addHeader("Authorization", "Basic " + credentials);
-    var status = httpClient.execute(request).getStatusLine().getStatusCode();
-    logStatus(feature, status);
-    return STATUS_FLAG_MAP.getOrDefault(status, false);
+    try (var response = httpClient.execute(request)) {
+      var status = response.getStatusLine().getStatusCode();
+      logStatus(feature, status);
+      return STATUS_FLAG_MAP.getOrDefault(status, false);
+    }
   }
 
   private void logStatus(String feature, int status) {

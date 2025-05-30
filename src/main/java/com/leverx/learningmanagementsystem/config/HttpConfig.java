@@ -1,6 +1,7 @@
 package com.leverx.learningmanagementsystem.config;
 
-import org.apache.http.client.HttpClient;
+
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class HttpConfig {
 
   @Bean
-  public HttpClient httpClient() {
+  public CloseableHttpClient httpClient() {
     return HttpClientBuilder.create().build();
   }
 }

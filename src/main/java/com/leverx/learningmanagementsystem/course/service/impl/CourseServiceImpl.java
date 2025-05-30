@@ -38,7 +38,6 @@ public class CourseServiceImpl implements CourseService {
   private final CourseMapper courseMapper;
   private final MailTrapServiceImpl mailTrapImp;
 
-
   @Override
   @Transactional(readOnly = true)
   public void printAllCoursesByStartDateBetween(LocalDateTime start, LocalDateTime end) {
