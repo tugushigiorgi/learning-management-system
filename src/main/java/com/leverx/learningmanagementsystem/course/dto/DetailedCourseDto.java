@@ -1,6 +1,6 @@
 package com.leverx.learningmanagementsystem.course.dto;
 
-import com.leverx.learningmanagementsystem.courseSettings.CourseSettings;
+import com.leverx.learningmanagementsystem.coursesettings.CourseSettings;
 import com.leverx.learningmanagementsystem.lesson.dto.LessonDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;
 import java.math.BigDecimal;

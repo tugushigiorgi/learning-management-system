@@ -1,4 +1,4 @@
-package com.leverx.learningmanagementsystem.lesson.service.imp;
+package com.leverx.learningmanagementsystem.lesson.service.impl;
 
 import static com.leverx.learningmanagementsystem.ConstMessages.LESSON_ALREADY_ADDED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
-class LessonServiceImpTest {
+class LessonServiceImplTest {
 
   @Mock
   private LessonRepository lessonRepository;
@@ -46,7 +46,7 @@ class LessonServiceImpTest {
   private CourseRepository courseRepository;
 
   @InjectMocks
-  private LessonServiceImp lessonService;
+  private LessonServiceImpl lessonService;
 
   @Captor
   private ArgumentCaptor<Lesson> lessonCaptor;

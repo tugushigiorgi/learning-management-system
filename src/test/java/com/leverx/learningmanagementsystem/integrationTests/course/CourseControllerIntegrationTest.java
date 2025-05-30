@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.leverx.learningmanagementsystem.course.Course;
 import com.leverx.learningmanagementsystem.course.CourseRepository;
-import com.leverx.learningmanagementsystem.courseSettings.CourseSettings;
+import com.leverx.learningmanagementsystem.coursesettings.CourseSettings;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;

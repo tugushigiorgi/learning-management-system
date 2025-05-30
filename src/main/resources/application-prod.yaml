@@ -6,3 +6,35 @@ management:
   endpoint:
     health:
       show-details: when-authorized
+
+spring:
+  datasource:
+    url: ${vcap.services.lms-hdi.credentials.url}
+    username: ${vcap.services.lms-hdi.credentials.user}
+    password: ${vcap.services.lms-hdi.credentials.password}
+    driver-class-name: com.sap.db.jdbc.Driver
+  jpa:
+    properties:
+      ddl-auto: none
+      dialect: org.hibernate.dialect.HANAColumnStoreDialect
+      hibernate:
+        default_schema: ${vcap.services.lms-hdi.credentials.schema}
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    contexts: dev
+
+sap:
+  ffs:
+    uri: ${vcap.services.lms_flag_service.credentials.uri}
+    username: ${vcap.services.lms_flag_service.credentials.username}
+    password: ${vcap.services.lms_flag_service.credentials.password}
+
+smtp-ups:
+  host: ${vcap.services.smtp-credentials.credentials.host}
+  port: ${vcap.services.smtp-credentials.credentials.port}
+  username: ${vcap.services.smtp-credentials.credentials.username}
+  password: ${vcap.services.smtp-credentials.credentials.password}
+
+
+

@@ -10,6 +10,7 @@ import java.util.UUID;
 
 public interface CourseService {
   void printAllCoursesByStartDateBetween(LocalDateTime start, LocalDateTime end);
+
   List<CourseDto> getMostPopularCourses();
 
   CourseDto createCourse(CreateCourseDto courseDto);

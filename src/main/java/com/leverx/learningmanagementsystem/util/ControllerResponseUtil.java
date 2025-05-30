@@ -8,7 +8,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.http.ResponseEntity;
 
 @UtilityClass
-public class ControllerResponse {
+public class ControllerResponseUtil {
   public static <T> ResponseEntity<List<T>> handleList(List<T> data) {
     return isEmpty(data)
         ? ResponseEntity.noContent().build()
