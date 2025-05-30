@@ -20,7 +20,6 @@ import com.leverx.learningmanagementsystem.coursesettings.CourseSettings;
 import com.leverx.learningmanagementsystem.mail.impl.MailTrapServiceImpl;
 import com.leverx.learningmanagementsystem.mapper.CourseMapper;
 import com.leverx.learningmanagementsystem.student.Student;
-import io.mailtrap.model.request.emails.Address;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +27,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 
 @Service
 @AllArgsConstructor

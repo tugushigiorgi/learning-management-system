@@ -18,15 +18,15 @@ public final class ConstMessages {
   public static final String SMTP_DESTINATION_NAME = "SmtpDestService";
   public static final String SMTP_FLAG = "upsordestemailservice";
   public static final String FLAG_CHECK_FAILED = "Flag check failed";
-  public static final String SMTP_HOST="mail.smtp.host";
-  public static final String SMTP_PORT="mail.smtp.port";
-  public static final String SMTP_USER="mail.user";
-  public static final String SMTP_PASSWORD="mail.password";
+  public static final String SMTP_HOST = "mail.smtp.host";
+  public static final String SMTP_PORT = "mail.smtp.port";
+  public static final String SMTP_USER = "mail.user";
+  public static final String SMTP_PASSWORD = "mail.password";
   public static final String DESTINATION_NOT_FOUND = "Destination not found";
-  public static final String MISSING_HOST="Missing host";
-  public static final String MISSING_PORT="Missing port";
-  public static final String MISSING_USER="Missing user";
-  public static final String MISSING_PASSWORD="Missing password";
-  public static final String FLAG_INPUT_ERROR="flag input error";
-  public static final String FLAG_IS_INACTIVE="flag is inactive";
+  public static final String MISSING_HOST = "Missing host";
+  public static final String MISSING_PORT = "Missing port";
+  public static final String MISSING_USER = "Missing user";
+  public static final String MISSING_PASSWORD = "Missing password";
+  public static final String FLAG_INPUT_ERROR = "flag input error";
+  public static final String FLAG_IS_INACTIVE = "flag is inactive";
 }
