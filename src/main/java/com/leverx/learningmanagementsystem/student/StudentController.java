@@ -11,11 +11,13 @@ import com.leverx.learningmanagementsystem.student.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/students")
 @RequiredArgsConstructor
 @Slf4j
+@Profile("prod")
 @Tag(name = "Students", description = "Endpoints for managing students and course enrollment")
 public class StudentController {
 
@@ -32,7 +35,7 @@ public class StudentController {
   @PostMapping("/enroll/{studentId}/{courseId}")
   public ResponseEntity<String> enrollToCourse(
       @PathVariable @Parameter(description = "ID of the student") UUID studentId,
-      @PathVariable @Parameter(description = "ID of the course") UUID courseId) {
+      @PathVariable @Parameter(description = "ID of the course") UUID courseId) throws MessagingException {
     log.info("Enrolling student {} to course {}", studentId, courseId);
     studentService.enrollToCourse(studentId, courseId);
     return ResponseEntity.ok(STUDENT_ENROLLED_SUCCESSFULLY);

@@ -22,6 +22,7 @@ import com.leverx.learningmanagementsystem.student.StudentRepository;
 import com.leverx.learningmanagementsystem.student.dto.CreateStudentDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;
 import com.leverx.learningmanagementsystem.student.dto.UpdateStudentDto;
+import jakarta.mail.MessagingException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -112,7 +113,7 @@ class StudentServiceImplTest {
   }
 
   @Test
-  void enrollToCourse_shouldSucceed_whenEnoughCoinsAndNotEnrolled() {
+  void enrollToCourse_shouldSucceed_whenEnoughCoinsAndNotEnrolled() throws MessagingException {
     // Arrange
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
