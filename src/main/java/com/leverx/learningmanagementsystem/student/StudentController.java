@@ -1,8 +1,8 @@
 package com.leverx.learningmanagementsystem.student;
 
 import static com.leverx.learningmanagementsystem.ConstMessages.STUDENT_ENROLLED_SUCCESSFULLY;
-import static com.leverx.learningmanagementsystem.util.ControllerResponse.handleItemOrNotFound;
-import static com.leverx.learningmanagementsystem.util.ControllerResponse.handleList;
+import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.handleItemOrNotFound;
+import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.handleList;
 
 import com.leverx.learningmanagementsystem.student.dto.CreateStudentDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;
@@ -15,19 +15,14 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/students")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Students", description = "Endpoints for managing students and course enrollment")
 public class StudentController {
 
@@ -38,6 +33,7 @@ public class StudentController {
   public ResponseEntity<String> enrollToCourse(
       @PathVariable @Parameter(description = "ID of the student") UUID studentId,
       @PathVariable @Parameter(description = "ID of the course") UUID courseId) {
+    log.info("Enrolling student {} to course {}", studentId, courseId);
     studentService.enrollToCourse(studentId, courseId);
     return ResponseEntity.ok(STUDENT_ENROLLED_SUCCESSFULLY);
   }
@@ -46,6 +42,7 @@ public class StudentController {
   @GetMapping("/{studentId}/enrolled-courses-count")
   public Integer getEnrolledCourseCount(
       @PathVariable @Parameter(description = "ID of the student") UUID studentId) {
+    log.info("Retrieving enrolled course count for student {}", studentId);
     return studentService.getEnrolledCourseCount(studentId);
   }
 
@@ -53,7 +50,8 @@ public class StudentController {
   @PostMapping
   public ResponseEntity<StudentDto> createStudent(
       @RequestBody @Valid @Parameter(description = "Student creation data") CreateStudentDto studentDto) {
-    var newStudent=studentService.createStudent(studentDto);
+    log.info("Creating new student: {}", studentDto);
+    var newStudent = studentService.createStudent(studentDto);
     return ResponseEntity.ok(newStudent);
   }
 
@@ -61,12 +59,14 @@ public class StudentController {
   @GetMapping("/{id}")
   public ResponseEntity<StudentDto> getStudent(
       @PathVariable @Parameter(description = "ID of the student to retrieve") UUID id) {
+    log.info("Fetching student with ID: {}", id);
     return handleItemOrNotFound(studentService.getStudentById(id));
   }
 
   @Operation(summary = "Get all students")
   @GetMapping
   public ResponseEntity<List<StudentDto>> getAllStudents() {
+    log.info("Fetching all students");
     return handleList(studentService.getAllStudents());
   }
 
@@ -74,6 +74,7 @@ public class StudentController {
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteStudent(
       @PathVariable @Parameter(description = "ID of the student to delete") UUID id) {
+    log.warn("Deleting student with ID: {}", id);
     studentService.deleteById(id);
     return ResponseEntity.noContent().build();
   }
@@ -82,7 +83,8 @@ public class StudentController {
   @PutMapping
   public ResponseEntity<StudentDto> updateStudent(
       @RequestBody @Valid @Parameter(description = "Student update data") UpdateStudentDto studentDto) {
-    var updatedStudent=studentService.updateStudent(studentDto);
+    log.info("Updating student: {}", studentDto);
+    var updatedStudent = studentService.updateStudent(studentDto);
     return ResponseEntity.ok(updatedStudent);
   }
 }
