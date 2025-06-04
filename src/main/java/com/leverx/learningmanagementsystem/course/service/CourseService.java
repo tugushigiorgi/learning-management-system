@@ -4,6 +4,7 @@ import com.leverx.learningmanagementsystem.course.dto.CourseDto;
 import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
+import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -25,5 +26,5 @@ public interface CourseService {
 
   DetailedCourseDto getDetailedCourseById(UUID id);
 
-  void sendMailToEnrolledStudents(UUID courseId);
+  void sendMailToEnrolledStudents(UUID courseId) throws MessagingException;
 }

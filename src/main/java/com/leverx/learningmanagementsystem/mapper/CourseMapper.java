@@ -13,6 +13,7 @@ import org.mapstruct.ReportingPolicy;
 public interface CourseMapper {
 
   @Mappings({
+      @Mapping(source = "id", target = "id"),
       @Mapping(source = "title", target = "title"),
       @Mapping(source = "description", target = "description"),
       @Mapping(source = "price", target = "price"),})
@@ -20,6 +21,7 @@ public interface CourseMapper {
   CourseDto toDto(Course entity);
 
   @Mappings({
+      @Mapping(source = "id", target = "id"),
       @Mapping(source = "title", target = "title"),
       @Mapping(source = "description", target = "description"),
       @Mapping(source = "price", target = "price"),

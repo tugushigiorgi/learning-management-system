@@ -11,6 +11,7 @@ import com.leverx.learningmanagementsystem.course.service.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -59,7 +60,7 @@ public class CourseController {
 
   @Operation(summary = "Sends  mail to enrolled students")
   @PostMapping("/{courseId}/send-mail-to-students")
-  public ResponseEntity<String> sendMailToEnrolledStudents(@PathVariable @Parameter(description = "Course Id") UUID courseId) {
+  public ResponseEntity<String> sendMailToEnrolledStudents(@PathVariable @Parameter(description = "Course Id") UUID courseId) throws MessagingException {
     log.info("Sending mail to enrolled students for course ID: {}", courseId);
     courseService.sendMailToEnrolledStudents(courseId);
     return ResponseEntity.ok(EMAIL_SENT);

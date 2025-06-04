@@ -17,9 +17,11 @@ import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
 import com.leverx.learningmanagementsystem.course.service.CourseService;
 import com.leverx.learningmanagementsystem.coursesettings.CourseSettings;
+import com.leverx.learningmanagementsystem.mail.impl.DynamicMailServiceImpl;
 import com.leverx.learningmanagementsystem.mail.impl.MailTrapServiceImpl;
 import com.leverx.learningmanagementsystem.mapper.CourseMapper;
 import com.leverx.learningmanagementsystem.student.Student;
+import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -34,7 +36,7 @@ public class CourseServiceImpl implements CourseService {
 
   private final CourseRepository courseRepository;
   private final CourseMapper courseMapper;
-  private final MailTrapServiceImpl mailTrapImp;
+  private final DynamicMailServiceImpl mailTrapImp;
 
   @Override
   @Transactional(readOnly = true)
@@ -133,7 +135,7 @@ public class CourseServiceImpl implements CourseService {
   }
 
   @Override
-  public void sendMailToEnrolledStudents(UUID courseId) {
+  public void sendMailToEnrolledStudents(UUID courseId) throws MessagingException {
     var course = courseRepository.findById(courseId)
         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, courseId)));
     if (isEmpty(course.getStudents())) {
