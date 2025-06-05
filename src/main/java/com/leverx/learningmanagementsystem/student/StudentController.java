@@ -83,11 +83,12 @@ public class StudentController {
   }
 
   @Operation(summary = "Update an existing student")
-  @PutMapping
+  @PutMapping("/{id}")
   public ResponseEntity<StudentDto> updateStudent(
+      @PathVariable @Parameter(description = "Student id to update") UUID id,
       @RequestBody @Valid @Parameter(description = "Student update data") UpdateStudentDto studentDto) {
     log.info("Updating student: {}", studentDto);
-    var updatedStudent = studentService.updateStudent(studentDto);
+    var updatedStudent = studentService.updateStudent(id, studentDto);
     return ResponseEntity.ok(updatedStudent);
   }
 }

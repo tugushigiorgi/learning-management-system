@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/courses")
 @RequiredArgsConstructor
 @Slf4j
+@Profile("prod")
 @Tag(name = "Courses", description = "Endpoints for managing courses")
 public class CourseController {
 
@@ -75,10 +77,11 @@ public class CourseController {
   }
 
   @Operation(summary = "Update an existing course")
-  @PutMapping
-  public ResponseEntity<CourseDto> updateCourse(@RequestBody @Valid @Parameter(description = "Course update data") UpdateCourseDto courseDtoDto) {
+  @PutMapping("/{id}")
+  public ResponseEntity<CourseDto> updateCourse(@PathVariable @Parameter(description = "Course id to update") UUID id, @RequestBody @Valid @Parameter(description = "Course update data") UpdateCourseDto courseDtoDto) {
     log.info("Updating course: {}", courseDtoDto);
-    var updatedCourse = courseService.updateCourse(courseDtoDto);
+    var updatedCourse = courseService.updateCourse(id, courseDtoDto);
     return ResponseEntity.ok(updatedCourse);
   }
 }
+

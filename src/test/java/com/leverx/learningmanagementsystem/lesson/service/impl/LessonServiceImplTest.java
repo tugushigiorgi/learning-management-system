@@ -167,7 +167,6 @@ class LessonServiceImplTest {
   void updateLessons_shouldUpdateAndReturnDto() {
     // Given
     var dto = UpdateLessonDto.builder()
-        .id(lessonId)
         .title("Updated Title")
         .duration(45)
         .build();
@@ -190,7 +189,7 @@ class LessonServiceImplTest {
     when(lessonMapper.toDto(updatedLesson)).thenReturn(expectedDto);
 
     // When
-    var result = lessonService.updateLessons(dto);
+    var result = lessonService.updateLessons(lessonId, dto);
 
     // Then
     verify(lessonRepository).save(lessonCaptor.capture());
@@ -204,7 +203,6 @@ class LessonServiceImplTest {
   void updateLessons_shouldThrowIfNotFound() {
     // Given
     var dto = UpdateLessonDto.builder()
-        .id(lessonId)
         .title("programming course")
         .duration(12)
         .build();
@@ -212,7 +210,7 @@ class LessonServiceImplTest {
 
     // When & Then
     assertThrows(ResponseStatusException.class,
-        () -> lessonService.updateLessons(dto));
+        () -> lessonService.updateLessons(lessonId, dto));
   }
 
   @Test

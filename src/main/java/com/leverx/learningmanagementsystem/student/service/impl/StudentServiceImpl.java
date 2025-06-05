@@ -13,7 +13,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import com.leverx.learningmanagementsystem.course.CourseRepository;
 import com.leverx.learningmanagementsystem.mail.impl.DynamicMailServiceImpl;
 import com.leverx.learningmanagementsystem.mapper.StudentMapper;
-import com.leverx.learningmanagementsystem.student.Student;
 import com.leverx.learningmanagementsystem.student.StudentRepository;
 import com.leverx.learningmanagementsystem.student.dto.CreateStudentDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;
@@ -81,14 +80,9 @@ public class StudentServiceImpl implements StudentService {
   @Transactional
   @Override
   public StudentDto createStudent(CreateStudentDto studentDto) {
-    var newStudent = Student.builder()
-        .firstName(studentDto.getFirstName())
-        .lastName(studentDto.getLastName())
-        .email(studentDto.getEmail())
-        .dateOfBirth(studentDto.getDateOfBirth())
-        .build();
-    var savedStudent = studentRepository.save(newStudent);
-    return studentMapper.toDto(savedStudent);
+    var newUser = studentMapper.toEntity(studentDto);
+    newUser = studentRepository.save(newUser);
+    return studentMapper.toDto(newUser);
   }
 
   @Override
@@ -119,23 +113,12 @@ public class StudentServiceImpl implements StudentService {
 
   @Override
   @Transactional
-  public StudentDto updateStudent(UpdateStudentDto studentDto) {
-    var currentStudent = studentRepository.findById(studentDto.getId())
+  public StudentDto updateStudent(UUID id, UpdateStudentDto studentDto) {
+    var currentStudent = studentRepository.findById(id)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, String.format(STUDENT_NOT_FOUND, studentDto.getId())));
-    if (!studentDto.getFirstName().equals(currentStudent.getFirstName())) {
-      currentStudent.setFirstName(studentDto.getFirstName());
-    }
-    if (!studentDto.getLastName().equals(currentStudent.getLastName())) {
-      currentStudent.setLastName(studentDto.getLastName());
-    }
-    if (!studentDto.getEmail().equals(currentStudent.getEmail())) {
-      currentStudent.setEmail(studentDto.getEmail());
-    }
-    if (!studentDto.getDateOfBirth().equals(currentStudent.getDateOfBirth())) {
-      currentStudent.setDateOfBirth(studentDto.getDateOfBirth());
-    }
-    var updatedStudent = studentRepository.save(currentStudent);
-    return studentMapper.toDto(updatedStudent);
+            new ResponseStatusException(NOT_FOUND, String.format(STUDENT_NOT_FOUND, id)));
+    studentMapper.update(studentDto, currentStudent);
+    studentRepository.save(currentStudent);
+    return studentMapper.toDto(currentStudent);
   }
 }

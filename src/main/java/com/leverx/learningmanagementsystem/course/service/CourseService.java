@@ -22,7 +22,7 @@ public interface CourseService {
 
   void deleteById(UUID id);
 
-  CourseDto updateCourse(UpdateCourseDto courseDto);
+  CourseDto updateCourse(UUID id,UpdateCourseDto courseDto);
 
   DetailedCourseDto getDetailedCourseById(UUID id);
 

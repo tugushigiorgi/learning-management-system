@@ -20,6 +20,6 @@ public interface StudentService {
 
   void deleteById(UUID id);
 
-  StudentDto updateStudent(UpdateStudentDto studentDto);
+  StudentDto updateStudent(UUID id, UpdateStudentDto studentDto);
 
 }

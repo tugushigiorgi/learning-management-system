@@ -9,34 +9,35 @@ import static com.leverx.learningmanagementsystem.ConstMessages.STUDENTS_NOT_FOU
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
-import com.leverx.learningmanagementsystem.course.Course;
 import com.leverx.learningmanagementsystem.course.CourseRepository;
 import com.leverx.learningmanagementsystem.course.dto.CourseDto;
 import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
 import com.leverx.learningmanagementsystem.course.service.CourseService;
-import com.leverx.learningmanagementsystem.coursesettings.CourseSettings;
 import com.leverx.learningmanagementsystem.mail.impl.DynamicMailServiceImpl;
-import com.leverx.learningmanagementsystem.mail.impl.MailTrapServiceImpl;
 import com.leverx.learningmanagementsystem.mapper.CourseMapper;
+import com.leverx.learningmanagementsystem.mapper.CourseSettingsMapper;
 import com.leverx.learningmanagementsystem.student.Student;
 import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @AllArgsConstructor
+@Profile("prod")
 public class CourseServiceImpl implements CourseService {
 
   private final CourseRepository courseRepository;
   private final CourseMapper courseMapper;
   private final DynamicMailServiceImpl mailTrapImp;
+  private final CourseSettingsMapper courseSettingsMapper;
 
   @Override
   @Transactional(readOnly = true)
@@ -58,19 +59,11 @@ public class CourseServiceImpl implements CourseService {
   @Override
   @Transactional
   public CourseDto createCourse(CreateCourseDto courseDto) {
-    var courseSettings = CourseSettings.builder()
-        .startDate(courseDto.getStartDate())
-        .endDate(courseDto.getEndDate())
-        .isPublic(courseDto.getIsPublic())
-        .build();
-    var newCourse = Course.builder()
-        .price(courseDto.getPrice())
-        .title(courseDto.getTitle())
-        .description(courseDto.getDescription())
-        .settings(courseSettings)
-        .build();
-    var savedCourse = courseRepository.save(newCourse);
-    return courseMapper.toDto(savedCourse);
+    var courseSettings = courseSettingsMapper.toEntity(courseDto);
+    var newCourse =  courseMapper.toEntity(courseDto);
+    newCourse.setSettings(courseSettings);
+    var newcourse = courseRepository.save(newCourse);
+    return courseMapper.toDto(newcourse);
   }
 
   @Override
@@ -100,30 +93,12 @@ public class CourseServiceImpl implements CourseService {
 
   @Override
   @Transactional
-  public CourseDto updateCourse(UpdateCourseDto courseDto) {
-    var currentCourse = courseRepository.findById(courseDto.getId())
-        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, courseDto.getId())));
-    if (!courseDto.getTitle().equals(currentCourse.getTitle())) {
-      currentCourse.setTitle(courseDto.getTitle());
-    }
-    if (!courseDto.getDescription().equals(currentCourse.getDescription())) {
-      currentCourse.setDescription(courseDto.getDescription());
-    }
-    if (!courseDto.getPrice().equals(currentCourse.getPrice())) {
-      currentCourse.setPrice(courseDto.getPrice());
-    }
-    var courseSettings = currentCourse.getSettings();
-    if (!courseDto.getStartDate().equals(courseSettings.getStartDate())) {
-      courseSettings.setStartDate(courseDto.getStartDate());
-    }
-    if (!courseDto.getEndDate().equals(courseSettings.getEndDate())) {
-      courseSettings.setEndDate(courseDto.getEndDate());
-    }
-    if (!courseDto.getIsPublic().equals(courseSettings.getIsPublic())) {
-      courseSettings.setIsPublic(courseDto.getIsPublic());
-    }
-    var updatedCourse = courseRepository.save(currentCourse);
-    return courseMapper.toDto(updatedCourse);
+  public CourseDto updateCourse(UUID id, UpdateCourseDto courseDto) {
+    var currentCourse = courseRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, id)));
+    courseMapper.update(courseDto, currentCourse);
+    courseRepository.save(currentCourse);
+    return courseMapper.toDto(currentCourse);
   }
 
   @Override

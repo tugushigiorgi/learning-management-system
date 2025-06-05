@@ -14,6 +14,7 @@ spring:
     password: ${vcap.services.lms-hdi.credentials.password}
     driver-class-name: com.sap.db.jdbc.Driver
   jpa:
+    show-sql: true
     properties:
       ddl-auto: none
       dialect: org.hibernate.dialect.HANAColumnStoreDialect
@@ -36,5 +37,8 @@ smtp-ups:
   username: ${vcap.services.smtp-credentials.credentials.username}
   password: ${vcap.services.smtp-credentials.credentials.password}
 
-
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
 
