@@ -11,6 +11,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.leverx.learningmanagementsystem.course.CourseRepository;
+import com.leverx.learningmanagementsystem.mail.MailService;
 import com.leverx.learningmanagementsystem.mail.impl.DynamicMailServiceImpl;
 import com.leverx.learningmanagementsystem.mapper.StudentMapper;
 import com.leverx.learningmanagementsystem.student.StudentRepository;
@@ -19,23 +20,22 @@ import com.leverx.learningmanagementsystem.student.dto.StudentDto;
 import com.leverx.learningmanagementsystem.student.dto.UpdateStudentDto;
 import com.leverx.learningmanagementsystem.student.service.StudentService;
 import jakarta.mail.MessagingException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
-@Profile("prod")
 public class StudentServiceImpl implements StudentService {
 
   private final StudentRepository studentRepository;
   private final StudentMapper studentMapper;
   private final CourseRepository courseRepository;
-  private final DynamicMailServiceImpl mailService;
+  private final MailService mailService;
 
   @Override
   @Transactional(readOnly = true)
@@ -65,6 +65,7 @@ public class StudentServiceImpl implements StudentService {
       var currentPaid = getCourse.getCoinsPaid();
       getCourse.setCoinsPaid(currentPaid.add(getCourse.getPrice()));
       getStudent.getCourses().add(getCourse);
+      getCourse.getStudents().add(getStudent);
       getStudent.setCoins(getStudent.getCoins().subtract(getCourse.getPrice()));
       courseRepository.save(getCourse);
       studentRepository.save(getStudent);
@@ -81,6 +82,7 @@ public class StudentServiceImpl implements StudentService {
   @Override
   public StudentDto createStudent(CreateStudentDto studentDto) {
     var newUser = studentMapper.toEntity(studentDto);
+    newUser.setCoins(BigDecimal.valueOf(10000));
     newUser = studentRepository.save(newUser);
     return studentMapper.toDto(newUser);
   }

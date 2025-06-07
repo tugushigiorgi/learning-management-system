@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: UUID
+                  type: VARBINARY(16)
                   constraints:
                     nullable: false
                     primaryKey: true
@@ -26,7 +26,7 @@ databaseChangeLog:
                   type: NUMERIC(10,2)
               - column:
                   name: course_settings_id
-                  type: UUID
+                  type: VARBINARY(16)
 
         - addUniqueConstraint:
             tableName: courses

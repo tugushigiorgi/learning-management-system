@@ -20,6 +20,7 @@ import com.leverx.learningmanagementsystem.mapper.CourseMapper;
 import com.leverx.learningmanagementsystem.mapper.CourseSettingsMapper;
 import com.leverx.learningmanagementsystem.student.Student;
 import jakarta.mail.MessagingException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -60,7 +61,8 @@ public class CourseServiceImpl implements CourseService {
   @Transactional
   public CourseDto createCourse(CreateCourseDto courseDto) {
     var courseSettings = courseSettingsMapper.toEntity(courseDto);
-    var newCourse =  courseMapper.toEntity(courseDto);
+    var newCourse = courseMapper.toEntity(courseDto);
+    newCourse.setCoinsPaid(BigDecimal.ZERO);
     newCourse.setSettings(courseSettings);
     var newcourse = courseRepository.save(newCourse);
     return courseMapper.toDto(newcourse);
@@ -86,9 +88,11 @@ public class CourseServiceImpl implements CourseService {
   @Override
   @Transactional
   public void deleteById(UUID id) {
-    var getCourse = courseRepository.findById(id)
+    var course = courseRepository.findById(id)
         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, id)));
-    courseRepository.delete(getCourse);
+    course.getStudents()
+        .forEach(student -> student.getCourses().remove(course));
+    courseRepository.delete(course);
   }
 
   @Override
@@ -110,6 +114,7 @@ public class CourseServiceImpl implements CourseService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public void sendMailToEnrolledStudents(UUID courseId) throws MessagingException {
     var course = courseRepository.findById(courseId)
         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, courseId)));

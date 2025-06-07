@@ -21,5 +21,4 @@ public interface StudentService {
   void deleteById(UUID id);
 
   StudentDto updateStudent(UUID id, UpdateStudentDto studentDto);
-
 }

@@ -30,7 +30,10 @@ public class LessonServiceImpl implements LessonService {
   @Override
   @Transactional
   public LessonDto createLesson(CreateLessonDto lessonDto) {
+    var currentCourse = courseRepository.findById(lessonDto.getCourseId())
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, lessonDto.getCourseId())));
     var lesson = lessonMapper.toEntity(lessonDto);
+    currentCourse.addLesson(lesson);
     lesson = lessonRepository.save(lesson);
     return lessonMapper.toDto(lesson);
   }

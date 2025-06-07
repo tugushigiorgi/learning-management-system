@@ -20,7 +20,8 @@ public interface CourseMapper {
       @Mapping(source = "id", target = "id"),
       @Mapping(source = "title", target = "title"),
       @Mapping(source = "description", target = "description"),
-      @Mapping(source = "price", target = "price")})
+      @Mapping(source = "price", target = "price"),
+      @Mapping(source = "coinsPaid", target = "coinsPaid")})
   @BeanMapping(ignoreByDefault = true)
   CourseDto toDto(Course entity);
 
@@ -39,7 +40,6 @@ public interface CourseMapper {
   Course update(UpdateCourseDto dto, @MappingTarget Course entity);
 
   @Mappings({
-
       @Mapping(source = "title", target = "title"),
       @Mapping(source = "description", target = "description"),
       @Mapping(source = "price", target = "price")})

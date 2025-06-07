@@ -1,6 +1,5 @@
 package com.leverx.learningmanagementsystem.mapper;
 
-import com.leverx.learningmanagementsystem.course.dto.CourseDto;
 import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.coursesettings.CourseSettings;
 import org.mapstruct.BeanMapping;

@@ -33,7 +33,8 @@ public class CourseController {
 
   @Operation(summary = "Get a course by ID")
   @GetMapping("/{id}")
-  public ResponseEntity<CourseDto> getCourse(@PathVariable @Parameter(description = "ID of the course to retrieve") UUID id) {
+  public ResponseEntity<CourseDto> getCourse(
+      @PathVariable @Parameter(description = "ID of the course to retrieve") UUID id) {
     log.info("Fetching course with ID: {}", id);
     return handleItemOrNotFound(courseService.getCourseById(id));
   }
@@ -54,7 +55,8 @@ public class CourseController {
 
   @Operation(summary = "Create a new course")
   @PostMapping
-  public ResponseEntity<CourseDto> createCourse(@RequestBody @Valid @Parameter(description = "Course creation data") CreateCourseDto courseDto) {
+  public ResponseEntity<CourseDto> createCourse(
+      @RequestBody @Valid @Parameter(description = "Course creation data") CreateCourseDto courseDto) {
     log.info("Creating new course: {}", courseDto);
     var newCourse = courseService.createCourse(courseDto);
     return ResponseEntity.ok(newCourse);
@@ -62,7 +64,8 @@ public class CourseController {
 
   @Operation(summary = "Sends  mail to enrolled students")
   @PostMapping("/{courseId}/send-mail-to-students")
-  public ResponseEntity<String> sendMailToEnrolledStudents(@PathVariable @Parameter(description = "Course Id") UUID courseId) throws MessagingException {
+  public ResponseEntity<String> sendMailToEnrolledStudents(
+      @PathVariable @Parameter(description = "Course Id") UUID courseId) throws MessagingException {
     log.info("Sending mail to enrolled students for course ID: {}", courseId);
     courseService.sendMailToEnrolledStudents(courseId);
     return ResponseEntity.ok(EMAIL_SENT);
@@ -70,7 +73,8 @@ public class CourseController {
 
   @Operation(summary = "Delete a course by ID")
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteCourse(@PathVariable @Parameter(description = "ID of the course to delete") UUID id) {
+  public ResponseEntity<Void> deleteCourse(
+      @PathVariable @Parameter(description = "ID of the course to delete") UUID id) {
     log.warn("Deleting course with ID: {}", id);
     courseService.deleteById(id);
     return ResponseEntity.noContent().build();
@@ -78,7 +82,9 @@ public class CourseController {
 
   @Operation(summary = "Update an existing course")
   @PutMapping("/{id}")
-  public ResponseEntity<CourseDto> updateCourse(@PathVariable @Parameter(description = "Course id to update") UUID id, @RequestBody @Valid @Parameter(description = "Course update data") UpdateCourseDto courseDtoDto) {
+  public ResponseEntity<CourseDto> updateCourse(
+      @PathVariable @Parameter(description = "Course id to update") UUID id,
+      @RequestBody @Valid @Parameter(description = "Course update data") UpdateCourseDto courseDtoDto) {
     log.info("Updating course: {}", courseDtoDto);
     var updatedCourse = courseService.updateCourse(id, courseDtoDto);
     return ResponseEntity.ok(updatedCourse);

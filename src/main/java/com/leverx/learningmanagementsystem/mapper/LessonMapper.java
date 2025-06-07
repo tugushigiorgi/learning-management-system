@@ -18,7 +18,7 @@ public interface LessonMapper {
   @Mappings({
       @Mapping(source = "id", target = "id"),
       @Mapping(source = "title", target = "title"),
-      @Mapping(source = "duration", target = "duration"),})
+      @Mapping(source = "duration", target = "duration")})
   @BeanMapping(ignoreByDefault = true)
   LessonDto toDto(Lesson entity);
 
@@ -27,7 +27,7 @@ public interface LessonMapper {
 
   @Mappings({
       @Mapping(source = "title", target = "title"),
-      @Mapping(source = "duration", target = "duration"),})
+      @Mapping(source = "duration", target = "duration")})
   @BeanMapping(ignoreByDefault = true)
   Lesson toEntity(CreateLessonDto dto);
 }

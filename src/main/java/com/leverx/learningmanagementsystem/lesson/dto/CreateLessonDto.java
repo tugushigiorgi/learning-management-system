@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateLessonDto {
+
+  @NotNull
+  private UUID courseId;
 
   @NotNull
   @Size(min = 1, max = 100, message = "title must be between 1 and 100 characters")

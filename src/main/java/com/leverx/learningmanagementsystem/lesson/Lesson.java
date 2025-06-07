@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.leverx.learningmanagementsystem.course.Course;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -22,10 +23,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "lessons")
 public class Lesson {
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
   private String title;
   private Integer duration;
+
   @ManyToOne
   @JsonIgnore
   @JoinColumn(name = "course_id", nullable = false)

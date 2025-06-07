@@ -8,7 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: UUID
+                  type: VARBINARY(16)
                   constraints:
                     nullable: false
                     primaryKey: true
