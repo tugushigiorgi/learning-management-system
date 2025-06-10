@@ -7,6 +7,7 @@ import com.leverx.learningmanagementsystem.student.Student;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
@@ -20,7 +21,9 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -30,19 +33,31 @@ import lombok.NoArgsConstructor;
 @Table(name = "courses")
 public class Course {
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
   private String title;
   private String description;
   private BigDecimal price;
   private BigDecimal coinsPaid;
+
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "course_settings_id", referencedColumnName = "id")
   private CourseSettings settings;
+
   @JsonIgnore
-  @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
+  @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
   private Set<Lesson> lessons = new HashSet<>();
+
   @JsonIgnore
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   @ManyToMany(mappedBy = "courses")
   private Set<Student> students = new HashSet<>();
+
+  public void addLesson(Lesson lesson) {
+    lessons.add(lesson);
+    lesson.setCourse(this);
+  }
 }

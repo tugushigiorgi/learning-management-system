@@ -71,11 +71,12 @@ public class LessonController {
   }
 
   @Operation(summary = "Update an existing lesson")
-  @PutMapping
+  @PutMapping("/{id}")
   public ResponseEntity<LessonDto> updateLesson(
+      @PathVariable @Parameter(description = "Lesson id to update") UUID id,
       @RequestBody @Valid @Parameter(description = "Lesson update data") UpdateLessonDto lessonDtoDto) {
     log.info("Updating lesson: {}", lessonDtoDto);
-    var updatedLesson = lessonService.updateLessons(lessonDtoDto);
+    var updatedLesson = lessonService.updateLessons(id, lessonDtoDto);
     return ResponseEntity.ok(updatedLesson);
   }
 }

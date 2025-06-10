@@ -11,6 +11,7 @@ import com.leverx.learningmanagementsystem.student.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +33,7 @@ public class StudentController {
   @PostMapping("/enroll/{studentId}/{courseId}")
   public ResponseEntity<String> enrollToCourse(
       @PathVariable @Parameter(description = "ID of the student") UUID studentId,
-      @PathVariable @Parameter(description = "ID of the course") UUID courseId) {
+      @PathVariable @Parameter(description = "ID of the course") UUID courseId) throws MessagingException {
     log.info("Enrolling student {} to course {}", studentId, courseId);
     studentService.enrollToCourse(studentId, courseId);
     return ResponseEntity.ok(STUDENT_ENROLLED_SUCCESSFULLY);
@@ -80,11 +81,12 @@ public class StudentController {
   }
 
   @Operation(summary = "Update an existing student")
-  @PutMapping
+  @PutMapping("/{id}")
   public ResponseEntity<StudentDto> updateStudent(
+      @PathVariable @Parameter(description = "Student id to update") UUID id,
       @RequestBody @Valid @Parameter(description = "Student update data") UpdateStudentDto studentDto) {
     log.info("Updating student: {}", studentDto);
-    var updatedStudent = studentService.updateStudent(studentDto);
+    var updatedStudent = studentService.updateStudent(id, studentDto);
     return ResponseEntity.ok(updatedStudent);
   }
 }

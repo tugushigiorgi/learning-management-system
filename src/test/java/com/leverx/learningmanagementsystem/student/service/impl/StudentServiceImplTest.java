@@ -22,6 +22,7 @@ import com.leverx.learningmanagementsystem.student.StudentRepository;
 import com.leverx.learningmanagementsystem.student.dto.CreateStudentDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;
 import com.leverx.learningmanagementsystem.student.dto.UpdateStudentDto;
+import jakarta.mail.MessagingException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -68,7 +69,6 @@ class StudentServiceImplTest {
     studentId = UUID.randomUUID();
     courseId = UUID.randomUUID();
     updateStudentDto = UpdateStudentDto.builder()
-        .id(studentId)
         .firstName("New")
         .lastName("Name")
         .email("new@mail.com")
@@ -112,7 +112,7 @@ class StudentServiceImplTest {
   }
 
   @Test
-  void enrollToCourse_shouldSucceed_whenEnoughCoinsAndNotEnrolled() {
+  void enrollToCourse_shouldSucceed_whenEnoughCoinsAndNotEnrolled() throws MessagingException {
     // Arrange
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
@@ -301,7 +301,6 @@ class StudentServiceImplTest {
         .build();
 
     var updateDto = UpdateStudentDto.builder()
-        .id(studentId)
         .firstName("New")
         .lastName("User")
         .email("new@email.com")
@@ -328,7 +327,7 @@ class StudentServiceImplTest {
     when(studentMapper.toDto(updatedStudent)).thenReturn(expectedDto);
 
     // Act
-    var result = studentService.updateStudent(updateDto);
+    var result = studentService.updateStudent(studentId,updateDto);
 
     // Assert
     verify(studentRepository).save(studentCaptor.capture());
@@ -347,7 +346,7 @@ class StudentServiceImplTest {
 
     // Act & Assert
     var exception = assertThrows(ResponseStatusException.class,
-        () -> studentService.updateStudent(updateStudentDto));
+        () -> studentService.updateStudent(studentId,updateStudentDto));
     assertEquals(String.format(STUDENT_NOT_FOUND,studentId), exception.getReason());
     assertEquals(NOT_FOUND, exception.getStatusCode());
     verify(studentRepository, never()).save(any());

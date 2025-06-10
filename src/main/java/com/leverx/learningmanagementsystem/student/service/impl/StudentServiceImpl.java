@@ -1,20 +1,25 @@
 package com.leverx.learningmanagementsystem.student.service.impl;
 
+import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_ENROLLED_SUBJECT;
 import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_NOT_FOUND;
+import static com.leverx.learningmanagementsystem.ConstMessages.FROM_MAIL;
 import static com.leverx.learningmanagementsystem.ConstMessages.NOT_ENOUGH_COINS;
 import static com.leverx.learningmanagementsystem.ConstMessages.STUDENT_ALREADY_ENROLLED;
 import static com.leverx.learningmanagementsystem.ConstMessages.STUDENT_NOT_FOUND;
+import static com.leverx.learningmanagementsystem.ConstMessages.WELCOME_TO_THE_COURSE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.leverx.learningmanagementsystem.course.CourseRepository;
+import com.leverx.learningmanagementsystem.mail.MailService;
 import com.leverx.learningmanagementsystem.mapper.StudentMapper;
-import com.leverx.learningmanagementsystem.student.Student;
 import com.leverx.learningmanagementsystem.student.StudentRepository;
 import com.leverx.learningmanagementsystem.student.dto.CreateStudentDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;
 import com.leverx.learningmanagementsystem.student.dto.UpdateStudentDto;
 import com.leverx.learningmanagementsystem.student.service.StudentService;
+import jakarta.mail.MessagingException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +34,7 @@ public class StudentServiceImpl implements StudentService {
   private final StudentRepository studentRepository;
   private final StudentMapper studentMapper;
   private final CourseRepository courseRepository;
+  private final MailService mailService;
 
   @Override
   @Transactional(readOnly = true)
@@ -41,7 +47,7 @@ public class StudentServiceImpl implements StudentService {
 
   @Override
   @Transactional
-  public void enrollToCourse(UUID studentId, UUID courseId) {
+  public void enrollToCourse(UUID studentId, UUID courseId) throws MessagingException {
     var getStudent = studentRepository.findById(studentId)
         .orElseThrow(() ->
             new ResponseStatusException(NOT_FOUND, String.format(STUDENT_NOT_FOUND, studentId)));
@@ -55,9 +61,17 @@ public class StudentServiceImpl implements StudentService {
       throw new ResponseStatusException(BAD_REQUEST, STUDENT_ALREADY_ENROLLED);
     }
     if (getStudent.getCoins().compareTo(getCourse.getPrice()) >= 0) {
+      var currentPaid = getCourse.getCoinsPaid();
+      getCourse.setCoinsPaid(currentPaid.add(getCourse.getPrice()));
       getStudent.getCourses().add(getCourse);
+      getCourse.getStudents().add(getStudent);
       getStudent.setCoins(getStudent.getCoins().subtract(getCourse.getPrice()));
+      courseRepository.save(getCourse);
       studentRepository.save(getStudent);
+      mailService.sendEmail(new String[]{getStudent.getEmail()},
+          FROM_MAIL,
+          String.format(WELCOME_TO_THE_COURSE, getCourse.getTitle()),
+          COURSE_ENROLLED_SUBJECT);
     } else {
       throw new ResponseStatusException(BAD_REQUEST, NOT_ENOUGH_COINS);
     }
@@ -66,14 +80,10 @@ public class StudentServiceImpl implements StudentService {
   @Transactional
   @Override
   public StudentDto createStudent(CreateStudentDto studentDto) {
-    var newStudent = Student.builder()
-        .firstName(studentDto.getFirstName())
-        .lastName(studentDto.getLastName())
-        .email(studentDto.getEmail())
-        .dateOfBirth(studentDto.getDateOfBirth())
-        .build();
-    var savedStudent=studentRepository.save(newStudent);
-    return studentMapper.toDto(savedStudent);
+    var newUser = studentMapper.toEntity(studentDto);
+    newUser.setCoins(BigDecimal.valueOf(10000));
+    newUser = studentRepository.save(newUser);
+    return studentMapper.toDto(newUser);
   }
 
   @Override
@@ -104,23 +114,12 @@ public class StudentServiceImpl implements StudentService {
 
   @Override
   @Transactional
-  public StudentDto updateStudent(UpdateStudentDto studentDto) {
-    var currentStudent = studentRepository.findById(studentDto.getId())
+  public StudentDto updateStudent(UUID id, UpdateStudentDto studentDto) {
+    var currentStudent = studentRepository.findById(id)
         .orElseThrow(() ->
-            new ResponseStatusException(NOT_FOUND, String.format(STUDENT_NOT_FOUND, studentDto.getId())));
-    if (!studentDto.getFirstName().equals(currentStudent.getFirstName())) {
-      currentStudent.setFirstName(studentDto.getFirstName());
-    }
-    if (!studentDto.getLastName().equals(currentStudent.getLastName())) {
-      currentStudent.setLastName(studentDto.getLastName());
-    }
-    if (!studentDto.getEmail().equals(currentStudent.getEmail())) {
-      currentStudent.setEmail(studentDto.getEmail());
-    }
-    if (!studentDto.getDateOfBirth().equals(currentStudent.getDateOfBirth())) {
-      currentStudent.setDateOfBirth(studentDto.getDateOfBirth());
-    }
-    var updatedStudent = studentRepository.save(currentStudent);
-    return studentMapper.toDto(updatedStudent);
+            new ResponseStatusException(NOT_FOUND, String.format(STUDENT_NOT_FOUND, id)));
+    studentMapper.update(studentDto, currentStudent);
+    studentRepository.save(currentStudent);
+    return studentMapper.toDto(currentStudent);
   }
 }

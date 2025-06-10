@@ -1,6 +1,6 @@
 spring:
   jpa:
-    open-in-view: false
+   open-in-view: false
   profiles:
     active: local
   liquibase:

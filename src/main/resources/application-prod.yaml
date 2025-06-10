@@ -36,5 +36,3 @@ smtp-ups:
   username: ${vcap.services.smtp-credentials.credentials.username}
   password: ${vcap.services.smtp-credentials.credentials.password}
 
-
-

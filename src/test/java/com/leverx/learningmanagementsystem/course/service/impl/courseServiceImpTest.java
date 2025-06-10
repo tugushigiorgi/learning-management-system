@@ -163,7 +163,6 @@ class CourseServiceImplTest {
   void updateCourse_shouldUpdateAndReturnDto() {
     // Given
     var updateDto = UpdateCourseDto.builder()
-        .id(courseId)
         .title("new")
         .description("Desc")
         .price(BigDecimal.valueOf(150))
@@ -175,7 +174,7 @@ class CourseServiceImplTest {
         .startDate(LocalDateTime.now().minusDays(1))
         .endDate(LocalDateTime.now())
         .isPublic(false).build();
-    var existingCourse  = Course.builder()
+    var existingCourse = Course.builder()
         .id(courseId)
         .title("old")
         .description("desc2")
@@ -189,7 +188,7 @@ class CourseServiceImplTest {
     when(courseMapper.toDto(updatedCourse)).thenReturn(expectedDto);
 
     // When
-    var result = courseService.updateCourse(updateDto);
+    var result = courseService.updateCourse(courseId, updateDto);
 
     // Then
     verify(courseRepository).save(courseCaptor.capture());
@@ -207,7 +206,6 @@ class CourseServiceImplTest {
   void updateCourse_shouldThrowException_whenNotFound() {
     // Given
     var dto = UpdateCourseDto.builder()
-        .id(courseId)
         .title("Title")
         .description("Desc")
         .price(BigDecimal.valueOf(99.0))
@@ -218,7 +216,7 @@ class CourseServiceImplTest {
     when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
     // When / Then
-    assertThrows(ResponseStatusException.class, () -> courseService.updateCourse(dto));
+    assertThrows(ResponseStatusException.class, () -> courseService.updateCourse(courseId, dto));
   }
 
   @Test
@@ -283,7 +281,7 @@ class CourseServiceImplTest {
     var exception = assertThrows(ResponseStatusException.class,
         () -> courseService.sendMailToEnrolledStudents(courseId)
     );
-    assertTrue(exception.getMessage().contains(String.format(COURSE_NOT_FOUND,courseId)));
+    assertTrue(exception.getMessage().contains(String.format(COURSE_NOT_FOUND, courseId)));
   }
 
   @Test

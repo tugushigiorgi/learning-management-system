@@ -3,11 +3,12 @@ package com.leverx.learningmanagementsystem.mail.util;
 import com.leverx.learningmanagementsystem.mail.SmtpObject;
 import jakarta.mail.MessagingException;
 import java.util.Properties;
+import lombok.experimental.UtilityClass;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
-
+@UtilityClass
 public class JavaMailSenderUtil {
 
   public static JavaMailSender getJavaMailSender(SmtpObject smtp) {

@@ -1,8 +1,10 @@
 package com.leverx.learningmanagementsystem.student;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.leverx.learningmanagementsystem.course.Course;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -16,7 +18,11 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Data
@@ -26,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "students")
 public class Student {
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
   private String firstName;
   private String lastName;
@@ -39,5 +45,8 @@ public class Student {
       joinColumns = @JoinColumn(name = "studentId"),
       inverseJoinColumns = @JoinColumn(name = "courseId")
   )
+  @JsonIgnore
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private Set<Course> courses = new HashSet<>();
 }
