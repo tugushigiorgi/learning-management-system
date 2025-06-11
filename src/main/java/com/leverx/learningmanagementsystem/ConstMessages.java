@@ -29,9 +29,6 @@ public final class ConstMessages {
   public static final String MISSING_PASSWORD = "Missing password";
   public static final String FLAG_INPUT_ERROR = "flag input error";
   public static final String FLAG_IS_INACTIVE = "flag is inactive";
-<<<<<<< HEAD
-=======
   public static final String WELCOME_TO_THE_COURSE = "Welcome to %s course!";
   public static final String COURSE_ENROLLED_SUBJECT = "Course Enrolled!, welcome to this awesome course!";
->>>>>>> Stage-2
 }
