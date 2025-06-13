@@ -10,3 +10,10 @@ spring:
 mailtrap:
   token: ${MailToken}
   id: ${inboxid}
+
+management:
+  endpoints:
+    web:
+#      base-path: /api/actuator
+
+

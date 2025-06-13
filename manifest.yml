@@ -13,8 +13,18 @@ applications:
       TARGET_RUNTIME: tomcat
       JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
       JBP_CONFIG_SAP_MACHINE_JDK : "{ version: 21.+ }"
-<<<<<<< HEAD
-=======
 
-
->>>>>>> Stage-2
+  - name: lms-router
+    random-route: true
+    path: web
+    memory: 1024M
+    env:
+      destinations: >
+        [
+          {
+            "name":"learningmanagementsystem",
+            "url":"https://learningmanagementsystem-intelligent-dugong-jv.cfapps.us10-001.hana.ondemand.com/",
+            "forwardAuthToken": true
+          }
+        ]
+    
