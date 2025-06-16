@@ -1,8 +1,8 @@
 logging:
   level:
-    root: INFO
-    javax.management.remote.rmi: WARN
-    sun.rmi: WARN
+    root: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate: WARN
 
 management:
   endpoints:
@@ -14,14 +14,16 @@ management:
       show-details: always
 
 spring:
-  h2:
-    console:
-     enabled: true
-  path: /h2-console
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-local.yaml
+    enabled: true
   datasource:
-    url: jdbc:h2:mem:learning_management_db
-    username: sa
-    password: password
-    driverClassName: org.h2.Driver
+    url: jdbc:postgresql://localhost:5432/lmsDb
+    username: ${postgresUser}
+    password: ${postgresPassword}
+    driverClassName: org.postgresql.Driver
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect

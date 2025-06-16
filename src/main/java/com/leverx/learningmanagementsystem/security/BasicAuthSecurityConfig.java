@@ -47,8 +47,8 @@ public class BasicAuthSecurityConfig {
   public SecurityFilterChain localSecurityFilter(HttpSecurity http) throws Exception {
     return http
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/actuator/**").hasRole("MANAGER")
-            .anyRequest().authenticated())
+         .requestMatchers("/actuator/**").hasRole("MANAGER")
+           .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
         .build();

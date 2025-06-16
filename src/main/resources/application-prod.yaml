@@ -4,8 +4,6 @@ management:
       exposure:
         include: health, info, loggers
 
-
-
 spring:
   datasource:
     url: ${vcap.services.lms-hdi.credentials.url}
@@ -20,7 +18,7 @@ spring:
         default_schema: ${vcap.services.lms-hdi.credentials.schema}
   liquibase:
     enabled: true
-    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    change-log: classpath:/db/changelog/changelog-prod.yaml
     contexts: dev
 
 sap:
