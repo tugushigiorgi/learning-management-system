@@ -62,8 +62,8 @@ public class StudentServiceImpl implements StudentService {
     }
     if (getStudent.getCoins().compareTo(getCourse.getPrice()) >= 0) {
       var currentPaid = getCourse.getCoinsPaid();
-      if(currentPaid != null) {
-        currentPaid=BigDecimal.ZERO;
+      if (currentPaid == null) {
+        currentPaid = BigDecimal.ZERO;
       }
       getCourse.setCoinsPaid(currentPaid.add(getCourse.getPrice()));
       getStudent.getCourses().add(getCourse);

@@ -19,13 +19,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/courses")
 @RequiredArgsConstructor
 @Slf4j
-@Profile("prod")
 @Tag(name = "Courses", description = "Endpoints for managing courses")
 public class CourseController {
 
@@ -64,6 +70,7 @@ public class CourseController {
 
   @Operation(summary = "Sends  mail to enrolled students")
   @PostMapping("/{courseId}/send-mail-to-students")
+  @Profile("prod")
   public ResponseEntity<String> sendMailToEnrolledStudents(
       @PathVariable @Parameter(description = "Course Id") UUID courseId) throws MessagingException {
     log.info("Sending mail to enrolled students for course ID: {}", courseId);

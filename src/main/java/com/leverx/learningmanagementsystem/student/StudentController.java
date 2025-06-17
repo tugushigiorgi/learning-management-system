@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class StudentController {
 
   @Operation(summary = "Enroll a student in a course")
   @PostMapping("/enroll/{studentId}/{courseId}")
+  @Profile("prod")
   public ResponseEntity<String> enrollToCourse(
       @PathVariable @Parameter(description = "ID of the student") UUID studentId,
       @PathVariable @Parameter(description = "ID of the course") UUID courseId) throws MessagingException {

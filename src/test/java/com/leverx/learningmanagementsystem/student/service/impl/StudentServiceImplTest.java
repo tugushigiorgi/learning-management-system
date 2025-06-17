@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,6 +17,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.leverx.learningmanagementsystem.course.Course;
 import com.leverx.learningmanagementsystem.course.CourseRepository;
+import com.leverx.learningmanagementsystem.mail.MailService;
 import com.leverx.learningmanagementsystem.mapper.StudentMapper;
 import com.leverx.learningmanagementsystem.student.Student;
 import com.leverx.learningmanagementsystem.student.StudentRepository;
@@ -48,6 +50,9 @@ class StudentServiceImplTest {
 
   @Mock
   private StudentMapper studentMapper;
+
+  @Mock
+  private MailService mailService;
 
   @Mock
   private CourseRepository courseRepository;
@@ -86,6 +91,7 @@ class StudentServiceImplTest {
         .courses(new HashSet<>())
         .build();
   }
+
   @Test
   void getEnrolledCourseCount_shouldReturnSize() {
     // Arrange
@@ -107,13 +113,22 @@ class StudentServiceImplTest {
     // Act & Assert
     var exception = assertThrows(ResponseStatusException.class,
         () -> studentService.getEnrolledCourseCount(studentId));
-    assertEquals(String.format(STUDENT_NOT_FOUND,studentId), exception.getReason());
+    assertEquals(String.format(STUDENT_NOT_FOUND, studentId), exception.getReason());
     assertEquals(NOT_FOUND, exception.getStatusCode());
   }
 
   @Test
   void enrollToCourse_shouldSucceed_whenEnoughCoinsAndNotEnrolled() throws MessagingException {
     // Arrange
+    // Initialize student's coins and courses set
+    student.setCoins(BigDecimal.valueOf(100));
+    student.setCourses(new HashSet<>());
+
+    // Initialize
+    course.setPrice(BigDecimal.valueOf(50));
+    course.setCoinsPaid(null);
+    course.setStudents(new HashSet<>());
+
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
 
@@ -121,9 +136,10 @@ class StudentServiceImplTest {
     studentService.enrollToCourse(studentId, courseId);
 
     // Assert
-    assertTrue(student.getCourses().contains(course));
-    assertEquals(BigDecimal.valueOf(50), student.getCoins());
+    assertTrue(student.getCourses().contains(course), "Student should have the course enrolled");
+    assertEquals(BigDecimal.valueOf(50), student.getCoins(), "Student's coins should be reduced by course price");
     verify(studentRepository).save(student);
+    verify(courseRepository).save(course);
   }
 
   @Test
@@ -162,7 +178,7 @@ class StudentServiceImplTest {
     // Act & Assert
     var exception = assertThrows(ResponseStatusException.class,
         () -> studentService.enrollToCourse(studentId, courseId));
-    assertEquals(String.format(STUDENT_NOT_FOUND,studentId), exception.getReason());
+    assertEquals(String.format(STUDENT_NOT_FOUND, studentId), exception.getReason());
     assertEquals(NOT_FOUND, exception.getStatusCode());
   }
 
@@ -175,7 +191,7 @@ class StudentServiceImplTest {
     // Act & Assert
     var exception = assertThrows(ResponseStatusException.class,
         () -> studentService.enrollToCourse(studentId, courseId));
-    assertEquals(String.format(COURSE_NOT_FOUND,courseId), exception.getReason());
+    assertEquals(String.format(COURSE_NOT_FOUND, courseId), exception.getReason());
     assertEquals(NOT_FOUND, exception.getStatusCode());
   }
 
@@ -195,6 +211,7 @@ class StudentServiceImplTest {
         .lastName("Tughushi")
         .email("giorgi@gmail.com")
         .dateOfBirth(LocalDate.of(2001, 1, 1))
+        .coins(BigDecimal.valueOf(10000)) // Important: coins set here
         .build();
 
     var expectedDto = StudentDto.builder()
@@ -202,8 +219,10 @@ class StudentServiceImplTest {
         .lastName("Tughushi")
         .email("giorgi@gmail.com")
         .dateOfBirth(LocalDate.of(2001, 1, 1))
+        .coins(BigDecimal.valueOf(10000)) // Should match service behavior
         .build();
 
+    when(studentMapper.toEntity(dto)).thenReturn(savedStudent); // Add this
     when(studentRepository.save(any(Student.class))).thenReturn(savedStudent);
     when(studentMapper.toDto(savedStudent)).thenReturn(expectedDto);
 
@@ -217,6 +236,7 @@ class StudentServiceImplTest {
     assertEquals("Tughushi", capturedStudent.getLastName());
     assertEquals("giorgi@gmail.com", capturedStudent.getEmail());
     assertEquals(LocalDate.of(2001, 1, 1), capturedStudent.getDateOfBirth());
+    assertEquals(BigDecimal.valueOf(10000), capturedStudent.getCoins()); // Verify coins
     assertEquals(expectedDto, result);
   }
 
@@ -285,7 +305,7 @@ class StudentServiceImplTest {
     // Act & Assert
     var exception = assertThrows(ResponseStatusException.class,
         () -> studentService.deleteById(studentId));
-    assertEquals(String.format(STUDENT_NOT_FOUND,studentId), exception.getReason());
+    assertEquals(String.format(STUDENT_NOT_FOUND, studentId), exception.getReason());
     assertEquals(NOT_FOUND, exception.getStatusCode());
   }
 
@@ -323,11 +343,22 @@ class StudentServiceImplTest {
         .build();
 
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(existingStudent));
-    when(studentRepository.save(any(Student.class))).thenReturn(updatedStudent);
-    when(studentMapper.toDto(updatedStudent)).thenReturn(expectedDto);
+    doAnswer(invocation -> {
+      // simulate mapper update: apply changes to existingStudent
+      UpdateStudentDto dto = invocation.getArgument(0);
+      Student entity = invocation.getArgument(1);
+      entity.setFirstName(dto.getFirstName());
+      entity.setLastName(dto.getLastName());
+      entity.setEmail(dto.getEmail());
+      entity.setDateOfBirth(dto.getDateOfBirth());
+      return null;
+    }).when(studentMapper).update(updateDto, existingStudent);
+
+    when(studentRepository.save(existingStudent)).thenReturn(existingStudent);
+    when(studentMapper.toDto(existingStudent)).thenReturn(expectedDto);
 
     // Act
-    var result = studentService.updateStudent(studentId,updateDto);
+    var result = studentService.updateStudent(studentId, updateDto);
 
     // Assert
     verify(studentRepository).save(studentCaptor.capture());
@@ -339,6 +370,7 @@ class StudentServiceImplTest {
     assertEquals(expectedDto, result);
   }
 
+
   @Test
   void updateStudent_shouldThrow_ifNotFound() {
     // Arrange
@@ -346,8 +378,8 @@ class StudentServiceImplTest {
 
     // Act & Assert
     var exception = assertThrows(ResponseStatusException.class,
-        () -> studentService.updateStudent(studentId,updateStudentDto));
-    assertEquals(String.format(STUDENT_NOT_FOUND,studentId), exception.getReason());
+        () -> studentService.updateStudent(studentId, updateStudentDto));
+    assertEquals(String.format(STUDENT_NOT_FOUND, studentId), exception.getReason());
     assertEquals(NOT_FOUND, exception.getStatusCode());
     verify(studentRepository, never()).save(any());
   }

@@ -1,5 +1,6 @@
 package com.leverx.learningmanagementsystem.integrationTests.course;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,6 +60,7 @@ public class CourseControllerIntegrationTest {
 
     // Act & Assert: perform GET request and verify response contains both courses
     mockMvc.perform(get("/api/courses")
+            .with(httpBasic("user", "password"))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.length()").value(2))

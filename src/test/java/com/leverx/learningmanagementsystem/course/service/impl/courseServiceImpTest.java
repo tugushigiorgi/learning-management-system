@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -18,8 +20,8 @@ import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
 import com.leverx.learningmanagementsystem.coursesettings.CourseSettings;
-import com.leverx.learningmanagementsystem.mail.impl.MailTrapServiceImpl;
 import com.leverx.learningmanagementsystem.mapper.CourseMapper;
+import com.leverx.learningmanagementsystem.mapper.CourseSettingsMapper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,11 +46,11 @@ class CourseServiceImplTest {
   @Mock
   private CourseMapper courseMapper;
 
-  @Mock
-  private MailTrapServiceImpl mailTrapImp;
-
   @InjectMocks
   private CourseServiceImpl courseService;
+
+  @Mock
+  private CourseSettingsMapper courseSettingsMapper;
 
   private UUID courseId;
   private Course course;
@@ -83,10 +85,38 @@ class CourseServiceImplTest {
         .startDate(LocalDateTime.now())
         .endDate(LocalDateTime.now().plusDays(5))
         .build();
-    var savedCourse = Course.builder().title(dto.getTitle()).build();
-    var courseDto = new CourseDto();
-    when(courseRepository.save(any())).thenReturn(savedCourse);
-    when(courseMapper.toDto(savedCourse)).thenReturn(courseDto);
+
+    var mappedCourse = Course.builder()
+        .title(dto.getTitle())
+        .description(dto.getDescription())
+        .price(dto.getPrice())
+        .build();
+
+    var mappedSettings = CourseSettings.builder()
+        .isPublic(dto.getIsPublic())
+        .startDate(dto.getStartDate())
+        .endDate(dto.getEndDate())
+        .build();
+
+    var savedCourse = Course.builder()
+        .title(dto.getTitle())
+        .description(dto.getDescription())
+        .price(dto.getPrice())
+        .coinsPaid(BigDecimal.ZERO)
+        .settings(mappedSettings)
+        .build();
+
+    var expectedDto = CourseDto.builder()
+        .title(savedCourse.getTitle())
+        .description(savedCourse.getDescription())
+        .price(savedCourse.getPrice())
+        .coinsPaid(savedCourse.getCoinsPaid())
+        .build();
+
+    when(courseMapper.toEntity(dto)).thenReturn(mappedCourse);
+    when(courseSettingsMapper.toEntity(dto)).thenReturn(mappedSettings);
+    when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
+    when(courseMapper.toDto(savedCourse)).thenReturn(expectedDto);
 
     // When
     var result = courseService.createCourse(dto);
@@ -94,9 +124,15 @@ class CourseServiceImplTest {
     // Then
     verify(courseRepository).save(courseCaptor.capture());
     var captured = courseCaptor.getValue();
+
     assertEquals(dto.getTitle(), captured.getTitle());
-    assertEquals(courseDto, result);
+    assertEquals(dto.getDescription(), captured.getDescription());
+    assertEquals(dto.getPrice(), captured.getPrice());
+    assertEquals(BigDecimal.ZERO, captured.getCoinsPaid());
+    assertEquals(mappedSettings, captured.getSettings());
+    assertEquals(expectedDto, result);
   }
+
 
   @Test
   void getCourseById_shouldReturnCourseDto_whenExists() {
@@ -170,22 +206,43 @@ class CourseServiceImplTest {
         .endDate(LocalDateTime.now().plusDays(1))
         .isPublic(false)
         .build();
-    var settings = CourseSettings.builder()
+
+    var existingSettings = CourseSettings.builder()
         .startDate(LocalDateTime.now().minusDays(1))
         .endDate(LocalDateTime.now())
-        .isPublic(false).build();
+        .isPublic(true)
+        .build();
+
     var existingCourse = Course.builder()
         .id(courseId)
         .title("old")
         .description("desc2")
         .price(BigDecimal.ZERO)
-        .settings(settings)
+        .settings(existingSettings)
         .build();
-    var updatedCourse = Course.builder().id(courseId).build();
-    var expectedDto = new CourseDto();
+
+    var expectedDto = CourseDto.builder()
+        .id(courseId)
+        .title(updateDto.getTitle())
+        .description(updateDto.getDescription())
+        .price(updateDto.getPrice())
+        .build();
+
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(existingCourse));
-    when(courseRepository.save(any())).thenReturn(updatedCourse);
-    when(courseMapper.toDto(updatedCourse)).thenReturn(expectedDto);
+    doAnswer(invocation -> {
+      var dto = invocation.getArgument(0, UpdateCourseDto.class);
+      var entity = invocation.getArgument(1, Course.class);
+      entity.setTitle(dto.getTitle());
+      entity.setDescription(dto.getDescription());
+      entity.setPrice(dto.getPrice());
+      entity.getSettings().setStartDate(dto.getStartDate());
+      entity.getSettings().setEndDate(dto.getEndDate());
+      entity.getSettings().setIsPublic(dto.getIsPublic());
+      return null;
+    }).when(courseMapper).update(eq(updateDto), eq(existingCourse));
+
+    when(courseRepository.save(existingCourse)).thenReturn(existingCourse);
+    when(courseMapper.toDto(existingCourse)).thenReturn(expectedDto);
 
     // When
     var result = courseService.updateCourse(courseId, updateDto);
@@ -193,14 +250,17 @@ class CourseServiceImplTest {
     // Then
     verify(courseRepository).save(courseCaptor.capture());
     var savedCourse = courseCaptor.getValue();
+
     assertEquals(updateDto.getTitle(), savedCourse.getTitle());
     assertEquals(updateDto.getDescription(), savedCourse.getDescription());
     assertEquals(updateDto.getPrice(), savedCourse.getPrice());
     assertEquals(updateDto.getStartDate(), savedCourse.getSettings().getStartDate());
     assertEquals(updateDto.getEndDate(), savedCourse.getSettings().getEndDate());
     assertEquals(updateDto.getIsPublic(), savedCourse.getSettings().getIsPublic());
+
     assertEquals(expectedDto, result);
   }
+
 
   @Test
   void updateCourse_shouldThrowException_whenNotFound() {
