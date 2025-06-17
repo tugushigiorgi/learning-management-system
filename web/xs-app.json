@@ -1,9 +1,0 @@
-{
-  "routes": [
-    {
-      "source": "^/learningmanagementsystem/(.*)$",
-      "target": "$1",
-      "destination": "learningmanagementsystem"
-    }
-  ]
-}
