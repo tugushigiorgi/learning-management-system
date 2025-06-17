@@ -23,7 +23,7 @@ import com.leverx.learningmanagementsystem.student.Student;
 import com.leverx.learningmanagementsystem.student.StudentRepository;
 import com.leverx.learningmanagementsystem.student.dto.CreateStudentDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;
-import com.leverx.learningmanagementsystem.student.dto.UpdateStudentDto;
+import com.leverx.learningmanagementsystem.student.dto.PatchStudentDto;
 import jakarta.mail.MessagingException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -63,7 +63,7 @@ class StudentServiceImplTest {
   @Captor
   private ArgumentCaptor<Student> studentCaptor;
 
-  private UpdateStudentDto updateStudentDto;
+  private PatchStudentDto patchStudentDto;
   private UUID studentId;
   private UUID courseId;
   private Student student;
@@ -73,7 +73,7 @@ class StudentServiceImplTest {
   void setUp() {
     studentId = UUID.randomUUID();
     courseId = UUID.randomUUID();
-    updateStudentDto = UpdateStudentDto.builder()
+    patchStudentDto = PatchStudentDto.builder()
         .firstName("New")
         .lastName("Name")
         .email("new@mail.com")
@@ -120,7 +120,7 @@ class StudentServiceImplTest {
   @Test
   void enrollToCourse_shouldSucceed_whenEnoughCoinsAndNotEnrolled() throws MessagingException {
     // Arrange
-    // Initialize student's coins and courses set
+    // Initialize
     student.setCoins(BigDecimal.valueOf(100));
     student.setCourses(new HashSet<>());
 
@@ -320,7 +320,7 @@ class StudentServiceImplTest {
         .dateOfBirth(LocalDate.of(1995, 1, 1))
         .build();
 
-    var updateDto = UpdateStudentDto.builder()
+    var updateDto = PatchStudentDto.builder()
         .firstName("New")
         .lastName("User")
         .email("new@email.com")
@@ -345,7 +345,7 @@ class StudentServiceImplTest {
     when(studentRepository.findById(studentId)).thenReturn(Optional.of(existingStudent));
     doAnswer(invocation -> {
       // simulate mapper update: apply changes to existingStudent
-      UpdateStudentDto dto = invocation.getArgument(0);
+      PatchStudentDto dto = invocation.getArgument(0);
       Student entity = invocation.getArgument(1);
       entity.setFirstName(dto.getFirstName());
       entity.setLastName(dto.getLastName());
@@ -370,7 +370,6 @@ class StudentServiceImplTest {
     assertEquals(expectedDto, result);
   }
 
-
   @Test
   void updateStudent_shouldThrow_ifNotFound() {
     // Arrange
@@ -378,10 +377,9 @@ class StudentServiceImplTest {
 
     // Act & Assert
     var exception = assertThrows(ResponseStatusException.class,
-        () -> studentService.updateStudent(studentId, updateStudentDto));
+        () -> studentService.updateStudent(studentId, patchStudentDto));
     assertEquals(String.format(STUDENT_NOT_FOUND, studentId), exception.getReason());
     assertEquals(NOT_FOUND, exception.getStatusCode());
     verify(studentRepository, never()).save(any());
   }
-
 }

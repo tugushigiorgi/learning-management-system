@@ -1,9 +1,9 @@
 package com.leverx.learningmanagementsystem.course.service;
 
 import com.leverx.learningmanagementsystem.course.dto.CourseDto;
+import com.leverx.learningmanagementsystem.course.dto.CourseUpdateDto;
 import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
-import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
 import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +22,7 @@ public interface CourseService {
 
   void deleteById(UUID id);
 
-  CourseDto updateCourse(UUID id,UpdateCourseDto courseDto);
+  CourseDto updateCourse(UUID id, CourseUpdateDto courseDto);
 
   DetailedCourseDto getDetailedCourseById(UUID id);
 

@@ -18,7 +18,7 @@ import com.leverx.learningmanagementsystem.course.CourseRepository;
 import com.leverx.learningmanagementsystem.course.dto.CourseDto;
 import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
-import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
+import com.leverx.learningmanagementsystem.course.dto.PatchCourseDto;
 import com.leverx.learningmanagementsystem.coursesettings.CourseSettings;
 import com.leverx.learningmanagementsystem.mapper.CourseMapper;
 import com.leverx.learningmanagementsystem.mapper.CourseSettingsMapper;
@@ -133,7 +133,6 @@ class CourseServiceImplTest {
     assertEquals(expectedDto, result);
   }
 
-
   @Test
   void getCourseById_shouldReturnCourseDto_whenExists() {
     // Given
@@ -198,7 +197,7 @@ class CourseServiceImplTest {
   @Test
   void updateCourse_shouldUpdateAndReturnDto() {
     // Given
-    var updateDto = UpdateCourseDto.builder()
+    var updateDto = PatchCourseDto.builder()
         .title("new")
         .description("Desc")
         .price(BigDecimal.valueOf(150))
@@ -230,7 +229,7 @@ class CourseServiceImplTest {
 
     when(courseRepository.findById(courseId)).thenReturn(Optional.of(existingCourse));
     doAnswer(invocation -> {
-      var dto = invocation.getArgument(0, UpdateCourseDto.class);
+      var dto = invocation.getArgument(0, PatchCourseDto.class);
       var entity = invocation.getArgument(1, Course.class);
       entity.setTitle(dto.getTitle());
       entity.setDescription(dto.getDescription());
@@ -261,11 +260,10 @@ class CourseServiceImplTest {
     assertEquals(expectedDto, result);
   }
 
-
   @Test
   void updateCourse_shouldThrowException_whenNotFound() {
     // Given
-    var dto = UpdateCourseDto.builder()
+    var dto = PatchCourseDto.builder()
         .title("Title")
         .description("Desc")
         .price(BigDecimal.valueOf(99.0))

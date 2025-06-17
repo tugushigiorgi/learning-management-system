@@ -11,9 +11,9 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 
 import com.leverx.learningmanagementsystem.course.CourseRepository;
 import com.leverx.learningmanagementsystem.course.dto.CourseDto;
+import com.leverx.learningmanagementsystem.course.dto.CourseUpdateDto;
 import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
-import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
 import com.leverx.learningmanagementsystem.course.service.CourseService;
 import com.leverx.learningmanagementsystem.mail.impl.DynamicMailServiceImpl;
 import com.leverx.learningmanagementsystem.mapper.CourseMapper;
@@ -97,7 +97,7 @@ public class CourseServiceImpl implements CourseService {
 
   @Override
   @Transactional
-  public CourseDto updateCourse(UUID id, UpdateCourseDto courseDto) {
+  public CourseDto updateCourse(UUID id, CourseUpdateDto courseDto) {
     var currentCourse = courseRepository.findById(id)
         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format(COURSE_NOT_FOUND, id)));
     courseMapper.update(courseDto, currentCourse);

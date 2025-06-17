@@ -31,4 +31,10 @@ public final class ConstMessages {
   public static final String FLAG_IS_INACTIVE = "flag is inactive";
   public static final String WELCOME_TO_THE_COURSE = "Welcome to %s course!";
   public static final String COURSE_ENROLLED_SUBJECT = "Course Enrolled!, welcome to this awesome course!";
+  public static final String IN_MEMORY_USER_NAME = "user";
+  public static final String IN_MEMORY_USER_PASSWORD = "password";
+  public static final String IN_MEMORY_USER_ROLE = "USER";
+  public static final String IN_MEMORY_MANAGER_ROLE = "MANAGER";
+  public static final String IN_MEMORY_MANAGER_NAME = "manager";
+  public static final String IN_MEMORY_MANAGER_PASSWORD = "managerpass";
 }

@@ -2,9 +2,9 @@ package com.leverx.learningmanagementsystem.mapper;
 
 import com.leverx.learningmanagementsystem.course.Course;
 import com.leverx.learningmanagementsystem.course.dto.CourseDto;
+import com.leverx.learningmanagementsystem.course.dto.CourseUpdateDto;
 import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
-import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -37,7 +37,7 @@ public interface CourseMapper {
   DetailedCourseDto toDetailedDto(Course entity);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  Course update(UpdateCourseDto dto, @MappingTarget Course entity);
+  Course update(CourseUpdateDto dto, @MappingTarget Course entity);
 
   @Mappings({
       @Mapping(source = "title", target = "title"),

@@ -20,7 +20,7 @@ import com.leverx.learningmanagementsystem.lesson.Lesson;
 import com.leverx.learningmanagementsystem.lesson.LessonRepository;
 import com.leverx.learningmanagementsystem.lesson.dto.CreateLessonDto;
 import com.leverx.learningmanagementsystem.lesson.dto.LessonDto;
-import com.leverx.learningmanagementsystem.lesson.dto.UpdateLessonDto;
+import com.leverx.learningmanagementsystem.lesson.dto.PatchLessonDto;
 import com.leverx.learningmanagementsystem.mapper.LessonMapper;
 import java.util.HashSet;
 import java.util.List;
@@ -190,7 +190,7 @@ class LessonServiceImplTest {
   @Test
   void updateLessons_shouldUpdateAndReturnDto() {
     // Given
-    var dto = UpdateLessonDto.builder()
+    var dto = PatchLessonDto.builder()
         .title("Updated Title")
         .duration(45)
         .build();
@@ -212,7 +212,7 @@ class LessonServiceImplTest {
 
 
     doAnswer(invocation -> {
-      UpdateLessonDto source = invocation.getArgument(0);
+      PatchLessonDto source = invocation.getArgument(0);
       Lesson target = invocation.getArgument(1);
       target.setTitle(source.getTitle());
       target.setDuration(source.getDuration());
@@ -231,11 +231,10 @@ class LessonServiceImplTest {
     assertEquals(expectedDto, result);
   }
 
-
   @Test
   void updateLessons_shouldThrowIfNotFound() {
     // Given
-    var dto = UpdateLessonDto.builder()
+    var dto = PatchLessonDto.builder()
         .title("programming course")
         .duration(12)
         .build();

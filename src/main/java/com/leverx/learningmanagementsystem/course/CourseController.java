@@ -6,7 +6,8 @@ import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.ha
 
 import com.leverx.learningmanagementsystem.course.dto.CourseDto;
 import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
-import com.leverx.learningmanagementsystem.course.dto.UpdateCourseDto;
+import com.leverx.learningmanagementsystem.course.dto.PatchCourseDto;
+import com.leverx.learningmanagementsystem.course.dto.ReplaceCourseDto;
 import com.leverx.learningmanagementsystem.course.service.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -87,13 +89,23 @@ public class CourseController {
     return ResponseEntity.noContent().build();
   }
 
-  @Operation(summary = "Update an existing course")
+  @Operation(summary = "Update an existing course completely")
   @PutMapping("/{id}")
-  public ResponseEntity<CourseDto> updateCourse(
+  public ResponseEntity<CourseDto> replaceCourse(
       @PathVariable @Parameter(description = "Course id to update") UUID id,
-      @RequestBody @Valid @Parameter(description = "Course update data") UpdateCourseDto courseDtoDto) {
-    log.info("Updating course: {}", courseDtoDto);
-    var updatedCourse = courseService.updateCourse(id, courseDtoDto);
+      @RequestBody @Valid @Parameter(description = "Complete course update data") ReplaceCourseDto courseDto) {
+    log.info("Replacing course: {}", courseDto);
+    var updatedCourse = courseService.updateCourse(id, courseDto);
+    return ResponseEntity.ok(updatedCourse);
+  }
+
+  @Operation(summary = "Partially update an existing course")
+  @PatchMapping("/{id}")
+  public ResponseEntity<CourseDto> patchCourse(
+      @PathVariable @Parameter(description = "Course id to update") UUID id,
+      @RequestBody @Valid @Parameter(description = "Partial course update data") PatchCourseDto courseDto) {
+    log.info("Patching course: {}", courseDto);
+    var updatedCourse = courseService.updateCourse(id, courseDto);
     return ResponseEntity.ok(updatedCourse);
   }
 }

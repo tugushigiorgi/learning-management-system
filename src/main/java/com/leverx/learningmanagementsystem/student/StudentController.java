@@ -5,8 +5,9 @@ import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.ha
 import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.handleList;
 
 import com.leverx.learningmanagementsystem.student.dto.CreateStudentDto;
+import com.leverx.learningmanagementsystem.student.dto.PatchStudentDto;
+import com.leverx.learningmanagementsystem.student.dto.ReplaceStudentDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;
-import com.leverx.learningmanagementsystem.student.dto.UpdateStudentDto;
 import com.leverx.learningmanagementsystem.student.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -84,10 +85,20 @@ public class StudentController {
 
   @Operation(summary = "Update an existing student")
   @PutMapping("/{id}")
-  public ResponseEntity<StudentDto> updateStudent(
+  public ResponseEntity<StudentDto> replaceStudent(
       @PathVariable @Parameter(description = "Student id to update") UUID id,
-      @RequestBody @Valid @Parameter(description = "Student update data") UpdateStudentDto studentDto) {
+      @RequestBody @Valid @Parameter(description = "Student update data") ReplaceStudentDto studentDto) {
     log.info("Updating student: {}", studentDto);
+    var updatedStudent = studentService.updateStudent(id, studentDto);
+    return ResponseEntity.ok(updatedStudent);
+  }
+
+  @Operation(summary = "Partially Update an existing student")
+  @PatchMapping("/{id}")
+  public ResponseEntity<StudentDto> patchStudent(
+      @PathVariable @Parameter(description = "Student id to update") UUID id,
+      @RequestBody @Valid @Parameter(description = "Student update data") PatchStudentDto studentDto) {
+    log.info("Patching student: {}", studentDto);
     var updatedStudent = studentService.updateStudent(id, studentDto);
     return ResponseEntity.ok(updatedStudent);
   }

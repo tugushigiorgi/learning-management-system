@@ -1,5 +1,12 @@
 package com.leverx.learningmanagementsystem.security;
 
+import static com.leverx.learningmanagementsystem.ConstMessages.IN_MEMORY_MANAGER_NAME;
+import static com.leverx.learningmanagementsystem.ConstMessages.IN_MEMORY_MANAGER_PASSWORD;
+import static com.leverx.learningmanagementsystem.ConstMessages.IN_MEMORY_MANAGER_ROLE;
+import static com.leverx.learningmanagementsystem.ConstMessages.IN_MEMORY_USER_NAME;
+import static com.leverx.learningmanagementsystem.ConstMessages.IN_MEMORY_USER_PASSWORD;
+import static com.leverx.learningmanagementsystem.ConstMessages.IN_MEMORY_USER_ROLE;
+
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,14 +36,14 @@ public class BasicAuthSecurityConfig {
 
   @Bean
   public UserDetailsService userDetailsService() {
-    var user = User.withUsername("user")
-        .password("password")
-        .roles("USER")
+    var user = User.withUsername(IN_MEMORY_USER_NAME)
+        .password(IN_MEMORY_USER_PASSWORD)
+        .roles(IN_MEMORY_USER_ROLE)
         .build();
 
-    var manager = User.withUsername("manager")
-        .password("managerpass")
-        .roles("MANAGER")
+    var manager = User.withUsername(IN_MEMORY_MANAGER_NAME)
+        .password(IN_MEMORY_MANAGER_PASSWORD)
+        .roles(IN_MEMORY_MANAGER_ROLE)
         .build();
 
     return new InMemoryUserDetailsManager(user, manager);
@@ -47,7 +54,7 @@ public class BasicAuthSecurityConfig {
   public SecurityFilterChain localSecurityFilter(HttpSecurity http) throws Exception {
     return http
         .authorizeHttpRequests(auth -> auth
-         .requestMatchers("/actuator/**").hasRole("MANAGER")
+         .requestMatchers("/actuator/**").hasRole(IN_MEMORY_MANAGER_ROLE)
            .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
@@ -59,7 +66,7 @@ public class BasicAuthSecurityConfig {
   public SecurityFilterChain basicAuthFilterChain(HttpSecurity http) throws Exception {
     return http.securityMatcher("/actuator/**")
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/actuator/**").hasRole("MANAGER")
+            .requestMatchers("/actuator/**").hasRole(IN_MEMORY_MANAGER_ROLE)
             .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)

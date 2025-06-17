@@ -16,7 +16,7 @@ import com.leverx.learningmanagementsystem.mapper.StudentMapper;
 import com.leverx.learningmanagementsystem.student.StudentRepository;
 import com.leverx.learningmanagementsystem.student.dto.CreateStudentDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;
-import com.leverx.learningmanagementsystem.student.dto.UpdateStudentDto;
+import com.leverx.learningmanagementsystem.student.dto.StudentUpdateDto;
 import com.leverx.learningmanagementsystem.student.service.StudentService;
 import jakarta.mail.MessagingException;
 import java.math.BigDecimal;
@@ -117,7 +117,7 @@ public class StudentServiceImpl implements StudentService {
 
   @Override
   @Transactional
-  public StudentDto updateStudent(UUID id, UpdateStudentDto studentDto) {
+  public StudentDto updateStudent(UUID id, StudentUpdateDto studentDto) {
     var currentStudent = studentRepository.findById(id)
         .orElseThrow(() ->
             new ResponseStatusException(NOT_FOUND, String.format(STUDENT_NOT_FOUND, id)));
