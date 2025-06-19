@@ -33,7 +33,3 @@ smtp-ups:
   username: ${vcap.services.smtp-credentials.credentials.username}
   password: ${vcap.services.smtp-credentials.credentials.password}
 
-logging:
-  level:
-    org.springframework.security: DEBUG
-    com.sap.cloud.security: DEBUG

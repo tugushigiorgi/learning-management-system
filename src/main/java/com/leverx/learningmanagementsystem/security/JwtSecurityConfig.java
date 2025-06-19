@@ -36,6 +36,7 @@ public class JwtSecurityConfig {
         .build();
   }
 
+  @Bean
   @Profile("prod")
   Converter<Jwt, AbstractAuthenticationToken> getJwtAuthoritiesConverter() {
     TokenAuthenticationConverter converter = new TokenAuthenticationConverter(xsuaaServiceConfiguration);
