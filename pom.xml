@@ -26,6 +26,8 @@
         <sap.loggind.version>3.8.4</sap.loggind.version>
         <http.client.version>4.5.14</http.client.version>
         <sapdest.version>5.18.0</sapdest.version>
+        <sap.security.version>3.5.0</sap.security.version>
+        <postgres.version>42.7.7</postgres.version>
     </properties>
     <dependencies>
         <dependency>
@@ -114,6 +116,25 @@
             <groupId>com.sap.cloud.sdk.cloudplatform</groupId>
             <artifactId>cloudplatform-connectivity-scp-cf</artifactId>
             <version>${sapdest.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sap.cloud.security.xsuaa</groupId>
+            <artifactId>xsuaa-spring-boot-starter</artifactId>
+            <version>${sap.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgres.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>

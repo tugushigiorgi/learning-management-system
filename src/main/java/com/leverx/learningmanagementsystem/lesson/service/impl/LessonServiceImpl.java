@@ -10,7 +10,7 @@ import com.leverx.learningmanagementsystem.course.CourseRepository;
 import com.leverx.learningmanagementsystem.lesson.LessonRepository;
 import com.leverx.learningmanagementsystem.lesson.dto.CreateLessonDto;
 import com.leverx.learningmanagementsystem.lesson.dto.LessonDto;
-import com.leverx.learningmanagementsystem.lesson.dto.UpdateLessonDto;
+import com.leverx.learningmanagementsystem.lesson.dto.LessonUpdateDto;
 import com.leverx.learningmanagementsystem.lesson.service.LessonService;
 import com.leverx.learningmanagementsystem.mapper.LessonMapper;
 import java.util.List;
@@ -65,7 +65,7 @@ public class LessonServiceImpl implements LessonService {
 
   @Override
   @Transactional
-  public LessonDto updateLessons(UUID id, UpdateLessonDto lessonDto) {
+  public LessonDto updateLessons(UUID id, LessonUpdateDto lessonDto) {
     var currentLesson = lessonRepository.findById(id)
         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format(LESSON_NOT_FOUND, id)));
     lessonMapper.update(lessonDto, currentLesson);

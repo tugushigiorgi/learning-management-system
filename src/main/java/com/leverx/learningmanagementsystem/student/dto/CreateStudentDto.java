@@ -15,19 +15,19 @@ import lombok.Setter;
 @Builder
 public class CreateStudentDto {
 
-  @NotBlank(message = "First name is required")
-  @Size(min = 1, max = 50, message = "First name must be between 1 and 50 characters")
+  @NotBlank(message = "first name is required")
+  @Size(min = 1, max = 50, message = "first name must be between 1 and 50 characters")
   private String firstName;
 
-  @NotBlank(message = "Last name is required")
-  @Size(min = 1, max = 50, message = "Last name must be between 1 and 50 characters")
+  @NotBlank(message = "last name is required")
+  @Size(min = 1, max = 50, message = "last name must be between 1 and 50 characters")
   private String lastName;
 
-  @NotBlank(message = "Email is required")
-  @Email(message = "Email must be valid")
+  @NotBlank(message = "email is required")
+  @Email(message = "email must be valid")
   private String email;
 
-  @NotNull(message = "Date of birth is required")
-  @Past(message = "Date of birth must be in the past")
+  @NotNull(message = "date of birth is required")
+  @Past(message = "date of birth must be in the past")
   private LocalDate dateOfBirth;
 }
