@@ -37,4 +37,8 @@ public final class ConstMessages {
   public static final String IN_MEMORY_MANAGER_ROLE = "MANAGER";
   public static final String IN_MEMORY_MANAGER_NAME = "manager";
   public static final String IN_MEMORY_MANAGER_PASSWORD = "managerpass";
+  public static final String UNSUPPORTED_EXCEPTION = "Not supported yet.";
+  public static final String STUDENT_UNSUPPORTED_MAIL_EXCEPTION = "Unsupported operation for email sending";
+  public static final String COURSE_UNSUPPORTED_MAIL_EXCEPTION = "Unsupported operation for course email sending";
 }
+

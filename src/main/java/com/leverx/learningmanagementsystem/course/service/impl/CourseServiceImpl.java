@@ -4,6 +4,7 @@ import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_NEWS;
 import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_NEWS_SUBJECT;
 import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_NOT_FOUND;
 import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_STARTING_TOMORROW;
+import static com.leverx.learningmanagementsystem.ConstMessages.COURSE_UNSUPPORTED_MAIL_EXCEPTION;
 import static com.leverx.learningmanagementsystem.ConstMessages.FROM_MAIL;
 import static com.leverx.learningmanagementsystem.ConstMessages.STUDENTS_NOT_FOUND;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -15,7 +16,7 @@ import com.leverx.learningmanagementsystem.course.dto.CourseUpdateDto;
 import com.leverx.learningmanagementsystem.course.dto.CreateCourseDto;
 import com.leverx.learningmanagementsystem.course.dto.DetailedCourseDto;
 import com.leverx.learningmanagementsystem.course.service.CourseService;
-import com.leverx.learningmanagementsystem.mail.impl.DynamicMailServiceImpl;
+import com.leverx.learningmanagementsystem.mail.MailService;
 import com.leverx.learningmanagementsystem.mapper.CourseMapper;
 import com.leverx.learningmanagementsystem.mapper.CourseSettingsMapper;
 import com.leverx.learningmanagementsystem.student.Student;
@@ -25,17 +26,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
   private final CourseRepository courseRepository;
   private final CourseMapper courseMapper;
-  private final DynamicMailServiceImpl mailTrapImp;
+  private final MailService mailService;
   private final CourseSettingsMapper courseSettingsMapper;
 
   @Override
@@ -125,6 +128,10 @@ public class CourseServiceImpl implements CourseService {
         .stream()
         .map(Student::getEmail)
         .toArray(String[]::new);
-    mailTrapImp.sendEmail(studentsEmails, FROM_MAIL, COURSE_NEWS_SUBJECT, COURSE_NEWS);
+    try {
+      mailService.sendEmail(studentsEmails, FROM_MAIL, COURSE_NEWS_SUBJECT, COURSE_NEWS);
+    } catch (UnsupportedOperationException e) {
+      log.info(COURSE_UNSUPPORTED_MAIL_EXCEPTION);
+    }
   }
 }

@@ -6,6 +6,8 @@ import static com.leverx.learningmanagementsystem.ConstMessages.FROM_MAIL;
 import static com.leverx.learningmanagementsystem.ConstMessages.NOT_ENOUGH_COINS;
 import static com.leverx.learningmanagementsystem.ConstMessages.STUDENT_ALREADY_ENROLLED;
 import static com.leverx.learningmanagementsystem.ConstMessages.STUDENT_NOT_FOUND;
+import static com.leverx.learningmanagementsystem.ConstMessages.STUDENT_UNSUPPORTED_MAIL_EXCEPTION;
+import static com.leverx.learningmanagementsystem.ConstMessages.UNSUPPORTED_EXCEPTION;
 import static com.leverx.learningmanagementsystem.ConstMessages.WELCOME_TO_THE_COURSE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -23,12 +25,14 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StudentServiceImpl implements StudentService {
 
   private final StudentRepository studentRepository;
@@ -71,10 +75,14 @@ public class StudentServiceImpl implements StudentService {
       getStudent.setCoins(getStudent.getCoins().subtract(getCourse.getPrice()));
       courseRepository.save(getCourse);
       studentRepository.save(getStudent);
-      mailService.sendEmail(new String[]{getStudent.getEmail()},
-          FROM_MAIL,
-          String.format(WELCOME_TO_THE_COURSE, getCourse.getTitle()),
-          COURSE_ENROLLED_SUBJECT);
+      try {
+        mailService.sendEmail(new String[]{getStudent.getEmail()},
+            FROM_MAIL,
+            String.format(WELCOME_TO_THE_COURSE, getCourse.getTitle()),
+            COURSE_ENROLLED_SUBJECT);
+      } catch (UnsupportedOperationException e) {
+        log.info(STUDENT_UNSUPPORTED_MAIL_EXCEPTION);
+      }
     } else {
       throw new ResponseStatusException(BAD_REQUEST, NOT_ENOUGH_COINS);
     }

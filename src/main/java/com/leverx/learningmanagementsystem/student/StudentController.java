@@ -33,7 +33,6 @@ public class StudentController {
 
   @Operation(summary = "Enroll a student in a course")
   @PostMapping("/enroll/{studentId}/{courseId}")
-  @Profile("prod")
   public ResponseEntity<String> enrollToCourse(
       @PathVariable @Parameter(description = "ID of the student") UUID studentId,
       @PathVariable @Parameter(description = "ID of the course") UUID courseId) throws MessagingException {

@@ -12,10 +12,6 @@ modules:
       builder: custom
       commands: []
       build-result: target/learningmanagementsystem-0.0.1-SNAPSHOT.jar
-    provides:
-      - name: lms-api
-        properties:
-          srv-url: ${default-url}
     parameters:
       buildpack: sap_java_buildpack_jakarta
       memory: 1024M
