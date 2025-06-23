@@ -3,7 +3,7 @@ package com.leverx.learningmanagementsystem.mapper;
 import com.leverx.learningmanagementsystem.student.Student;
 import com.leverx.learningmanagementsystem.student.dto.CreateStudentDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;
-import com.leverx.learningmanagementsystem.student.dto.UpdateStudentDto;
+import com.leverx.learningmanagementsystem.student.dto.StudentUpdateDto;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -33,5 +33,5 @@ public interface StudentMapper {
   Student toEntity(CreateStudentDto dto);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  Student update(UpdateStudentDto dto, @MappingTarget Student entity);
+  Student update(StudentUpdateDto dto, @MappingTarget Student entity);
 }

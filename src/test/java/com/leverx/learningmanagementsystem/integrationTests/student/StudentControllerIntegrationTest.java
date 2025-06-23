@@ -1,6 +1,7 @@
 package com.leverx.learningmanagementsystem.integrationTests.student;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,6 +45,7 @@ class StudentControllerIntegrationTest {
     // Act & Assert: send POST request and verify response JSON structure and values
     mockMvc.perform(post("/api/students")
             .contentType(MediaType.APPLICATION_JSON)
+            .with(httpBasic("user", "password"))
             .content(json))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.firstName").value("Giorgi"))

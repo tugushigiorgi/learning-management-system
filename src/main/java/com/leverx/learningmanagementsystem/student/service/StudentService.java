@@ -2,7 +2,7 @@ package com.leverx.learningmanagementsystem.student.service;
 
 import com.leverx.learningmanagementsystem.student.dto.CreateStudentDto;
 import com.leverx.learningmanagementsystem.student.dto.StudentDto;
-import com.leverx.learningmanagementsystem.student.dto.UpdateStudentDto;
+import com.leverx.learningmanagementsystem.student.dto.StudentUpdateDto;
 import jakarta.mail.MessagingException;
 import java.util.List;
 import java.util.UUID;
@@ -20,5 +20,5 @@ public interface StudentService {
 
   void deleteById(UUID id);
 
-  StudentDto updateStudent(UUID id, UpdateStudentDto studentDto);
+  StudentDto updateStudent(UUID id, StudentUpdateDto studentDto);
 }

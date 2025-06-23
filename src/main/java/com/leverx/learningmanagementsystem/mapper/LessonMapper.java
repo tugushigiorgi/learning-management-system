@@ -3,7 +3,7 @@ package com.leverx.learningmanagementsystem.mapper;
 import com.leverx.learningmanagementsystem.lesson.Lesson;
 import com.leverx.learningmanagementsystem.lesson.dto.CreateLessonDto;
 import com.leverx.learningmanagementsystem.lesson.dto.LessonDto;
-import com.leverx.learningmanagementsystem.lesson.dto.UpdateLessonDto;
+import com.leverx.learningmanagementsystem.lesson.dto.LessonUpdateDto;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -23,7 +23,7 @@ public interface LessonMapper {
   LessonDto toDto(Lesson entity);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  Lesson update(UpdateLessonDto dto, @MappingTarget Lesson entity);
+  Lesson update(LessonUpdateDto dto, @MappingTarget Lesson entity);
 
   @Mappings({
       @Mapping(source = "title", target = "title"),

@@ -29,9 +29,16 @@ public final class ConstMessages {
   public static final String MISSING_PASSWORD = "Missing password";
   public static final String FLAG_INPUT_ERROR = "flag input error";
   public static final String FLAG_IS_INACTIVE = "flag is inactive";
-<<<<<<< HEAD
-=======
   public static final String WELCOME_TO_THE_COURSE = "Welcome to %s course!";
   public static final String COURSE_ENROLLED_SUBJECT = "Course Enrolled!, welcome to this awesome course!";
->>>>>>> Stage-2
+  public static final String IN_MEMORY_USER_NAME = "user";
+  public static final String IN_MEMORY_USER_PASSWORD = "password";
+  public static final String IN_MEMORY_USER_ROLE = "USER";
+  public static final String IN_MEMORY_MANAGER_ROLE = "MANAGER";
+  public static final String IN_MEMORY_MANAGER_NAME = "manager";
+  public static final String IN_MEMORY_MANAGER_PASSWORD = "managerpass";
+  public static final String UNSUPPORTED_EXCEPTION = "Not supported yet.";
+  public static final String STUDENT_UNSUPPORTED_MAIL_EXCEPTION = "Unsupported operation for email sending";
+  public static final String COURSE_UNSUPPORTED_MAIL_EXCEPTION = "Unsupported operation for course email sending";
 }
+

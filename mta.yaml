@@ -1,0 +1,86 @@
+ID: learningmanagementsystem
+_schema-version: "3.1"
+version: 0.0.1
+parameters:
+  enable-parallel-deployments: true
+
+modules:
+  - name: learningmanagementsystem
+    type: java
+    path: .
+    build-parameters:
+      builder: custom
+      commands: []
+      build-result: target/learningmanagementsystem-0.0.1-SNAPSHOT.jar
+    parameters:
+      buildpack: sap_java_buildpack_jakarta
+      memory: 1024M
+      enable-ssh: true
+      env:
+        JAVA_OPTS: '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000'
+        SPRING_PROFILES_ACTIVE: prod
+      TARGET_RUNTIME: tomcat
+      JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
+      JBP_CONFIG_SAP_MACHINE_JDK: "{ version: 21.+ }"
+    requires:
+      - name: lmsuaa
+      - name: lms_destination_service
+      - name: lms_flag_service
+      - name: lms_hdi
+      - name: smtp-credentials
+      - name: smtp-ups
+      - name: lms_logging
+
+  - name: lms-router
+    type: html5
+    path: web
+    parameters:
+      memory: 1024M
+      disk-quota: 1024M
+    requires:
+      - name: lmsuaa
+    properties:
+      destinations: >
+        [
+          {
+            "name": "learningmanagementsystem",
+            "url": "https://419c1b34trial-dev-learningmanagementsystem.cfapps.us10-001.hana.ondemand.com/",
+            "forwardAuthToken": true
+          }
+        ]
+
+resources:
+  - name: lmsuaa
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: lmsuaa
+
+  - name: lms_destination_service
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: lms_destination_service
+
+  - name: lms_flag_service
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: lms_flag_service
+
+  - name: lms_hdi
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: lms_hdi
+
+  - name: lms_logging
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: lms_logging
+
+  - name: smtp-credentials
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: smtp-credentials
+
+  - name: smtp-ups
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: smtp-ups

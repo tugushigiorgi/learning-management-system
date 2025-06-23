@@ -5,7 +5,8 @@ import static com.leverx.learningmanagementsystem.util.ControllerResponseUtil.ha
 
 import com.leverx.learningmanagementsystem.lesson.dto.CreateLessonDto;
 import com.leverx.learningmanagementsystem.lesson.dto.LessonDto;
-import com.leverx.learningmanagementsystem.lesson.dto.UpdateLessonDto;
+import com.leverx.learningmanagementsystem.lesson.dto.PatchLessonDto;
+import com.leverx.learningmanagementsystem.lesson.dto.ReplaceLessonDto;
 import com.leverx.learningmanagementsystem.lesson.service.LessonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,7 +17,15 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/lessons")
@@ -70,12 +79,22 @@ public class LessonController {
     return ResponseEntity.noContent().build();
   }
 
-  @Operation(summary = "Update an existing lesson")
+  @Operation(summary = "Update an existing lesson completely")
   @PutMapping("/{id}")
-  public ResponseEntity<LessonDto> updateLesson(
+  public ResponseEntity<LessonDto> replaceLesson(
       @PathVariable @Parameter(description = "Lesson id to update") UUID id,
-      @RequestBody @Valid @Parameter(description = "Lesson update data") UpdateLessonDto lessonDtoDto) {
+      @RequestBody @Valid @Parameter(description = "Lesson update data") ReplaceLessonDto lessonDtoDto) {
     log.info("Updating lesson: {}", lessonDtoDto);
+    var updatedLesson = lessonService.updateLessons(id, lessonDtoDto);
+    return ResponseEntity.ok(updatedLesson);
+  }
+
+  @Operation(summary = "Partially Update an existing lesson")
+  @PatchMapping("/{id}")
+  public ResponseEntity<LessonDto> patchLesson(
+      @PathVariable @Parameter(description = "Lesson id to update") UUID id,
+      @RequestBody @Valid @Parameter(description = "Partial Lesson update data") PatchLessonDto lessonDtoDto) {
+    log.info("Patching lesson: {}", lessonDtoDto);
     var updatedLesson = lessonService.updateLessons(id, lessonDtoDto);
     return ResponseEntity.ok(updatedLesson);
   }
